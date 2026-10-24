@@ -1,0 +1,26 @@
+/* REVELIO — mise en forme des messages (gras, citations, spoilers, mentions) */
+.postbody .content,.post .content{font-family:'Lora',Georgia,serif;font-size:17px;line-height:1.8;color:#e4dfd0}
+.postbody .content b,.postbody .content strong{font-weight:600;color:#f4efe0}
+.postbody .content u{text-decoration:underline;text-decoration-color:rgba(217,179,106,.7);text-underline-offset:4px}
+.postbody .content s,.postbody .content strike{text-decoration-color:#8f8878;color:#a8a193}
+.postbody .content ul{list-style:none;padding:0;margin:0 0 14px}
+.postbody .content ul li{position:relative;padding-left:22px;margin:3px 0}
+.postbody .content ul li:before{content:'';position:absolute;left:3px;top:.8em;width:6px;height:6px;transform:rotate(45deg);background:#d9b36a}
+.postbody .content a:not(.mentiontag){color:#f0d28f;border-bottom:1px solid rgba(217,179,106,.5);text-decoration:none}
+/* citations */
+.postbody blockquote,.post blockquote{margin:4px 0 16px;padding:12px 18px;border:0;border-left:2px solid #d9b36a;border-radius:0;background:linear-gradient(90deg,rgba(217,179,106,.09),rgba(255,255,255,.02) 70%);font:400 15.5px/1.7 'Lora',serif;color:#cfc9ba}
+.postbody blockquote blockquote{margin:10px 0 2px;border-left-color:rgba(217,179,106,.5);background:rgba(255,255,255,.03)}
+.postbody blockquote cite,.postbody blockquote .quote_title,.postbody blockquote>div:first-child>cite{display:block;margin:0 0 6px;font:italic 400 14px 'EB Garamond',serif;color:#a8a193}
+/* spoilers */
+.sp-wrap{margin:4px 0 16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.02);border-radius:0}
+.sp-wrap.rv-open{border-color:rgba(217,179,106,.5)}
+.sp-head{padding:10px 14px;cursor:pointer;background:transparent;border:0;border-radius:0;color:#cfc9ba;font:700 9.5px 'Montserrat',sans-serif;letter-spacing:1.8px;text-transform:uppercase}
+.sp-head:hover{color:#f0d28f}
+.sp-body{position:relative;min-height:84px;padding:14px 18px 6px;border:0;border-top:1px dashed rgba(217,179,106,.4);background:transparent;font:400 16px/1.75 'Lora',serif;color:#e4dfd0}
+.rv-rv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font:600 22px 'Cinzel',serif;letter-spacing:.35em;color:#f0d28f;text-transform:uppercase;background:radial-gradient(ellipse at center,rgba(217,179,106,.14),transparent 70%);animation:rvO .45s 1.35s ease forwards}
+.rv-rv span{opacity:0;animation:rvL .55s ease forwards;animation-delay:calc(var(--i)*.11s)}
+.rv-in{animation:rvIn .7s 1.3s ease both}
+@keyframes rvL{0%{opacity:0;transform:translateY(8px) scale(.9);filter:blur(6px)}55%{opacity:1;filter:blur(0);text-shadow:0 0 18px rgba(240,210,143,.95)}100%{opacity:1;transform:none;text-shadow:0 0 8px rgba(240,210,143,.5)}}
+@keyframes rvO{to{opacity:0;visibility:hidden}}
+@keyframes rvIn{0%{opacity:0;transform:translateY(6px);filter:blur(4px)}100%{opacity:1;transform:none;filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){.rv-rv{display:none}.rv-in{animation:none}}

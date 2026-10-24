@@ -33,3 +33,4 @@
 .rv-rv span.on{opacity:1;transform:none;filter:blur(0);text-shadow:0 0 14px rgba(240,210,143,.9)}
 .rv-in{opacity:0;transform:translateY(6px);transition:opacity .7s ease,transform .7s ease}
 .rv-in.rv-show{opacity:1;transform:none}
+.postbody .content dl.codebox.spoiler.rv-open .spoiler_content,.postbody .content dl.codebox.spoiler.rv-open .spoiler_content[hidden]{content-visibility:visible !important}

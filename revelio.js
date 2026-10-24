@@ -19,7 +19,7 @@
   function toggle(dl) {
     var b = dl.querySelector('.spoiler_content'); if (!b) { return; }
     var open = dl.className.indexOf('rv-open') > -1;
-    function vis(on) { if (on) { b.className = b.className.replace(/\s*\bhidden\b/g, ''); b.style.setProperty('display', 'block', 'important'); b.style.setProperty('visibility', 'visible', 'important'); b.style.setProperty('height', 'auto', 'important'); b.style.setProperty('opacity', '1', 'important'); } else { b.style.setProperty('display', 'none', 'important'); } }
+    function vis(on) { if (on) { b.removeAttribute('hidden'); b.style.setProperty('content-visibility', 'visible', 'important'); b.className = b.className.replace(/\s*\bhidden\b/g, ''); b.style.setProperty('display', 'block', 'important'); b.style.setProperty('visibility', 'visible', 'important'); b.style.setProperty('height', 'auto', 'important'); b.style.setProperty('opacity', '1', 'important'); } else { b.style.setProperty('display', 'none', 'important'); } }
     var old = b.querySelector('.rv-rv'); if (old) { b.removeChild(old); }
     var inn = b.querySelector('.rv-in'); if (inn) { while (inn.firstChild) { b.insertBefore(inn.firstChild, inn); } b.removeChild(inn); }
     if (open) { dl.className = dl.className.replace(/\s*rv-open/, ''); vis(false); return; }

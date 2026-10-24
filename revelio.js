@@ -29,8 +29,12 @@
     var d = document.createElement('div'); d.className = 'rv-in';
     while (b.firstChild) { d.appendChild(b.firstChild); } b.appendChild(d);
     var r = document.createElement('div'); r.className = 'rv-rv'; r.setAttribute('aria-hidden', 'true');
-    'Revelio'.split('').forEach(function (ch, k) { var s = document.createElement('span'); s.style.setProperty('--i', k); s.textContent = ch; r.appendChild(s); });
+    var sp = [];
+    'Revelio'.split('').forEach(function (ch) { var s = document.createElement('span'); s.textContent = ch; r.appendChild(s); sp.push(s); });
     b.appendChild(r);
+    sp.forEach(function (s, k) { setTimeout(function () { s.className = 'on'; }, 60 + k * 110); });
+    setTimeout(function () { d.className = 'rv-in rv-show'; r.className = 'rv-rv rv-off'; }, 1150);
+    setTimeout(function () { d.className = 'rv-in rv-show'; d.style.opacity = '1'; d.style.transform = 'none'; if (r.parentNode) { r.parentNode.removeChild(r); } }, 2200);
   }
   document.addEventListener('click', function (e) {
     var t = e.target.closest ? e.target.closest('dl.codebox.spoiler dt.spoiler_title') : null; if (!t) { return; }

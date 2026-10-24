@@ -27,10 +27,9 @@
 .postbody .content dl.codebox.spoiler dd{margin:0 !important;padding:0 !important;border:0 !important;background:transparent !important}
 .postbody .content dl.codebox.spoiler .spoiler_content{display:none !important;position:relative;min-height:84px;margin:0 !important;padding:14px 18px 6px !important;border:0 !important;border-top:1px dashed rgba(217,179,106,.4) !important;background:transparent !important;font:400 16px/1.75 'Lora',serif !important;color:#e4dfd0 !important}
 .postbody .content dl.codebox.spoiler.rv-open .spoiler_content{display:block !important;visibility:visible !important;height:auto !important}
-.rv-rv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font:600 22px 'Cinzel',serif;letter-spacing:.35em;color:#f0d28f;text-transform:uppercase;background:radial-gradient(ellipse at center,rgba(217,179,106,.14),transparent 70%);animation:rvO .45s 1.35s ease forwards}
-.rv-rv span{opacity:0;animation:rvL .55s ease forwards;animation-delay:calc(var(--i)*.11s)}
-.rv-in{animation:rvIn .7s 1.3s ease both}
-@keyframes rvL{0%{opacity:0;transform:translateY(8px) scale(.9);filter:blur(6px)}55%{opacity:1;filter:blur(0);text-shadow:0 0 18px rgba(240,210,143,.95)}100%{opacity:1;transform:none;text-shadow:0 0 8px rgba(240,210,143,.5)}}
-@keyframes rvO{to{opacity:0;visibility:hidden}}
-@keyframes rvIn{0%{opacity:0;transform:translateY(6px);filter:blur(4px)}100%{opacity:1;transform:none;filter:blur(0)}}
-@media(prefers-reduced-motion:reduce){.rv-rv{display:none}.rv-in{animation:none}}
+.rv-rv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font:600 22px 'Cinzel',serif;letter-spacing:.35em;color:#f0d28f;text-transform:uppercase;background:radial-gradient(ellipse at center,rgba(217,179,106,.14),transparent 70%);opacity:1;transition:opacity .45s ease}
+.rv-rv.rv-off{opacity:0}
+.rv-rv span{opacity:0;transform:translateY(8px);filter:blur(6px);transition:opacity .5s ease,transform .5s ease,filter .5s ease,text-shadow .5s ease}
+.rv-rv span.on{opacity:1;transform:none;filter:blur(0);text-shadow:0 0 14px rgba(240,210,143,.9)}
+.rv-in{opacity:0;transform:translateY(6px);transition:opacity .7s ease,transform .7s ease}
+.rv-in.rv-show{opacity:1;transform:none}

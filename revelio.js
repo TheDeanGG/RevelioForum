@@ -156,7 +156,7 @@
         for (var i = 0; i < st.length; i++) n.style.setProperty(st[i][0], st[i][1], 'important');
       };
       var ins = f.querySelectorAll('input.inputbox, .password-container');
-      for (var k = 0; k < ins.length; k++) { var n = ins[k]; while (n && n !== lg.querySelector('.content')) { if (n.tagName !== 'LABEL') fix(n); n = n.parentNode; } }
+      for (var k = 0; k < ins.length; k++) { var n = ins[k]; while (n && n !== lg.querySelector('.content')) { if (n.tagName !== 'LABEL') { fix(n); if (n.tagName === 'INPUT') { n.style.setProperty('padding-left', '16px', 'important'); n.style.setProperty('padding-right', '44px', 'important'); } } n = n.parentNode; } }
       var lb = lg.querySelector('.login-body'); if (lb) { lb.style.setProperty('text-align', 'center', 'important'); }
       var sb = f.querySelector('input[type="submit"]');
       if (sb) { sb.style.setProperty('display', 'block', 'important'); sb.style.setProperty('margin', '0 auto', 'important'); sb.style.setProperty('float', 'none', 'important'); var p = sb.parentNode; if (p) { p.style.setProperty('text-align', 'center', 'important'); p.style.setProperty('display', 'block', 'important'); } }

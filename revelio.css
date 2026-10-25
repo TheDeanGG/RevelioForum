@@ -253,3 +253,6 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .login-tabbed #panel-magic input[type="submit"]{min-width:0 !important;height:48px;padding:0 30px !important;margin:0 !important;white-space:nowrap}
 #main-content .login-tabbed #panel-magic input.inputbox,#main-content .login-tabbed #panel-magic input[type="email"]{height:48px}
 @media (max-width:820px){#main-content .login-tabbed #panel-magic fieldset{grid-template-columns:1fr !important}#main-content .login-tabbed #panel-magic fieldset > dl:has(input){grid-column:1 !important;grid-row:auto !important;margin-bottom:16px !important}}
+
+#main-content .login-tabbed input.inputbox{padding-left:16px !important}
+#main-content .login-tabbed input:-webkit-autofill,#main-content .login-tabbed input:-webkit-autofill:hover,#main-content .login-tabbed input:-webkit-autofill:focus{-webkit-text-fill-color:#e8e4d8 !important;caret-color:#e8e4d8;box-shadow:0 0 0 1000px #0f0e0b inset !important;-webkit-box-shadow:0 0 0 1000px #0f0e0b inset !important;transition:background-color 9999s ease-out}

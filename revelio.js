@@ -404,7 +404,7 @@
 		if (sc) { base = sc.getAttribute('src').replace(/revelio\.js.*$/, ''); }
 		var IMG = {
 			'le grand hall': 'img/lieux/grand-hall.jpg', 'les salles de cours': 'img/lieux/salles-de-cours.jpg',
-			'la bibliotheque': 'img/lieux/bibliotheque.jpg', 'exterieur de poudlard': 'img/lieux/foret-interdite.jpg',
+			'la bibliotheque': 'img/lieux/bibliotheque.jpg', 'la foret interdite': 'img/lieux/foret-interdite.jpg', 'le lac noir': 'img/lieux/lac-noir.jpg', 'exterieur de poudlard': 'img/lieux/foret-interdite.jpg',
 			'le terrain de quidditch': 'img/lieux/terrain-quidditch.jpg', 'couloir et passage secrets': 'img/lieux/couloirs.jpg',
 			"l'infirmerie": 'img/lieux/infirmerie.jpg', 'le bureau du directeur': 'img/lieux/bureau-directeur.jpg',
 			'salle commune de gryffondor': 'img/lieux/salle-commune-gryffondor.jpg', 'dortoirs de gryffondor': 'img/lieux/dortoirs-gryffondor.jpg',
@@ -414,6 +414,8 @@
 			'le grand hall': 'Le cœur du château : arrivées, rencontres au détour de l’escalier, annonces du directeur.',
 			'les salles de cours': 'Cours, travaux pratiques et retenues, de la métamorphose aux potions.',
 			'la bibliotheque': 'Recherches, section interdite et nuits de révision.',
+			'la foret interdite': 'Créatures, secrets et dangers : on n’y entre pas sans raison.',
+			'le lac noir': 'Sirènes, calamar géant et rives silencieuses.',
 			'exterieur de poudlard': 'Parc, forêt, lac et cabane : tout ce qui se passe hors des murs.',
 			'le terrain de quidditch': 'Entraînements, matchs et rivalités entre maisons.',
 			'couloir et passage secrets': 'Tours, passages dérobés et salles que l’on ne trouve qu’en cherchant.',

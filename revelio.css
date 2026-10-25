@@ -256,3 +256,8 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 
 #main-content .login-tabbed input.inputbox{padding-left:16px !important}
 #main-content .login-tabbed input:-webkit-autofill,#main-content .login-tabbed input:-webkit-autofill:hover,#main-content .login-tabbed input:-webkit-autofill:focus{-webkit-text-fill-color:#e8e4d8 !important;caret-color:#e8e4d8;box-shadow:0 0 0 1000px #0f0e0b inset !important;-webkit-box-shadow:0 0 0 1000px #0f0e0b inset !important;transition:background-color 9999s ease-out}
+/* Activités : titres de date et losange non coupés */
+#main-content .activity-date-group,#main-content .activity-date-group .header{overflow:visible !important}
+#main-content .activity-date-group .header{padding:6px 0 6px 8px !important;min-height:30px;box-sizing:border-box}
+#main-content .activity-date-group .header:before{margin:0 2px 0 0;flex:none}
+#main-content .activity-date-group .header h2,#main-content .activity-date-group .header .table-title{display:block !important;line-height:1.5 !important;overflow:visible !important;height:auto !important;max-height:none !important;white-space:nowrap}

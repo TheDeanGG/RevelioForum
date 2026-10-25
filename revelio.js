@@ -259,7 +259,7 @@
     cap.textContent = h1 ? h1.textContent.replace(/sujets?/i, function (m) { return /s$/i.test(m) ? 'prophéties' : 'prophétie'; }).replace(/surveillés/i, 'surveillées').replace(/surveillé\b/i, 'surveillée') : '';
     panel.parentNode.insertBefore(bar, panel); panel.parentNode.insertBefore(list, panel); panel.parentNode.insertBefore(cap, panel);
     panel.style.setProperty('display', 'none', 'important'); if (h1) { h1.style.setProperty('display', 'none', 'important'); }
-    var gi = bar.querySelector('input[type="submit"]'); if (gi) { gi.value = /favori/i.test(gi.value) ? 'Retirer des favoris' : 'Arrêter de surveiller'; }
+    var gi = bar.querySelector('input[type="submit"]'); if (gi) { gi.value = gi.value.replace(/les sujets sélectionnés/i, 'la sélection'); }
   }
   try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { }
 })();

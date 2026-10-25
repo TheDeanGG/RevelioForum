@@ -26,8 +26,6 @@
 .postbody .content dl.codebox.spoiler{position:relative;overflow:hidden;margin:4px 0 18px !important;padding:0 !important;border:1px solid rgba(217,179,106,.4) !important;border-radius:0 !important;background:linear-gradient(160deg,rgba(217,179,106,.08),rgba(255,255,255,.02)) !important;box-shadow:none !important;transition:box-shadow .6s,border-color .6s}
 .postbody .content dl.codebox.spoiler:before,.postbody .content dl.codebox.spoiler:after,.postbody .content dl.codebox.spoiler dd:before,.postbody .content dl.codebox.spoiler dd:after{content:none !important;display:none !important;background:none !important}
 .postbody .content dl.codebox.spoiler.rv-open{border-color:rgba(217,179,106,.75) !important;box-shadow:0 0 34px rgba(217,179,106,.14) !important}
-.rv-cn{position:absolute;width:7px;height:7px;transform:rotate(45deg);background:#d9b36a;opacity:.8}
-.rv-cn.a{left:-4px;top:-4px}.rv-cn.b{right:-4px;top:-4px}.rv-cn.c{left:-4px;bottom:-4px}.rv-cn.d{right:-4px;bottom:-4px}
 .postbody .content dl.codebox.spoiler dt.spoiler_title{display:flex !important;align-items:center;gap:14px;margin:0 !important;padding:16px 18px !important;border:0 !important;background:transparent !important;color:#cfc9ba !important;cursor:pointer;user-select:none;font-style:normal !important}
 .rv-d{flex:none;position:relative;width:34px;height:34px;margin:0 4px;transform:rotate(45deg);box-shadow:inset 0 0 0 1px #d9b36a;transition:transform .7s cubic-bezier(.2,.8,.2,1),background .5s,box-shadow .5s;animation:rvPulse 2.8s ease-in-out infinite}
 .rv-d:after{content:'';position:absolute;left:50%;top:50%;width:15px;height:15px;margin:-7.5px 0 0 -7.5px;transform:rotate(-45deg);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9b36a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat;transition:transform .7s}
@@ -57,3 +55,9 @@ dt.spoiler_title:hover .rv-d{box-shadow:inset 0 0 0 1px #f0d28f,0 0 24px rgba(21
 .rv-in{min-height:84px;opacity:0;transform:translateY(6px);transition:opacity .8s ease,transform .8s ease}
 .rv-in.rv-show{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rv-d{animation:none}.rv-p i{animation:none}}
+/* bouton fermer */
+.postbody .content dl.codebox.spoiler .rv-cl{display:none;align-items:center;gap:8px;margin:0 22px 16px 24px;padding:8px 14px;cursor:pointer;border:1px solid rgba(217,179,106,.45);background:transparent;color:#d9b36a;font:700 9px 'Montserrat',sans-serif;letter-spacing:1.6px;text-transform:uppercase;opacity:0;transition:opacity .5s,background .25s,color .25s}
+.postbody .content dl.codebox.spoiler.rv-open .rv-cl{display:inline-flex;opacity:1;animation:rvClIn .5s 1.5s ease both}
+.postbody .content dl.codebox.spoiler .rv-cl:hover{background:rgba(217,179,106,.14);color:#f0d28f}
+.rv-cl svg{width:12px;height:12px}
+@keyframes rvClIn{from{opacity:0}to{opacity:1}}

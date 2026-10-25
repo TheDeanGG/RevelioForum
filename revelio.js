@@ -187,3 +187,28 @@
   }
   try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { }
 })();
+/* Mon compte : en-tête (fil d'Ariane, titre, accroche) au-dessus des onglets */
+(function () {
+  function run() {
+    var tabs = document.getElementById('tabs');
+    if (!tabs || document.querySelector('.rv-uh') || !tabs.querySelector('a[href*="page_profil="]')) { return; }
+    var act = tabs.querySelector('li.activetab span'); if (!act) { return; }
+    var name = act.textContent.replace(/^\s+|\s+$/g, '');
+    var M = {
+      'Informations': ['Mon profil', 'Ce que les autres sorciers lisent sur toi, à côté de chacun de tes hiboux.'],
+      'Préférences': ['Mes préférences', 'Comment le forum se comporte avec toi : contacts, courrier, affichage.'],
+      'Avatar': ['Mon avatar', 'La grande image qui accompagne chacun de tes hiboux.'],
+      'Amis et ignorés': ['Mes amis', 'Les sorciers que tu fréquentes, et ceux que tu préfères ne plus entendre.'],
+      'Membres suivis': ['Membres suivis', 'Les membres dont tu veux suivre chaque nouveau message.'],
+      'Notifications': ['Mes notifications', 'Choisis comment le forum te prévient, et retrouve tes dernières alertes.'],
+      'Sujets surveillés': ['Sujets surveillés', 'Les sujets dont tu veux être prévenu des nouvelles réponses.'],
+      'Favoris': ['Mes favoris', 'Les sujets que tu gardes sous la main.']
+    };
+    var m = M[name] || [name, ''];
+    var h = document.createElement('div'); h.className = 'rv-uh';
+    h.innerHTML = '<nav class="rv-uh-crumb"><span>Revelio</span>›<span>Mon compte</span>›<b></b></nav><h1 class="rv-uh-h1"></h1>' + (m[1] ? '<p class="rv-uh-tag"></p>' : '');
+    h.querySelector('b').textContent = name; h.querySelector('h1').textContent = m[0]; if (m[1]) { h.querySelector('p').textContent = m[1]; }
+    tabs.parentNode.insertBefore(h, tabs);
+  }
+  try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { }
+})();

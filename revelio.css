@@ -315,3 +315,11 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content #cp-main fieldset dl:only-child dt{display:none !important}
 #main-content #cp-main fieldset dl:only-child dd{text-align:center !important}
 #main-content #cp-main fieldset dl:only-child dd em{font:italic 400 18px 'EB Garamond',serif !important;color:#8f8878 !important}
+/* Mon compte : en-tête */
+#main-content .rv-uh{margin:6px 0 0}
+#main-content .rv-uh-crumb{display:flex;flex-wrap:wrap;gap:8px;font:600 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;color:#8f8878}
+#main-content .rv-uh-crumb b{color:#d9b36a;font-weight:700}
+#main-content .rv-uh-h1{margin:16px 0 0 !important;padding:0 !important;border:0 !important;background:none !important;font:500 38px/1.15 'Cinzel',serif !important;letter-spacing:3px;text-transform:uppercase;color:#f4efe0 !important}
+#main-content .rv-uh-tag{margin:10px 0 0;font:italic 400 20px/1.4 'EB Garamond',serif;color:#cfc9ba}
+#main-content .rv-uh+#tabs{margin-top:22px !important}
+@media (max-width:720px){#main-content .rv-uh-h1{font-size:26px !important}}

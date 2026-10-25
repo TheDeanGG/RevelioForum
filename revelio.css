@@ -231,3 +231,5 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .rv-lg-reg .content{grid-template-columns:1fr;text-align:center !important}
 #main-content .rv-lg-reg .rv-lg-join{justify-self:center}
 }
+#main-content .login-tabbed .content,#main-content .rv-lg-reg .content{box-sizing:border-box !important}
+#main-content .login-tabbed #panel-password fieldset dt,#main-content .login-tabbed #panel-password fieldset dt label{text-align:left !important;display:block}

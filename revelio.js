@@ -387,3 +387,157 @@
   }
   try { new MutationObserver(fix).observe(document.documentElement, { childList: true, subtree: true }); fix(); } catch (e) { }
 })();
+
+/* ===== REVELIO : page de la catégorie Poudlard (lieux + maisons) ===== */
+(function () {
+	function run() {
+		if (!/^\/c\d+/.test(location.pathname)) { return; }
+		var main = document.getElementById('main-content');
+		var card = main && main.querySelector('.forabg');
+		var rvx = main && main.querySelector('.rvx');
+		if (!card || !rvx) { return; }
+		var title = card.querySelector('.table-title');
+		function norm(s) { s = (s || '').toLowerCase(); if (s.normalize) { s = s.normalize('NFD').replace(/[̀-ͯ]/g, ''); } return s.replace(/[’']/g, "'").replace(/\s+/g, ' ').trim(); }
+		if (!title || norm(title.textContent).indexOf('poudlard') < 0) { return; }
+		var base = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
+		var sc = document.querySelector('script[src*="revelio.js"]');
+		if (sc) { base = sc.getAttribute('src').replace(/revelio\.js.*$/, ''); }
+		var IMG = {
+			'le grand hall': 'img/lieux/grand-hall.jpg', 'les salles de cours': 'img/lieux/salles-de-cours.jpg',
+			'la bibliotheque': 'img/lieux/bibliotheque.jpg', 'exterieur de poudlard': 'img/lieux/foret-interdite.jpg',
+			'le terrain de quidditch': 'img/lieux/terrain-quidditch.jpg', 'couloir et passage secrets': 'img/lieux/couloirs.jpg',
+			"l'infirmerie": 'img/lieux/infirmerie.jpg', 'le bureau du directeur': 'img/lieux/bureau-directeur.jpg',
+			'salle commune de gryffondor': 'img/lieux/salle-commune-gryffondor.jpg', 'dortoirs de gryffondor': 'img/lieux/dortoirs-gryffondor.jpg',
+			'salle commune de serpentard': 'img/lieux/salle-commune-serpentard.jpg', 'dortoirs de serpentard': 'img/lieux/dortoirs-serpentard.jpg'
+		};
+		var DESC = {
+			'le grand hall': 'Le cœur du château : arrivées, rencontres au détour de l’escalier, annonces du directeur.',
+			'les salles de cours': 'Cours, travaux pratiques et retenues, de la métamorphose aux potions.',
+			'la bibliotheque': 'Recherches, section interdite et nuits de révision.',
+			'exterieur de poudlard': 'Parc, forêt, lac et cabane : tout ce qui se passe hors des murs.',
+			'le terrain de quidditch': 'Entraînements, matchs et rivalités entre maisons.',
+			'couloir et passage secrets': 'Tours, passages dérobés et salles que l’on ne trouve qu’en cherchant.',
+			"l'infirmerie": 'Soins, convalescences et visites tardives.',
+			'le bureau du directeur': 'Audiences, convocations et secrets de l’université.'
+		};
+		var HOUSES = [
+			{ k: 'gryffondor', c: '#d65a6b', crest: 'img/ecussons/Gryffondor.png', tag: 'Courage, audace et loyauté.' },
+			{ k: 'serdaigle', c: '#6fb0cf', crest: 'img/ecussons/Serdaigle.png', tag: 'Savoir, esprit et curiosité.' },
+			{ k: 'serpentard', c: '#5fc4a0', crest: 'img/ecussons/Serpentard.png', tag: 'Ambition, ruse et détermination.' },
+			{ k: 'poufsouffle', c: '#d9b650', crest: 'img/ecussons/Poufsouffle.png', tag: 'Travail, patience et justice.' }
+		];
+		function h(tag, cls, txt) { var e = document.createElement(tag); if (cls) { e.className = cls; } if (txt !== undefined && txt !== null) { e.textContent = txt; } return e; }
+		function link(cls, txt, href) { var a = h('a', cls, txt); a.href = href || '#'; return a; }
+		function clean(s) { return (s || '').replace(/ /g, ' ').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, ''); }
+		function num(n) { if (!n) { return 0; } var t = n.firstChild ? (n.firstChild.nodeValue || '') : ''; var v = parseInt(t.replace(/\D/g, ''), 10); return isNaN(v) ? 0 : v; }
+
+		/* lecture des forums */
+		var rows = [];
+		Array.prototype.forEach.call(card.querySelectorAll('li.row'), function (row) {
+			var a = row.querySelector('a.forumtitle');
+			if (!a) { return; }
+			var subs = [];
+			Array.prototype.forEach.call(row.querySelectorAll('dd.dterm a.gensmall'), function (s) { subs.push({ name: clean(s.textContent), href: s.getAttribute('href') }); });
+			var lp = row.querySelector('dd.lastpost .lastpost-infos');
+			var ta = lp ? lp.querySelector('a') : null;
+			var who = row.querySelector('dd.lastpost a.gensmall');
+			var date = '';
+			if (lp) { Array.prototype.forEach.call(lp.childNodes, function (nd) { if (nd.nodeType === 3) { date += nd.nodeValue; } }); }
+			date = clean(date).replace(/\s*\bpar\b\s*$/i, '');
+			var whoTxt = who ? clean(who.textContent) : '';
+			rows.push({
+				name: clean(a.textContent), href: a.getAttribute('href'), subs: subs,
+				topics: num(row.querySelector('dd.topics')), posts: num(row.querySelector('dd.posts')),
+				lastTitle: ta && clean(ta.textContent) ? clean(ta.textContent) : '', lastHref: ta ? ta.getAttribute('href') : '',
+				lastRest: date && whoTxt ? date + ' · ' + whoTxt : (date || whoTxt), lastBy: whoTxt
+			});
+		});
+		if (!rows.length) { return; }
+		function imgOf(name) { var p = IMG[norm(name)]; return p ? base + p : ''; }
+		function foot(r) {
+			var f = h('div', 'cp-cf');
+			var s = h('span');
+			s.appendChild(h('b', '', String(r.topics))); s.appendChild(document.createTextNode(' prophéties · '));
+			s.appendChild(h('b', '', String(r.posts))); s.appendChild(document.createTextNode(' hiboux'));
+			f.appendChild(s);
+			f.appendChild(h('span', '', r.lastTitle || '—'));
+			return f;
+		}
+
+		var places = [], houses = [], topics = 0, posts = 0, last = null;
+		rows.forEach(function (r) {
+			topics += r.topics; posts += r.posts;
+			if (!last && r.lastTitle) { last = r; }
+			var n = norm(r.name), hs = null;
+			HOUSES.forEach(function (x) { if (n.indexOf('maison') === 0 && n.indexOf(x.k) > -1) { hs = x; } });
+			if (hs) { houses.push({ r: r, h: hs }); } else { places.push(r); }
+		});
+
+		var root = h('div', 'cpx');
+		/* bandeau */
+		var hero = h('section', 'cp-hero');
+		hero.style.setProperty('--cp-img', 'url(' + base + 'img/lieux/poudlard-nuit.jpg)');
+		var hi = h('div', 'cp-hi');
+		var num1 = h('div', 'cp-num', 'IV'); num1.appendChild(h('i')); hi.appendChild(num1);
+		hi.appendChild(h('h1', '', 'Poudlard'));
+		hi.appendChild(h('p', 'cp-tag', 'L’université de sorcellerie, étage par étage.'));
+		hi.appendChild(h('p', 'cp-desc', 'Le cœur de la vie universitaire, organisé par zones du château. Les lieux précis sont des sujets RP dans l’espace concerné.'));
+		hero.appendChild(hi);
+		var st = h('div', 'cp-st');
+		var s1 = h('div'); s1.appendChild(h('b', '', String(topics))); s1.appendChild(document.createTextNode('prophéties'));
+		var s2 = h('div'); s2.appendChild(h('b', '', String(posts))); s2.appendChild(document.createTextNode('hiboux'));
+		st.appendChild(s1); st.appendChild(s2); hero.appendChild(st);
+		var lb = h('div', 'cp-last');
+		lb.appendChild(h('span', 'dm', last && last.lastBy ? last.lastBy.charAt(0).toUpperCase() : '✦'));
+		var lt = h('div'); lt.appendChild(h('small', '', 'Dernier hibou'));
+		if (last) { var sa = h('strong'); sa.appendChild(link('', last.lastTitle, last.lastHref)); lt.appendChild(sa); lt.appendChild(h('span', '', last.lastRest)); }
+		else { lt.appendChild(h('strong', '', 'Aucun hibou')); lt.appendChild(h('span', '', 'pour le moment')); }
+		lb.appendChild(lt);
+		var act = h('div', 'cp-act');
+		var mark = main.querySelector('ul.linklist li.rightside a[href*="mark=forums"]');
+		if (mark) { act.appendChild(link('', 'Marquer comme lu', mark.getAttribute('href'))); }
+		act.appendChild(link('g', 'Nouveaux hiboux', '/search?search_id=newposts'));
+		lb.appendChild(act); hero.appendChild(lb);
+		root.appendChild(hero);
+
+		/* lieux */
+		if (places.length) {
+			var lab = h('div', 'cp-lab', 'Les lieux du château'); lab.appendChild(h('em', '', 'Choisis où se déroule ta scène')); root.appendChild(lab);
+			var grid = h('div', 'cp-grid');
+			places.forEach(function (r) {
+				var art = h('article', 'cp-card');
+				var im = imgOf(r.name), ci = h('div', 'cp-ci');
+				if (im) { ci.style.backgroundImage = 'url(' + im + ')'; } else { ci.className += ' none'; }
+				art.appendChild(ci);
+				var cb = h('div', 'cp-cb'), h3 = h('h3'); h3.appendChild(link('', r.name, r.href)); cb.appendChild(h3);
+				var d = DESC[norm(r.name)]; if (d) { cb.appendChild(h('p', '', d)); }
+				if (r.subs.length) { var ch = h('div', 'cp-chips'); r.subs.forEach(function (s) { ch.appendChild(link('', s.name, s.href)); }); cb.appendChild(ch); }
+				cb.appendChild(foot(r)); art.appendChild(cb); grid.appendChild(art);
+			});
+			root.appendChild(grid);
+		}
+		/* maisons */
+		if (houses.length) {
+			var lab2 = h('div', 'cp-lab', 'Les quatre maisons'); lab2.appendChild(h('em', '', 'Salles communes et dortoirs')); root.appendChild(lab2);
+			var hg = h('div', 'cp-hg');
+			houses.forEach(function (o) {
+				var art = h('article', 'cp-h'); art.style.setProperty('--c', o.h.c);
+				var hh = h('div', 'cp-hh'), im = h('img'); im.src = base + o.h.crest; im.alt = ''; hh.appendChild(im);
+				var tx = h('div'), h3 = h('h3'); h3.appendChild(link('', o.r.name, o.r.href)); tx.appendChild(h3); tx.appendChild(h('p', '', o.h.tag)); hh.appendChild(tx); art.appendChild(hh);
+				var ht = h('div', 'cp-ht');
+				o.r.subs.forEach(function (s) {
+					var n = norm(s.name), label = n.indexOf('dortoir') > -1 ? 'Dortoirs' : (n.indexOf('commune') > -1 ? 'Salle Commune' : s.name);
+					var p = imgOf(s.name), a = link('cp-t', '', s.href);
+					if (p) { a.style.backgroundImage = 'url(' + p + ')'; }
+					else { a.className += ' empty'; var ci = h('img'); ci.src = base + o.h.crest; ci.alt = ''; a.appendChild(ci); }
+					a.appendChild(h('span', '', label)); ht.appendChild(a);
+				});
+				art.appendChild(ht); art.appendChild(foot(o.r)); hg.appendChild(art);
+			});
+			root.appendChild(hg);
+		}
+		rvx.parentNode.insertBefore(root, rvx);
+		document.body.className += ' rv-catp';
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

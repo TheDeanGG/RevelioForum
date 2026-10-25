@@ -204,6 +204,7 @@
       'Sujets surveillés': ['Sujets surveillés', 'Les sujets dont tu veux être prévenu des nouvelles réponses.'],
       'Favoris': ['Mes favoris', 'Les sujets que tu gardes sous la main.']
     };
+    if (name !== 'Informations') { document.documentElement.className += ' rv-nohero'; }
     var m = M[name] || [name, ''];
     var h = document.createElement('div'); h.className = 'rv-uh';
     h.innerHTML = '<nav class="rv-uh-crumb"><span>Revelio</span>›<span>Mon compte</span>›<b></b></nav><h1 class="rv-uh-h1"></h1>' + (m[1] ? '<p class="rv-uh-tag"></p>' : '');

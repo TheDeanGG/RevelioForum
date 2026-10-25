@@ -324,3 +324,4 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .rv-uh+#tabs{margin-top:22px !important}
 @media (max-width:720px){#main-content .rv-uh-h1{font-size:26px !important}}
 #main-content .rv-pt{display:none !important}
+.rv-nohero #main-content .rv-hero,.rv-nohero #main-content .rv-nav{display:none !important}

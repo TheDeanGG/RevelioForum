@@ -475,5 +475,5 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 .monomer-modal>*{position:relative;z-index:1}
 /* Bandeau Informations : écusson centré derrière le nom */
 #main-content .rv-pe .rv-hid{position:relative}
-#main-content .rv-pe .rv-hcrest{position:absolute !important;left:50% !important;top:50% !important;right:auto !important;bottom:auto !important;transform:translate(-50%,-50%) !important;height:150px !important;width:auto !important;max-width:none;object-fit:contain;opacity:.38 !important;z-index:0;pointer-events:none}
+#main-content .rv-pe .rv-hcrest{position:absolute !important;left:auto !important;right:-24px !important;top:50% !important;bottom:auto !important;transform:translateY(-50%) !important;height:150px !important;width:auto !important;max-width:none;object-fit:contain;opacity:.38 !important;z-index:0;pointer-events:none}
 #main-content .rv-pe .rv-hid>*:not(.rv-hcrest){position:relative;z-index:1}

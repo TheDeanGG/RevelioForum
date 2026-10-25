@@ -473,3 +473,7 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 .monomer-modal{overflow:hidden !important}
 .monomer-modal::after{content:'';position:absolute;right:-34px;bottom:-34px;width:230px;height:260px;background:url(https://i.imgur.com/dw1TqNU.png) center/contain no-repeat;opacity:.09;pointer-events:none;z-index:0}
 .monomer-modal>*{position:relative;z-index:1}
+/* Bandeau Informations : écusson centré derrière le nom */
+#main-content .rv-pe .rv-hid{position:relative}
+#main-content .rv-pe .rv-hcrest{position:absolute !important;left:50% !important;top:50% !important;right:auto !important;bottom:auto !important;transform:translate(-50%,-50%) !important;height:200px !important;width:auto !important;max-width:none;object-fit:contain;opacity:.22 !important;z-index:0;pointer-events:none}
+#main-content .rv-pe .rv-hid>*:not(.rv-hcrest){position:relative;z-index:1}

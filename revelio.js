@@ -274,3 +274,104 @@
   }
   try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { }
 })();
+/* Mon profil (Informations) : mise en page deux colonnes, sections en cartes, colonne d'avancement */
+(function () {
+  function el(t, c, h) { var e = document.createElement(t); if (c) { e.className = c; } if (h) { e.innerHTML = h; } return e; }
+  function norm(t) { return (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim(); }
+  function run() {
+    var root = document.querySelector('.rv-pe'), form = root && root.querySelector('form#ucp');
+    if (!form || root.classList.contains('pi-on') || !root.querySelector('.rv-hero') || !form.querySelector('h1.page-title')) { return; }
+    var act = document.querySelector('#tabs li.activetab'); if (act && act.previousElementSibling) { return; }
+    var DESC = { 'Compte': 'Les champs marqués d’un * sont obligatoires.', 'Ton personnage': 'Ce qui s’affiche à côté de chacun de tes hiboux.', 'Allégeance': 'Où va ta loyauté ? Tu peux en choisir plusieurs.', 'Karma': 'Ta place entre ténèbres et lumière.', 'Contacts': 'Ces informations seront visibles publiquement.', 'Tes données': '' };
+    var GROUPS = [
+      ['Identité', ['titre', 'statut', 'annee scolaire', 'genre', 'date de naissance', 'lieu de naissance', 'habitation']],
+      ['Image', ['portrait', 'faceclaim']],
+      ['Histoire', ['resume', 'citation']],
+      ['Serment inviolable', ['serment inviolable', 'serment • type', 'serment • depuis', 'serment • citation', 'serment • infos', 'serment • profil']],
+      ['Hors RP', ['multicomptes', 'credits', 'discord']]
+    ];
+    var REN = { 'serment inviolable': 'Avec qui', 'serment • type': 'Type', 'serment • depuis': 'Depuis', 'serment • citation': 'Citation', 'serment • infos': 'Infos', 'serment • profil': 'Profil', 'changer votre mot de passe': 'Mot de passe' };
+    var S3 = { 'genre': 1, 'date de naissance': 1, 'lieu de naissance': 1, 'habitation / colocation': 1 };
+    var S6 = { 'resume': 1, 'citation': 1 };
+    var hs = form.querySelectorAll('h1.page-title'), secs = [];
+    for (var i = 0; i < hs.length; i++) {
+      var h1 = hs[i], panel = h1.nextElementSibling; if (!panel || !/panel/.test(panel.className)) { continue; }
+      var title = h1.textContent.replace(/^\s+|\s+$/g, ''), fs = panel.querySelector('fieldset'); if (!fs) { continue; }
+      var sec = el('section', 'pi-sec'); sec.id = 'rv-s' + i;
+      var head = el('div', 'pi-sh', '<span class="dm"></span><h2></h2><p></p><span class="ct"></span>');
+      head.querySelector('h2').textContent = title; head.querySelector('p').textContent = DESC[title] || '';
+      var body = el('div', 'pi-sb'); body.appendChild(fs); sec.appendChild(head); sec.appendChild(body);
+      h1.parentNode.insertBefore(sec, h1); h1.parentNode.removeChild(h1); panel.parentNode.removeChild(panel);
+      var kind = title === 'Compte' ? 'c' : title === 'Ton personnage' ? 'p' : title === 'Allégeance' ? 'a' : title === 'Karma' ? 'k' : title === 'Contacts' ? 'n' : 'd';
+      var dls = [].slice.call(fs.children).filter(function (x) { return x.tagName === 'DL'; });
+      var byKey = [];
+      for (var d = 0; d < dls.length; d++) {
+        var dl = dls[d], dt = dl.querySelector('dt'), dd = dl.querySelector('dd'); if (!dt) { continue; }
+        var raw = dt.textContent.replace(/ /g, ' '), req = /\*/.test(raw), nm = raw.replace(/\*/g, '').replace(/\s*:\s*/g, ' ').replace(/\s+/g, ' ').trim(), key = norm(nm);
+        byKey.push([key, dl]);
+        var shown = REN[key] || nm;
+        if (kind === 'a' || kind === 'k') { dt.style.display = 'none'; dl.className += ' pi-f s6'; continue; }
+        if (kind === 'd') { dl.className += ' pi-f s6 pi-data'; continue; }
+        dt.innerHTML = ''; var lb = el('label', 'pi-lb'); lb.appendChild(document.createTextNode(shown.charAt(0).toUpperCase() + shown.slice(1))); if (req) { lb.appendChild(el('b', '', '*')); } dt.appendChild(lb);
+        dl.className += ' pi-f ' + (S6[key] ? 's6' : key === 'portrait' ? 's4' : S3[key] ? 's3' : 's2');
+        if (kind === 'c' && key === 'changer votre mot de passe' && dd) { var a = dd.querySelector('a'); var href = a ? a.getAttribute('href') : '#'; dd.innerHTML = ''; var pw = el('div', 'pi-pw', '<span>••••••••••</span>'); var pa = el('a', '', 'Modifier'); pa.href = href; pa.target = '_blank'; pw.appendChild(pa); dd.appendChild(pw); }
+        if (key === 'date de naissance' && dd) { var se = dd.querySelectorAll('select'), ip = dd.querySelector('input'); var g = el('div', 'pi-date'); for (var s = 0; s < se.length; s++) { g.appendChild(se[s]); } if (ip) { g.appendChild(ip); } dd.insertBefore(g, dd.firstChild); var tn = []; for (var n = dd.firstChild; n; n = n.nextSibling) { if (n.nodeType === 3) { tn.push(n); } } for (var t = 0; t < tn.length; t++) { dd.removeChild(tn[t]); } }
+        if (key === 'genre' && dd) { var ul = dd.querySelector('ul.profile_field_list'); if (ul) { ul.parentNode.removeChild(ul); } }
+      }
+      if (kind === 'p') {
+        var used = {}, frag = [];
+        for (var gI = 0; gI < GROUPS.length; gI++) {
+          frag.push(el('div', 'pi-sub', GROUPS[gI][0]));
+          for (var kI = 0; kI < GROUPS[gI][1].length; kI++) { for (var b = 0; b < byKey.length; b++) { if (!used[b] && byKey[b][0].indexOf(GROUPS[gI][1][kI]) === 0) { used[b] = 1; frag.push(byKey[b][1]); break; } } }
+        }
+        for (var b2 = 0; b2 < byKey.length; b2++) { if (!used[b2]) { frag.push(byKey[b2][1]); } }
+        for (var f = 0; f < frag.length; f++) { fs.appendChild(frag[f]); }
+      }
+      secs.push({ el: sec, kind: kind, title: title, ct: head.querySelector('.ct') });
+    }
+    if (!secs.length) { return; }
+    /* grille : colonne gauche + sections */
+    var hero = root.querySelector('.rv-hero'); hero.style.marginLeft = '0'; hero.style.width = 'auto';
+    var grid = el('div', 'pi-grid'), side = el('aside', 'pi-side'), main = el('div', 'pi-main');
+    side.innerHTML = '<div class="pi-box"><h3 class="pi-bt">Ta fiche</h3><div class="pi-score"><b>0</b><span></span></div><div class="pi-prog"><i></i></div><ul class="pi-miss"></ul></div><div class="pi-box pi-navbox"><h3 class="pi-bt">Sections</h3><nav class="pi-nav"></nav></div><div class="pi-act"></div>';
+    for (var m = 0; m < secs.length; m++) { main.appendChild(secs[m].el); }
+    grid.appendChild(side); grid.appendChild(main);
+    hero.parentNode.insertBefore(grid, hero.nextSibling);
+    var sub = form.querySelector('fieldset.submit-buttons'); if (sub) { side.querySelector('.pi-act').appendChild(sub); }
+    root.className += ' pi-on';
+    /* calculs */
+    var nav = side.querySelector('.pi-nav'), navA = [];
+    for (var q = 0; q < secs.length; q++) { var na = el('a', '', ''); na.href = '#' + secs[q].el.id; na.appendChild(document.createTextNode(secs[q].title)); na.appendChild(el('em', '', '')); (function (a, s) { a.addEventListener('click', function (e) { e.preventDefault(); s.el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); })(na, secs[q]); nav.appendChild(na); navA.push(na); }
+    function vis(x) { return x.offsetParent !== null; }
+    function fields(sec) { return [].slice.call(sec.el.querySelectorAll('input[type=text],input[type=url],input[type=email],input[type=number],textarea,select')).filter(function (x) { return vis(x) && !/^rv-kdl$/.test(x.closest('dl').className); }); }
+    function refresh() {
+      var tot = 0, ok = 0, req = [], opt = [];
+      for (var s = 0; s < secs.length; s++) {
+        var sc = secs[s], c = sc.ct, a = navA[s], em = a.querySelector('em'), txt = '', cls = '';
+        if (sc.kind === 'a') { var n = sc.el.querySelectorAll('input:checked').length; txt = n + (n > 1 ? ' choisies' : ' choisie'); cls = n ? 'ok' : ''; em.textContent = String(n); }
+        else if (sc.kind === 'c' || sc.kind === 'p' || sc.kind === 'n') {
+          var fl = fields(sc), o = 0;
+          for (var f = 0; f < fl.length; f++) {
+            var filled = (fl[f].value || '').replace(/\s/g, '') !== ''; if (filled) { o++; }
+            var dl = fl[f].closest('dl'); fl[f].classList.toggle('miss', !filled && !!(dl && dl.querySelector('.pi-lb b')));
+            if (!filled) { var lbl = dl && dl.querySelector('.pi-lb'); (dl && dl.querySelector('.pi-lb b') ? req : opt).push({ f: fl[f], t: lbl ? lbl.textContent.replace(/\*$/, '') : '' }); }
+          }
+          tot += fl.length; ok += o; txt = o + ' / ' + fl.length; cls = o === fl.length ? 'ok' : ''; em.textContent = o + '/' + fl.length;
+        }
+        if (c) { c.textContent = txt; c.className = 'ct ' + cls; c.style.display = txt ? '' : 'none'; }
+        a.className = (cls === 'ok' ? 'ok ' : '') + (a.className.indexOf('on') > -1 ? 'on' : '');
+      }
+      var sb = side.querySelector('.pi-score'); sb.querySelector('b').textContent = String(ok); sb.querySelector('span').textContent = '/ ' + tot + ' champs remplis';
+      side.querySelector('.pi-prog i').style.width = (tot ? Math.round(ok * 100 / tot) : 0) + '%';
+      var ul = side.querySelector('.pi-miss'); ul.innerHTML = '';
+      var list = req.slice(0, 4).map(function (x) { x.r = 1; return x; }).concat(opt.slice(0, 3));
+      if (!req.length) { ul.appendChild(el('li', 'pi-done', 'Tous les champs obligatoires sont remplis.')); }
+      list.forEach(function (x) { var li = el('li'), a = el('a', '', '<i></i>'); a.appendChild(document.createTextNode(x.t)); if (!x.r) { a.appendChild(el('em', '', 'facultatif')); } a.href = '#'; a.addEventListener('click', function (e) { e.preventDefault(); x.f.scrollIntoView({ behavior: 'smooth', block: 'center' }); try { x.f.focus({ preventScroll: true }); } catch (er) { } }); li.appendChild(a); ul.appendChild(li); });
+    }
+    var tm = null; function later() { clearTimeout(tm); tm = setTimeout(refresh, 60); }
+    root.addEventListener('input', later); root.addEventListener('change', later); refresh();
+    function spy() { var cur = 0; for (var s = 0; s < secs.length; s++) { if (secs[s].el.getBoundingClientRect().top < 160) { cur = s; } } for (var z = 0; z < navA.length; z++) { navA[z].classList.toggle('on', z === cur); } }
+    window.addEventListener('scroll', spy, { passive: true }); spy();
+  }
+  try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { if (window.console) { console.log('rv-pi', e); } }
+})();

@@ -161,6 +161,16 @@
       var sb = f.querySelector('input[type="submit"]');
       if (sb) { sb.style.setProperty('display', 'block', 'important'); sb.style.setProperty('margin', '0 auto', 'important'); sb.style.setProperty('float', 'none', 'important'); var p = sb.parentNode; if (p) { p.style.setProperty('text-align', 'center', 'important'); p.style.setProperty('display', 'block', 'important'); } }
     }
+    /* onglets : affichage explicite du bon formulaire */
+    var tabs = lg.querySelectorAll('.login-tab'), pw = lg.querySelector('#panel-password'), mg = lg.querySelector('#panel-magic');
+    if (tabs.length > 1 && pw && mg) {
+      var show = function (i) {
+        pw.style.setProperty('display', i === 0 ? 'block' : 'none', 'important');
+        mg.style.setProperty('display', i === 1 ? 'block' : 'none', 'important');
+      };
+      show(0);
+      for (var t = 0; t < tabs.length; t++) (function (i) { tabs[i].addEventListener('click', function () { show(i); }); })(t);
+    }
     /* carte inscription */
     var reg = lg.nextElementSibling;
     if (reg && /panel/.test(reg.className)) {

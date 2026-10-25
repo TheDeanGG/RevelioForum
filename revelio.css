@@ -365,3 +365,4 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .rv-wt-bar .rv-wt-go:before,#main-content .rv-wt-bar .rv-wt-go:after,#main-content .rv-wt-bar a:before,#main-content .rv-wt-bar a:after{display:none !important;content:none !important}
 #main-content .rv-wt-bar .rv-wt-gh{margin:0 !important}
 #main-content .panel.row3:has(#cp-main),#main-content .panel.row3:has(#cp-main)>.inner,#main-content #cp-main,#main-content #cp-main>form,#main-content #cp-main .panel{border-radius:0 !important;overflow:visible !important;clip-path:none !important}
+#main-content #tabs ul{display:inline-flex !important;width:auto !important;max-width:100%}

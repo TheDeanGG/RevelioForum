@@ -262,3 +262,38 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .activity-date-group .header:before{margin:0 2px 0 0;flex:none}
 #main-content .activity-date-group .header h2,#main-content .activity-date-group .header .table-title{display:block !important;line-height:1.5 !important;overflow:visible !important;height:auto !important;max-height:none !important;white-space:nowrap}
 #main-content .activity-date-group .header:before{width:12px !important;height:12px !important;transform:none !important;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%) !important;background:#d9b36a !important;margin:0 4px 0 0 !important}
+
+/* ===== Mon compte (UCP) : onglets + sections ===== */
+#main-content #tabs{margin:18px 0 26px !important;padding:0 !important;background:none !important;border:0 !important}
+#main-content #tabs ul{display:flex !important;flex-wrap:wrap;gap:4px;margin:0 !important;padding:0 !important;list-style:none !important;background:none !important;border:0 !important;border-bottom:1px solid rgba(255,255,255,.12) !important}
+#main-content #tabs li{float:none !important;margin:0 0 -1px !important;padding:0 !important;background:none !important;border:0 !important;border-radius:0 !important;list-style:none !important}
+#main-content #tabs li a,#main-content #tabs li a span{display:block;float:none !important;padding:0 !important;background:none !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;font:700 10px 'Montserrat',sans-serif !important;letter-spacing:1.8px;text-transform:uppercase;color:#8f8878 !important;text-decoration:none !important}
+#main-content #tabs li a{padding:12px 18px !important;border-bottom:2px solid transparent !important;transition:color .2s}
+#main-content #tabs li a:hover,#main-content #tabs li a:hover span{color:#f4efe0 !important}
+#main-content #tabs li.activetab a,#main-content #tabs li.activetab a span{color:#f4efe0 !important}
+#main-content #tabs li.activetab a{border-bottom-color:#d9b36a !important}
+
+#main-content .panel.row3:has(#cp-main),#main-content .panel.row3:has(#cp-main)>.inner{background:none !important;border:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important}
+#main-content .panel.row3:has(#cp-main)>.inner>.corners-top,#main-content .panel.row3:has(#cp-main)>.inner>.corners-bottom,#cp-main .corners-top,#cp-main .corners-bottom{display:none !important}
+#cp-main h1.page-title{margin:30px 0 12px !important;padding:0 0 10px !important;background:none !important;border:0 !important;border-bottom:1px solid rgba(217,179,106,.25) !important;font:600 14px 'Cinzel',serif !important;letter-spacing:3px;text-transform:uppercase;color:#d9b36a !important}
+#cp-main h1.page-title:first-child{margin-top:20px !important}
+#cp-main>.panel{background:none !important;border:0 !important;box-shadow:none !important;margin:0 !important;padding:0 !important}
+#cp-main>.panel>.inner{background:#12100d !important;border:1px solid rgba(217,179,106,.16) !important;border-radius:4px !important;padding:20px 26px 8px !important;box-shadow:none !important}
+#cp-main>.panel>.inner>p{margin:0 0 14px !important;font:400 13.5px/1.6 'Poppins',sans-serif;color:#e8e4d8}
+#cp-main fieldset{margin:0 !important;padding:0 !important;border:0 !important;background:none !important}
+#cp-main fieldset dl{display:grid !important;grid-template-columns:220px minmax(0,1fr);gap:6px 28px;align-items:start;margin:0 !important;padding:16px 0 !important;border:0 !important;border-top:1px solid rgba(255,255,255,.06) !important;background:none !important}
+#cp-main fieldset dt,#cp-main fieldset dd{float:none !important;width:auto !important;margin:0 !important;padding:0 !important;background:none !important;border:0 !important}
+#cp-main fieldset dt label{font:600 12px 'Poppins',sans-serif !important;color:#cfc9ba !important}
+#cp-main fieldset dd em{font:italic 400 13px 'EB Garamond','Poppins',serif;color:#8f8878}
+#cp-main fieldset dd form{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#cp-main fieldset dd form br{display:none}
+#cp-main fieldset dd form input.inputbox{order:1;width:260px !important;max-width:100% !important;box-sizing:border-box !important;height:40px;padding:0 14px !important;background:#0b0a08 !important;border:1px solid rgba(255,255,255,.16) !important;border-radius:3px !important;color:#e8e4d8 !important;font:400 13px 'Poppins',sans-serif !important;outline:0}
+#cp-main fieldset dd form input.inputbox:focus{border-color:#d9b36a !important;box-shadow:0 0 0 2px rgba(217,179,106,.16) !important}
+#cp-main fieldset dd form input.button1{order:2}
+#cp-main fieldset dd form input.button2{order:3}
+#cp-main input.button1,#cp-main input.button2{height:40px;padding:0 22px !important;border-radius:0 !important;cursor:pointer;font:700 10.5px 'Montserrat',sans-serif !important;letter-spacing:2px;text-transform:uppercase;box-shadow:none !important;text-shadow:none !important;transition:all .2s}
+#cp-main input.button1{background:#d9b36a !important;border:1px solid #d9b36a !important;color:#0b0a08 !important}
+#cp-main input.button1:hover{background:#f0d28f !important;border-color:#f0d28f !important}
+#cp-main input.button2{background:transparent !important;border:1px solid rgba(255,255,255,.2) !important;color:#cfc9ba !important}
+#cp-main input.button2:hover{border-color:#d9b36a !important;color:#f0d28f !important}
+@media (max-width:720px){#cp-main fieldset dl{grid-template-columns:1fr}#main-content #tabs li a{padding:10px 12px !important}}

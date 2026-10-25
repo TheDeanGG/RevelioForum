@@ -375,3 +375,15 @@
   }
   try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { if (window.console) { console.log('rv-pi', e); } }
 })();
+/* Switcheroo : libellé du bouton de connexion s'il est vide */
+(function () {
+  function fix() {
+    var b = document.querySelectorAll('.switcheroo__form-button');
+    for (var i = 0; i < b.length; i++) {
+      var x = b[i];
+      if (x.tagName === 'INPUT') { if (!x.value) { x.value = 'Connexion'; } }
+      else if (!(x.textContent || '').replace(/\s/g, '')) { x.textContent = 'Connexion'; }
+    }
+  }
+  try { new MutationObserver(fix).observe(document.documentElement, { childList: true, subtree: true }); fix(); } catch (e) { }
+})();

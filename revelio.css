@@ -458,3 +458,7 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .pi-act fieldset.submit-buttons input[type=submit],#main-content .pi-act fieldset.submit-buttons input[type=reset],#main-content .pi-act fieldset.submit-buttons input.button1,#main-content .pi-act fieldset.submit-buttons input.button2{display:flex !important;align-items:center;justify-content:center;height:46px !important;border-radius:3px !important;font:700 11px 'Montserrat',sans-serif !important;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
 #main-content .pi-act fieldset.submit-buttons input[type=submit]{background:#d9b36a !important;color:#0b0a08 !important;border:0 !important}
 #main-content .pi-act fieldset.submit-buttons input[type=reset]{background:transparent !important;color:#cfc9ba !important;border:1px solid rgba(255,255,255,.2) !important;height:42px !important}
+/* Switcheroo : champs (autofill) et bouton */
+.switcheroo__form-input:-webkit-autofill,.switcheroo__form-input:-webkit-autofill:hover,.switcheroo__form-input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #1c1915 inset !important;box-shadow:0 0 0 1000px #1c1915 inset !important;-webkit-text-fill-color:#e8e4d8 !important;caret-color:#e8e4d8;transition:background-color 99999s ease-out 0s}
+.switcheroo__form-input:focus{border-color:#d9b36a !important}
+.switcheroo__form-button{display:block;width:100%;min-height:46px}

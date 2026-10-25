@@ -233,3 +233,11 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 }
 #main-content .login-tabbed .content,#main-content .rv-lg-reg .content{box-sizing:border-box !important}
 #main-content .login-tabbed #panel-password fieldset dt,#main-content .login-tabbed #panel-password fieldset dt label{text-align:left !important;display:block}
+/* Connexion en largeur : réglages */
+#main-content:has(.login-tabbed){max-width:1280px !important}
+#main-content .login-tabbed #panel-password fieldset dl.rv-lg-row{justify-content:flex-start !important;gap:34px !important}
+#main-content .login-tabbed .password-container{line-height:0 !important}
+@media (min-width:1100px){
+#main-content .rv-lg-reg .rv-lg-names,#main-content .rv-lg-reg .rv-lg-pres{white-space:nowrap}
+#main-content .rv-lg-reg .rv-lg-pres{font-size:17px}
+}

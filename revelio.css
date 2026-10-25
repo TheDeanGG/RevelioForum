@@ -462,3 +462,7 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 .switcheroo__form-input:-webkit-autofill,.switcheroo__form-input:-webkit-autofill:hover,.switcheroo__form-input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #1c1915 inset !important;box-shadow:0 0 0 1000px #1c1915 inset !important;-webkit-text-fill-color:#e8e4d8 !important;caret-color:#e8e4d8;transition:background-color 99999s ease-out 0s}
 .switcheroo__form-input:focus{border-color:#d9b36a !important}
 .switcheroo__form-button{display:block;width:100%;min-height:46px}
+.monomer-modal .switcheroo__form-button,.monomer-modal .switcheroo__form-button:hover,.monomer-modal .switcheroo__form-button:focus,.monomer-modal .switcheroo__form-button:active,.monomer-modal .switcheroo__form-button:disabled,.monomer-modal button.switcheroo__form-button[type]{color:#0b0a08 !important;-webkit-text-fill-color:#0b0a08 !important;text-shadow:none !important;opacity:1 !important;filter:none !important;background:#d9b36a !important}
+.monomer-modal .switcheroo__form-button:hover,.monomer-modal .switcheroo__form-button:focus{background:#e6c47e !important}
+.monomer-modal .switcheroo__form-button *{color:inherit !important}
+.monomer-modal input[type=password].switcheroo__form-input,.monomer-modal input.switcheroo__form-input{background-color:#1c1915 !important;background-image:none !important;color:#e8e4d8 !important;-webkit-text-fill-color:#e8e4d8 !important}

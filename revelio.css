@@ -198,3 +198,9 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .login-tabbed fieldset dl:last-child dd,#main-content .login-tabbed fieldset dl:has(> dd > input[type="submit"]) dd{text-align:center !important}
 #main-content .login-tabbed input.button1,#main-content .login-tabbed input[type="submit"]{display:block !important;width:auto !important;min-width:280px;margin:0 auto !important}
 #main-content .rv-lg-reg .rv-lg-join{margin-left:auto;margin-right:auto}
+/* Connexion : force la pleine largeur (conteneurs en bloc) */
+#main-content .login-tabbed .content,#main-content .login-tabbed .login-body,#main-content .login-tabbed .login-body form,#main-content .login-tabbed fieldset,#main-content .login-tabbed fieldset dl,#main-content .login-tabbed fieldset dd,#main-content .login-tabbed fieldset dt{display:block !important;width:100% !important;inline-size:100% !important;max-width:none !important;max-inline-size:none !important;min-width:0 !important;flex:none !important;grid-template-columns:none !important}
+#main-content .login-tabbed fieldset dl.rv-lg-row{display:flex !important}
+#main-content .login-tabbed fieldset dl.rv-lg-row dd{display:block !important;width:auto !important;inline-size:auto !important}
+#main-content .login-tabbed .password-container{display:block !important;width:100% !important;max-width:none !important}
+#main-content .login-tabbed input.inputbox{width:100% !important;inline-size:100% !important;max-width:none !important;size:auto}

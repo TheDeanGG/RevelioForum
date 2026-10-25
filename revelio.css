@@ -372,3 +372,11 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .rv-wt-ei i{position:relative;font:normal 14px 'Poppins',sans-serif;color:#d9b36a}
 #main-content .rv-wt-et{font:500 18px 'Poppins',sans-serif;color:#e8e4d8}
 #main-content .rv-wt-es{margin-top:4px;font:400 13.5px 'Poppins',sans-serif;color:#8f8878}
+/* Informations (.rv-pe) : retrouve les cartes de la maquette, malgré le style générique de Mon compte */
+#main-content .rv-pe #cp-main fieldset{background:#12100d !important;border:1px solid rgba(217,179,106,.16) !important;border-radius:4px !important;padding:6px 26px !important;margin:0 !important}
+#main-content .rv-pe #cp-main fieldset.submit-buttons{position:sticky !important;bottom:0;z-index:5;display:flex !important;gap:12px;justify-content:flex-end;margin:20px 0 0 !important;padding:14px 0 !important;background:linear-gradient(transparent,#0b0a08 30%) !important;border:0 !important;border-radius:0 !important}
+#main-content .rv-pe #cp-main fieldset.submit-buttons dl,#main-content .rv-pe #cp-main fieldset.submit-buttons{grid-template-columns:none}
+#main-content .rv-pe #cp-main input.button1,#main-content .rv-pe #cp-main input.button2{height:auto;border-radius:3px !important}
+#main-content .rv-pe #cp-main h1.page-title{margin:30px 0 12px !important}
+#main-content .rv-pe #cp-main fieldset dl dt label,#main-content .rv-pe #cp-main fieldset dl dt{font:600 12px 'Poppins',sans-serif !important;color:#cfc9ba !important}
+#main-content .rv-pe textarea{font:400 13px/1.6 'Poppins',sans-serif !important;letter-spacing:0 !important;color:#e8e4d8 !important}

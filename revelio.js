@@ -85,3 +85,24 @@
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
   if (window.MutationObserver) { new MutationObserver(function () { prep(document); }).observe(document.documentElement, { childList: true, subtree: true }); }
 })();
+
+/* Comptes liés (Switcheroo) : page d'accueil uniquement */
+(function () {
+  try {
+    if (!/^\/(forum|index)?\/?$/.test(location.pathname) || document.getElementById('switcheroo')) { return; }
+    var BASE = 'https://cdn.jsdelivr.net/gh/caezd/switcheroo@master/';
+    function load(src, cb) { var s = document.createElement('script'); s.src = src; s.onload = cb; document.body.appendChild(s); }
+    function boot() {
+      var nav = document.createElement('nav');
+      nav.id = 'switcheroo'; nav.className = 'switcheroo';
+      nav.setAttribute('direction', 'vertical'); nav.setAttribute('position', 'top');
+      document.body.appendChild(nav);
+      load(BASE + 'monomer.js', function () {
+        load(BASE + 'switcheroo.js', function () {
+          try { new Switcheroo('#switcheroo', { enableReorder: true, updateAvatar: true, confirm: true, deleteIcon: '×', addIcon: '+' }); } catch (e) { }
+        });
+      });
+    }
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
+  } catch (e) { }
+})();

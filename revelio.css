@@ -1,6 +1,6 @@
 /* REVELIO — mise en forme des messages (gras, citations, spoilers, mentions) */
 .postbody .content,.post .content{font-family:'Lora',Georgia,serif;font-size:17px;line-height:1.8;color:#e4dfd0}
-.postbody .content b,.postbody .content strong{font-weight:600;color:#f4efe0}
+.postbody .content b,.postbody .content strong{font-weight:600;color:#f0d28f}
 .postbody .content u{text-decoration:underline;text-decoration-color:rgba(217,179,106,.7);text-underline-offset:4px}
 .postbody .content s,.postbody .content strike{text-decoration-color:#8f8878;color:#a8a193}
 .postbody .content ul{list-style:none;padding:0;margin:0 0 14px}

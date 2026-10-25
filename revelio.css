@@ -140,3 +140,4 @@ form[name="form_login"] label:has(> input[type="checkbox"]){display:inline-flex 
 form[name="form_login"] img.show_hide_pwd{filter:brightness(0) saturate(100%) invert(76%) sepia(38%) saturate(560%) hue-rotate(354deg) brightness(92%) contrast(88%) !important;opacity:1 !important}
 form[name="form_login"] input.fl_username,form[name="form_login"] input.fl_password,form[name="form_login"] img.show_hide_pwd{vertical-align:middle !important}
 form[name="form_login"] img.show_hide_pwd{position:relative;top:0 !important;margin-top:0 !important}
+form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px !important}

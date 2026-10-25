@@ -217,10 +217,10 @@
 (function () {
   var RV_CUT_DATE = true; /* true : retire la date et la suite du titre (« Titre | 19/09/1996 | … » devient « Titre ») ; false : titre complet */
   function run() {
-    var cp = document.getElementById('cp-main'), tb = cp && cp.querySelector('table#memberlist');
+    var cp = document.getElementById('cp-main'), tb = cp && cp.querySelector('table#memberlist, table.table1');
     if (!tb || cp.querySelector('.rv-wt')) { return; }
     var ths = tb.querySelectorAll('thead th'), ok = false;
-    for (var i = 0; i < ths.length; i++) { if (/^\s*Sujets\s*$/.test(ths[i].textContent)) { ok = true; } }
+    for (var i = 0; i < ths.length; i++) { if (/^\s*Sujets?\s*$/.test(ths[i].textContent)) { ok = true; } }
     if (!ok) { return; }
     var form = tb.closest('form'), h1 = cp.querySelector('h1.page-title'), panel = tb.closest('.panel');
     var rows = tb.querySelectorAll('tbody tr'), list = document.createElement('div'); list.className = 'rv-wt';
@@ -249,17 +249,28 @@
       row.appendChild(c0); row.appendChild(c1); row.appendChild(c2); row.appendChild(c3); row.appendChild(c4); row.appendChild(c5);
       list.appendChild(row);
     }
+    var fav = /favouritesearch/.test(location.search + location.href), nrows = list.querySelectorAll('.rv-wt-r').length;
+    if (!nrows) {
+      var em = document.createElement('div'); em.className = 'rv-wt-e';
+      var ec = tb.querySelector('tbody td'), et = ec ? ec.textContent.replace(/^\s+|\s+$/g, '') : '';
+      em.innerHTML = '<span class="rv-wt-ei"><i>☆</i></span><div><div class="rv-wt-et"></div><div class="rv-wt-es"></div></div>';
+      em.querySelector('.rv-wt-et').textContent = et || (fav ? 'Aucun favori' : 'Aucune prophétie surveillée');
+      em.querySelector('.rv-wt-es').textContent = fav ? 'Ajoute une prophétie à tes favoris depuis sa page pour la retrouver ici.' : 'Surveille une prophétie depuis sa page pour être prévenu des nouvelles réponses.';
+      list.appendChild(em);
+    }
     /* barre d'outils */
     var bar = document.createElement('div'); bar.className = 'rv-wt-bar';
+    if (!nrows) { var bar0 = true; }
     var b1 = document.createElement('a'); b1.href = 'javascript:select_switch_search(true);'; b1.className = 'rv-wt-gh'; b1.textContent = 'Tout sélectionner';
     var b2 = document.createElement('a'); b2.href = 'javascript:select_switch_search(false);'; b2.className = 'rv-wt-gh'; b2.textContent = 'Tout désélectionner';
-    bar.appendChild(b1); bar.appendChild(b2);
+    if (nrows) { bar.appendChild(b1); bar.appendChild(b2); }
     var sub = form ? form.querySelector('fieldset.submit-buttons') : null; if (sub) { sub.className += ' rv-wt-go'; bar.appendChild(sub); }
     var cap = document.createElement('div'); cap.className = 'rv-wt-cap';
     cap.textContent = h1 ? h1.textContent.replace(/sujets?/i, function (m) { return /s$/i.test(m) ? 'prophéties' : 'prophétie'; }).replace(/surveillés/i, 'surveillées').replace(/surveillé\b/i, 'surveillée') : '';
-    panel.parentNode.insertBefore(bar, panel); panel.parentNode.insertBefore(list, panel); panel.parentNode.insertBefore(cap, panel);
+    if (bar.children.length) { panel.parentNode.insertBefore(bar, panel); }
+     panel.parentNode.insertBefore(list, panel); panel.parentNode.insertBefore(cap, panel);
     panel.style.setProperty('display', 'none', 'important'); if (h1) { h1.style.setProperty('display', 'none', 'important'); }
-    var gi = bar.querySelector('input[type="submit"]'); if (gi) { gi.value = gi.value.replace(/les sujets sélectionnés/i, 'la sélection'); }
+    var gi = bar.querySelector('input[type="submit"]'); if (gi) { gi.value = fav ? 'Retirer la sélection des favoris' : gi.value.replace(/les sujets sélectionnés/i, 'la sélection'); }
   }
   try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { }
 })();

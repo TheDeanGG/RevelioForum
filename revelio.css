@@ -127,3 +127,11 @@ dt.spoiler_title:hover .rv-d{box-shadow:inset 0 0 0 1px #f0d28f,0 0 24px rgba(21
 .monomer-modal .monomer-close:hover{color:#f0d28f !important}
 /* Zone de connexion rapide : sans cadre ni fond */
 .panel:has(> form[name="form_login"]),.panel:has(> form[name="form_login"]) .user_login_form{background:none !important;border:0 !important;box-shadow:none !important;border-radius:0 !important}
+/* Connexion rapide : espacement, survol/focus dorés, œil et case dorés */
+.panel:has(> form[name="form_login"]){margin-top:26px !important;padding-top:6px !important}
+form[name="form_login"] input.inputbox,form[name="form_login"] input[type="text"],form[name="form_login"] input[type="password"]{transition:border-color .2s,box-shadow .2s}
+form[name="form_login"] input.inputbox:hover,form[name="form_login"] input.inputbox:focus,form[name="form_login"] input[type="text"]:hover,form[name="form_login"] input[type="text"]:focus,form[name="form_login"] input[type="password"]:hover,form[name="form_login"] input[type="password"]:focus{border-color:#d9b36a !important;border-bottom-color:#d9b36a !important;box-shadow:0 0 0 3px rgba(217,179,106,.15) !important;outline:0 !important;background-image:none !important}
+form[name="form_login"] input[type="checkbox"]{accent-color:#d9b36a}
+form[name="form_login"] input[type="checkbox"]:focus{outline:1px solid #d9b36a !important}
+form[name="form_login"] :is(i,svg,span,a,button):not(.button1):not(.mainoption),form[name="form_login"] [class*="eye"],form[name="form_login"] [class*="pass"] i{color:#d9b36a !important}
+form[name="form_login"] svg,form[name="form_login"] svg *{fill:#d9b36a !important;stroke:none}

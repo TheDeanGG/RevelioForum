@@ -65,3 +65,7 @@ dt.spoiler_title:hover .rv-d{box-shadow:inset 0 0 0 1px #f0d28f,0 0 24px rgba(21
 
 .postbody .content dl.codebox.spoiler .rv-cl,.postbody .content dl.codebox.spoiler .rv-cl:hover,.postbody .content dl.codebox.spoiler .rv-cl:focus,.postbody .content dl.codebox.spoiler .rv-cl:active{-webkit-appearance:none;appearance:none;outline:0 !important;box-shadow:none !important;text-shadow:none !important;filter:none !important;background:none !important;border:0 !important;-webkit-tap-highlight-color:transparent}
 .rv-cl svg{filter:none !important}
+
+/* blockquote simple (sans auteur) */
+.postbody .content blockquote.rv-plain{margin:6px 0 16px 4px !important;padding:6px 0 6px 20px !important;background:none !important;box-shadow:none !important;border:0 !important;border-left:2px solid rgba(217,179,106,.6) !important;font-style:italic;color:#cfc9ba}
+.postbody .content blockquote.rv-plain,.postbody .content blockquote.rv-plain *{font-style:italic}

@@ -24,6 +24,7 @@
       var q = Q[i]; q.setAttribute('data-rv', '1');
       var inner = q.querySelector(':scope > div') || q, ci = q.querySelector(':scope > div > cite') || q.querySelector(':scope > cite');
       var who = ci ? (ci.textContent || '').replace(/\s*(a écrit|wrote)\s*:?\s*$/i, '').replace(/^\s+|\s+$/g, '') : '';
+      if (!ci) { q.className += ' rv-plain'; continue; }
       q.insertBefore(el('i', 'rv-bar'), q.firstChild);
       q.insertBefore(el('span', 'rv-rb', 'Citation'), q.firstChild);
       q.insertBefore(el('span', 'rv-qg', '”'), q.firstChild);

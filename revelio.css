@@ -261,3 +261,4 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .activity-date-group .header{padding:6px 0 6px 8px !important;min-height:30px;box-sizing:border-box}
 #main-content .activity-date-group .header:before{margin:0 2px 0 0;flex:none}
 #main-content .activity-date-group .header h2,#main-content .activity-date-group .header .table-title{display:block !important;line-height:1.5 !important;overflow:visible !important;height:auto !important;max-height:none !important;white-space:nowrap}
+#main-content .activity-date-group .header:before{width:12px !important;height:12px !important;transform:none !important;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%) !important;background:#d9b36a !important;margin:0 4px 0 0 !important}

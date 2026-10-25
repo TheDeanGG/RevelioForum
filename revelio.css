@@ -106,3 +106,22 @@ dt.spoiler_title:hover .rv-d{box-shadow:inset 0 0 0 1px #f0d28f,0 0 24px rgba(21
 #switcheroo .switcheroo__delete{position:absolute !important;top:-5px !important;right:-5px !important;left:auto !important;bottom:auto !important;z-index:3;width:18px !important;height:18px !important;margin:0 !important;padding:0 !important;display:flex !important;align-items:center;justify-content:center;border-radius:50% !important;border:1px solid rgba(217,179,106,.6) !important;background:#100d09 !important;color:#e8e4d8 !important;font:400 12px/1 'Montserrat',sans-serif !important;opacity:0;transition:opacity .2s}
 #switcheroo .switcheroo__squircle:hover .switcheroo__delete{opacity:1}
 #switcheroo .switcheroo__squircle{overflow:visible !important}
+/* Switcheroo : avatars en losange */
+#switcheroo .switcheroo__squircles{gap:6px !important}
+#switcheroo .switcheroo__squircle:not(.switcheroo__squircle--button){width:56px !important;height:56px !important;border:0 !important;border-radius:0 !important;background:none !important;opacity:1;box-shadow:none !important;overflow:visible !important}
+#switcheroo .switcheroo__squircle:not(.switcheroo__squircle--button):before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(217,179,106,.45);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);transition:background .2s}
+#switcheroo .switcheroo__squircle:not(.switcheroo__squircle--button):hover:before{background:rgba(217,179,106,.85)}
+#switcheroo .switcheroo__squircle.active:before{background:#f0d28f}
+#switcheroo .switcheroo__squircle:not(.switcheroo__squircle--button) .switcheroo__avatar{position:absolute;top:3px;left:3px;right:3px;bottom:3px;width:auto !important;height:auto !important;border-radius:0 !important;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:#1b150d}
+#switcheroo .switcheroo__squircle:not(.switcheroo__squircle--button) .switcheroo__avatar img{width:100% !important;height:100% !important;border-radius:0 !important;object-fit:cover;opacity:.72;transition:opacity .2s}
+#switcheroo .switcheroo__squircle:hover .switcheroo__avatar img,#switcheroo .switcheroo__squircle.active .switcheroo__avatar img{opacity:1}
+#switcheroo .switcheroo__delete{top:2px !important;right:2px !important}
+/* Fenêtre de liaison */
+.monomer-overlay{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.monomer-modal{padding:34px 32px 30px !important;border-top:2px solid #d9b36a !important;background:linear-gradient(180deg,rgba(217,179,106,.07),rgba(217,179,106,0) 120px),#100d09 !important}
+.monomer-modal:before{content:'Lier un compte';display:block;font:600 16px 'Cinzel',serif;letter-spacing:3px;text-transform:uppercase;color:#d9b36a}
+.monomer-modal .switcheroo__form:before{content:'Connecte l’un de tes autres personnages pour passer de l’un à l’autre en un clic.';display:block;margin:8px 0 6px;font:italic 400 16px/1.45 'EB Garamond',Georgia,serif;color:#a8a193}
+.monomer-modal .switcheroo__form-input:focus{border-color:#d9b36a !important;background:rgba(255,255,255,.08) !important}
+.monomer-modal .switcheroo__form-button{width:100%;transition:background .2s}
+.monomer-modal .switcheroo__form-button:hover{background:#f0d28f !important}
+.monomer-modal .monomer-close:hover{color:#f0d28f !important}

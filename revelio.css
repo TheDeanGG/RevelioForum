@@ -135,3 +135,6 @@ form[name="form_login"] input[type="checkbox"]{accent-color:#d9b36a}
 form[name="form_login"] input[type="checkbox"]:focus{outline:1px solid #d9b36a !important}
 form[name="form_login"] :is(i,svg,span,a,button):not(.button1):not(.mainoption),form[name="form_login"] [class*="eye"],form[name="form_login"] [class*="pass"] i{color:#d9b36a !important}
 form[name="form_login"] svg,form[name="form_login"] svg *{fill:#d9b36a !important;stroke:none}
+/* Connexion rapide : case à gauche, œil doré */
+form[name="form_login"] label:has(> input[type="checkbox"]){display:inline-flex !important;flex-direction:row-reverse;align-items:center;gap:10px}
+form[name="form_login"] img.show_hide_pwd{filter:brightness(0) saturate(100%) invert(76%) sepia(38%) saturate(560%) hue-rotate(354deg) brightness(92%) contrast(88%) !important;opacity:1 !important}

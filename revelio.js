@@ -107,3 +107,16 @@
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
   } catch (e) { }
 })();
+
+/* Connexion rapide : retire les « : » de « Connexion automatique: » */
+(function () {
+  function fix() {
+    var L = document.querySelectorAll('form[name="form_login"] label'), i, n;
+    for (i = 0; i < L.length; i++) {
+      for (n = L[i].firstChild; n; n = n.nextSibling) {
+        if (n.nodeType === 3 && /:\s*$/.test(n.nodeValue)) { n.nodeValue = n.nodeValue.replace(/\s*:\s*$/, ''); }
+      }
+    }
+  }
+  try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fix); } else { fix(); } } catch (e) { }
+})();

@@ -179,10 +179,8 @@
       var c = reg.querySelector('.content');
       if (c) {
         c.innerHTML = '';
-        c.appendChild(el('div', 'rv-lg-eye', 'Pas encore de compte ?'));
-        c.appendChild(el('div', 'rv-lg-names', 'Messieurs Lunard, Queudver, Patmol et Cornedrue'));
-        c.appendChild(el('div', 'rv-lg-pres', 'fournisseurs d’accessoires pour sorciers facétieux, sont fiers de vous présenter'));
-        c.appendChild(el('div', 'rv-lg-big', 'Revelio'));
+        var c1 = el('div', 'rv-lg-c1'); c1.appendChild(el('div', 'rv-lg-eye', 'Pas encore de compte ?')); c1.appendChild(el('div', 'rv-lg-big', 'Revelio')); c.appendChild(c1);
+        var c2 = el('div', 'rv-lg-c2'); c2.appendChild(el('div', 'rv-lg-names', 'Messieurs Lunard, Queudver, Patmol et Cornedrue')); c2.appendChild(el('div', 'rv-lg-pres', 'fournisseurs d’accessoires pour sorciers facétieux, sont fiers de vous présenter')); c.appendChild(c2);
         var a = el('a', 'rv-lg-join', 'Rejoindre Poudlard'); a.href = href; c.appendChild(a);
       }
     }

@@ -193,3 +193,8 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .login-tabbed dl.rv-lg-row dd{width:auto !important;flex:0 0 auto}
 #main-content .login-tabbed dl.rv-lg-row dd label{white-space:nowrap}
 #main-content .login-tabbed .rv-lg-lk{white-space:nowrap}
+/* Connexion : boutons centrés */
+#main-content .login-tabbed dl.rv-lg-row{justify-content:center !important;gap:34px !important}
+#main-content .login-tabbed fieldset dl:last-child dd,#main-content .login-tabbed fieldset dl:has(> dd > input[type="submit"]) dd{text-align:center !important}
+#main-content .login-tabbed input.button1,#main-content .login-tabbed input[type="submit"]{display:block !important;width:auto !important;min-width:280px;margin:0 auto !important}
+#main-content .rv-lg-reg .rv-lg-join{margin-left:auto;margin-right:auto}

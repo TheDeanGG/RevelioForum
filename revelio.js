@@ -96,7 +96,8 @@
       var nav = document.createElement('nav');
       nav.id = 'switcheroo'; nav.className = 'switcheroo';
       nav.setAttribute('direction', 'vertical'); nav.setAttribute('position', 'top');
-      document.body.appendChild(nav);
+      var hero = document.querySelector('.rv-hero'); if (!hero) { return; }
+      hero.appendChild(nav);
       load(BASE + 'monomer.js', function () {
         load(BASE + 'switcheroo.js', function () {
           try { new Switcheroo('#switcheroo', { enableReorder: true, updateAvatar: true, confirm: true, deleteIcon: '×', addIcon: '+' }); } catch (e) { }

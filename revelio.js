@@ -215,6 +215,7 @@
 })();
 /* Mon compte : liste des sujets surveillés / favoris */
 (function () {
+  var RV_CUT_DATE = true; /* true : retire la date et la suite du titre (« Titre | 19/09/1996 | … » devient « Titre ») ; false : titre complet */
   function run() {
     var cp = document.getElementById('cp-main'), tb = cp && cp.querySelector('table#memberlist');
     if (!tb || cp.querySelector('.rv-wt')) { return; }
@@ -234,7 +235,7 @@
       var c0 = document.createElement('label'); c0.className = 'rv-wt-ck'; if (cb) { c0.appendChild(cb); }
       var c1 = document.createElement('span'); c1.className = 'rv-wt-ic'; c1.innerHTML = '<i></i>';
       var c2 = document.createElement('div'); c2.className = 'rv-wt-t';
-      var t = document.createElement('a'); t.className = 'rv-wt-tt'; t.href = a ? a.getAttribute('href') : '#'; t.textContent = a ? a.textContent.replace(/^\s+|\s+$/g, '') : '';
+      var t = document.createElement('a'); t.className = 'rv-wt-tt'; t.href = a ? a.getAttribute('href') : '#'; var full = a ? a.textContent.replace(/^\s+|\s+$/g, '') : ''; t.textContent = RV_CUT_DATE ? full.replace(/\s*\|\s*(\d{1,2}\/\d{1,2}\/\d{2,4}|\d{1,2}(er)?\s+[A-Za-zÀ-ÿ]+\.?\s+\d{4}).*$/, '') : full; t.title = full;
       var s = document.createElement('div'); s.className = 'rv-wt-s'; s.appendChild(document.createTextNode('dans '));
       if (fo) { var f2 = fo.cloneNode(true); f2.className = 'rv-wt-f'; s.appendChild(f2); }
       s.appendChild(document.createTextNode(' · par ')); if (au) { s.appendChild(au.cloneNode(true)); }
@@ -258,7 +259,7 @@
     cap.textContent = h1 ? h1.textContent.replace(/sujets?/i, function (m) { return /s$/i.test(m) ? 'prophéties' : 'prophétie'; }).replace(/surveillés/i, 'surveillées').replace(/surveillé\b/i, 'surveillée') : '';
     panel.parentNode.insertBefore(bar, panel); panel.parentNode.insertBefore(list, panel); panel.parentNode.insertBefore(cap, panel);
     panel.style.setProperty('display', 'none', 'important'); if (h1) { h1.style.setProperty('display', 'none', 'important'); }
-    var gi = bar.querySelector('input[type="submit"]'); if (gi) { gi.value = gi.value.replace(/les sujets sélectionnés/i, 'la sélection'); }
+    var gi = bar.querySelector('input[type="submit"]'); if (gi) { gi.value = /favori/i.test(gi.value) ? 'Retirer des favoris' : 'Arrêter de surveiller'; }
   }
   try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { }
 })();

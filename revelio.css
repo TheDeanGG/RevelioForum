@@ -361,3 +361,6 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #cp-main form[name="jumpbox"] select{height:42px;padding:0 14px;background:#0b0a08;border:1px solid rgba(255,255,255,.16);border-radius:3px;color:#e8e4d8;font:400 13px 'Poppins',sans-serif;max-width:300px}
 @media (max-width:860px){#main-content .rv-wt-h{display:none}#main-content .rv-wt-r{grid-template-columns:28px 40px minmax(0,1fr);row-gap:10px}#main-content .rv-wt-n,#main-content .rv-wt-l{grid-column:3}}
 #cp-main form p.right-box{display:none !important}
+#main-content .rv-wt-bar,#main-content .rv-wt-bar *,#main-content .rv-wt-go{border-radius:0 !important;clip-path:none !important;overflow:visible !important}
+#main-content .rv-wt-bar .rv-wt-go:before,#main-content .rv-wt-bar .rv-wt-go:after,#main-content .rv-wt-bar a:before,#main-content .rv-wt-bar a:after{display:none !important;content:none !important}
+#main-content .rv-wt-bar .rv-wt-gh{margin:0 !important}

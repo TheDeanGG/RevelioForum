@@ -297,3 +297,9 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #cp-main input.button2{background:transparent !important;border:1px solid rgba(255,255,255,.2) !important;color:#cfc9ba !important}
 #cp-main input.button2:hover{border-color:#d9b36a !important;color:#f0d28f !important}
 @media (max-width:720px){#cp-main fieldset dl{grid-template-columns:1fr}#main-content #tabs li a{padding:10px 12px !important}}
+/* UCP : titres non coupés */
+#cp-main h1.page-title{text-indent:0 !important;overflow:visible !important;position:relative !important;left:0 !important;right:auto !important;width:auto !important;height:auto !important;max-width:none !important;margin-left:0 !important;margin-right:0 !important;padding-left:0 !important;line-height:1.5 !important;float:none !important;display:block !important}
+#cp-main h1.page-title:before,#cp-main h1.page-title:after{display:none !important;content:none !important}
+#cp-main>.panel,#cp-main>.panel>.inner{margin-left:0 !important;margin-right:0 !important;left:0 !important;position:relative !important;box-sizing:border-box !important;width:100% !important}
+#cp-main fieldset dd form{margin:0 !important;padding:0 !important}
+#cp-main fieldset dd em{font-size:15px !important}

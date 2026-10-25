@@ -187,3 +187,9 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .rv-lg-big{margin:0 0 24px;font:500 38px/1.1 'Cinzel',serif;letter-spacing:6px;text-transform:uppercase;color:#d9b36a}
 #main-content .rv-lg-join{display:block;max-width:320px;margin:0 auto;padding:15px 20px;background:transparent;box-shadow:inset 0 0 0 1px rgba(217,179,106,.6);color:#f0d28f !important;font:700 11px 'Montserrat',sans-serif;letter-spacing:2.4px;text-transform:uppercase;text-decoration:none;transition:background .2s}
 #main-content .rv-lg-join:hover{background:rgba(217,179,106,.14)}
+/* Connexion : tout en pleine largeur de la carte */
+#main-content .login-tabbed .login-body,#main-content .login-tabbed .login-body form,#main-content .login-tabbed fieldset,#main-content .login-tabbed fieldset dl,#main-content .login-tabbed fieldset dt,#main-content .login-tabbed fieldset dd,#main-content .login-tabbed .password-container{width:100% !important;max-width:none !important;min-width:0 !important;box-sizing:border-box !important;float:none !important}
+#main-content .login-tabbed dl.rv-lg-row{display:flex !important;flex-wrap:nowrap}
+#main-content .login-tabbed dl.rv-lg-row dd{width:auto !important;flex:0 0 auto}
+#main-content .login-tabbed dl.rv-lg-row dd label{white-space:nowrap}
+#main-content .login-tabbed .rv-lg-lk{white-space:nowrap}

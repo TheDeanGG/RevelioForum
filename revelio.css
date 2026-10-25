@@ -303,3 +303,4 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #cp-main>.panel,#cp-main>.panel>.inner{margin-left:0 !important;margin-right:0 !important;left:0 !important;position:relative !important;box-sizing:border-box !important;width:100% !important}
 #cp-main fieldset dd form{margin:0 !important;padding:0 !important}
 #cp-main fieldset dd em{font-size:15px !important}
+#main-content #cp-main{margin:0 0 18px !important}

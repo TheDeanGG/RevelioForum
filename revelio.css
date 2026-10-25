@@ -141,3 +141,49 @@ form[name="form_login"] img.show_hide_pwd{filter:brightness(0) saturate(100%) in
 form[name="form_login"] input.fl_username,form[name="form_login"] input.fl_password,form[name="form_login"] img.show_hide_pwd{vertical-align:middle !important}
 form[name="form_login"] img.show_hide_pwd{position:relative;top:0 !important;margin-top:0 !important}
 form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px !important}
+/* ===== Page de connexion ===== */
+#main-content:has(.login-tabbed){max-width:680px;margin:0 auto;padding:0 16px}
+#main-content .rv-lg-head{text-align:center;margin:26px 0 30px}
+#main-content .rv-lg-crest{display:block;margin:0 auto 14px;width:100px;height:auto;filter:drop-shadow(0 6px 22px rgba(217,179,106,.28))}
+#main-content .rv-lg-kick{font:700 11px 'Montserrat',sans-serif;letter-spacing:3px;text-transform:uppercase;color:#d9b36a}
+#main-content .rv-lg-oath{margin:12px auto 0;max-width:640px;font:500 28px/1.3 'Cinzel',serif;letter-spacing:3px;text-transform:uppercase;color:#f4efe0}
+#main-content .rv-lg-oath em{font-style:normal;color:#d9b36a}
+#main-content .rv-lg-sub{margin:12px 0 0;font:italic 400 20px/1.5 'EB Garamond',serif;color:#a8a193}
+#main-content .login-tabbed,#main-content .login-tabbed+.panel{position:relative;overflow:hidden;margin:0 auto 22px !important;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02)),#0d0c09 !important;border:0 !important;border-radius:0 !important;box-shadow:inset 0 0 0 1px rgba(217,179,106,.28) !important}
+#main-content .login-tabbed:before,#main-content .login-tabbed+.panel:before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:linear-gradient(90deg,#d9b36a,rgba(217,179,106,0))}
+#main-content .login-tabbed .inner,#main-content .login-tabbed+.panel .inner{padding:0 !important;background:none !important}
+#main-content .login-tabbed .corners-top,#main-content .login-tabbed .corners-bottom,#main-content .login-tabbed+.panel .corners-top,#main-content .login-tabbed+.panel .corners-bottom{display:none !important}
+#main-content .login-tabbed .content{position:relative;padding:28px 34px 32px !important}
+#main-content .login-tabbed .h3,#main-content .login-tabbed+.panel .h3{margin:0 !important;padding:0 !important;border:0 !important;background:none !important;font:500 20px 'Cinzel',serif !important;letter-spacing:3px;text-transform:uppercase;color:#f4efe0 !important}
+#main-content .rv-lg-card-sub{margin:6px 0 22px;font:300 13px 'Poppins',sans-serif;color:#8f8878}
+#main-content .rv-lg-fp{position:absolute;right:28px;top:22px;width:120px;height:40px;color:rgba(217,179,106,.14);transform:rotate(-8deg);pointer-events:none}
+#main-content .rv-lg-fp svg{display:block;width:100%;height:100%}
+#main-content .login-tabs{display:flex;gap:26px;margin:0 0 24px !important;padding:0 !important;border:0 !important;border-bottom:1px solid rgba(255,255,255,.08) !important;background:none !important}
+#main-content .login-tab{display:inline-flex;align-items:center;gap:8px;margin:0 0 -1px !important;padding:0 0 12px !important;background:none !important;border:0 !important;border-bottom:2px solid transparent !important;border-radius:0 !important;box-shadow:none !important;color:#8f8878 !important;font:700 9.5px 'Montserrat',sans-serif !important;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
+#main-content .login-tab i{color:inherit !important;font-size:14px}
+#main-content .login-tab[aria-selected="true"]{color:#f0d28f !important;border-bottom-color:#d9b36a !important}
+#main-content .login-tab:hover{color:#f0d28f !important}
+#main-content .login-tabbed fieldset{margin:0 !important;padding:0 !important;border:0 !important;background:none !important}
+#main-content .login-tabbed fieldset dl{display:block !important;margin:0 0 20px !important;padding:0 !important;border:0 !important}
+#main-content .login-tabbed fieldset dt{float:none !important;width:auto !important;margin:0 0 8px !important;padding:0 !important}
+#main-content .login-tabbed fieldset dd{float:none !important;margin:0 !important;padding:0 !important}
+#main-content .login-tabbed fieldset dt label{font:700 9.5px 'Montserrat',sans-serif !important;letter-spacing:2px;text-transform:uppercase;color:#cfc9ba !important}
+#main-content .login-tabbed .password-container{position:relative;display:block;width:100%}
+#main-content .login-tabbed input.inputbox,#main-content .login-tabbed input[type="text"],#main-content .login-tabbed input[type="password"],#main-content .login-tabbed input[type="email"]{box-sizing:border-box !important;width:100% !important;max-width:none !important;padding:13px 16px !important;background:rgba(255,255,255,.04) !important;border:1px solid rgba(217,179,106,.28) !important;border-radius:0 !important;box-shadow:none !important;color:#e8e4d8 !important;font:400 14px 'Poppins',sans-serif !important;outline:0 !important;height:auto !important;text-align:left !important}
+#main-content .login-tabbed input.inputbox:focus,#main-content .login-tabbed input.inputbox:hover{border-color:#d9b36a !important;box-shadow:0 0 0 3px rgba(217,179,106,.15) !important}
+#main-content .login-tabbed img.show_hide_pwd{position:absolute !important;right:16px !important;top:50% !important;margin:0 !important;transform:translateY(-50%);vertical-align:baseline !important}
+#main-content .login-tabbed dl.rv-lg-row{display:flex !important;justify-content:space-between;align-items:center;gap:14px;margin:6px 0 22px !important}
+#main-content .login-tabbed dl.rv-lg-row dd{margin:0 !important}
+#main-content .login-tabbed .rv-lg-lk{color:#d9b36a !important;font:300 12.5px 'Poppins',sans-serif;border-bottom:1px solid rgba(217,179,106,.4);text-decoration:none}
+#main-content .login-tabbed label:has(> input[type="checkbox"]){flex-direction:row !important;font:300 12.5px 'Poppins',sans-serif;color:#a8a193 !important}
+#main-content .login-tabbed input.button1,#main-content .login-tabbed input[type="submit"]{display:block;width:100%;margin:0 !important;padding:15px 20px !important;background:#d9b36a !important;border:0 !important;border-radius:0 !important;color:#0b0a08 !important;font:700 11px 'Montserrat',sans-serif !important;letter-spacing:2.4px;text-transform:uppercase;cursor:pointer;box-shadow:none !important;transition:background .2s}
+#main-content .login-tabbed input.button1:hover{background:#f0d28f !important}
+#main-content .login-hint{margin:0 0 18px;font:italic 400 16px/1.5 'EB Garamond',serif;color:#a8a193}
+/* carte inscription : Messieurs Lunard, Queudver, Patmol et Cornedrue */
+#main-content .rv-lg-reg .content{padding:34px 34px 36px !important;text-align:center}
+#main-content .rv-lg-eye{margin:0 0 14px;font:700 9.5px 'Montserrat',sans-serif;letter-spacing:2.6px;text-transform:uppercase;color:#a8a193}
+#main-content .rv-lg-names{margin:0 0 8px;font:500 13.5px/1.5 'Cinzel',serif;letter-spacing:1.4px;text-transform:uppercase;color:#f0d28f}
+#main-content .rv-lg-pres{margin:0 auto 16px;max-width:420px;font:italic 400 19px/1.55 'EB Garamond',serif;color:#cfc9ba}
+#main-content .rv-lg-big{margin:0 0 24px;font:500 38px/1.1 'Cinzel',serif;letter-spacing:6px;text-transform:uppercase;color:#d9b36a}
+#main-content .rv-lg-join{display:block;max-width:320px;margin:0 auto;padding:15px 20px;background:transparent;box-shadow:inset 0 0 0 1px rgba(217,179,106,.6);color:#f0d28f !important;font:700 11px 'Montserrat',sans-serif;letter-spacing:2.4px;text-transform:uppercase;text-decoration:none;transition:background .2s}
+#main-content .rv-lg-join:hover{background:rgba(217,179,106,.14)}

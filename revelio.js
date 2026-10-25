@@ -120,3 +120,50 @@
   }
   try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fix); } else { fix(); } } catch (e) { }
 })();
+
+/* Page de connexion : serment, carte du Maraudeur */
+(function () {
+  function el(t, c, h) { var e = document.createElement(t); if (c) { e.className = c; } if (h) { e.innerHTML = h; } return e; }
+  function run() {
+    var lg = document.querySelector('#main-content .login-tabbed');
+    if (!lg || lg.getAttribute('data-rv')) { return; }
+    lg.setAttribute('data-rv', '1');
+    var host = lg.parentNode;
+    /* en-tête */
+    var head = el('div', 'rv-lg-head');
+    head.appendChild(el('img', 'rv-lg-crest'));
+    head.firstChild.src = 'https://i.imgur.com/dw1TqNU.png'; head.firstChild.alt = 'Écusson de Poudlard';
+    head.appendChild(el('div', 'rv-lg-kick', 'Poudlard · Entrée des sorciers'));
+    head.appendChild(el('div', 'rv-lg-oath', 'Je jure solennellement que mes <em>intentions sont mauvaises</em>'));
+    head.appendChild(el('p', 'rv-lg-sub', 'Prononce le serment, la carte s’ouvrira.'));
+    host.insertBefore(head, lg);
+    /* carte connexion */
+    var h3 = lg.querySelector('.h3');
+    if (h3) { h3.parentNode.insertBefore(el('p', 'rv-lg-card-sub', 'Retrouve ton personnage, tes hiboux et tes prophéties.'), h3.nextSibling); }
+    var fp = el('span', 'rv-lg-fp', '<svg viewBox="0 0 120 40" aria-hidden="true"><g fill="currentColor"><ellipse cx="14" cy="26" rx="5" ry="8" transform="rotate(-12 14 26)"/><ellipse cx="9" cy="12" rx="1.6" ry="2"/><ellipse cx="14" cy="10" rx="1.6" ry="2"/><ellipse cx="19" cy="11" rx="1.6" ry="2"/><ellipse cx="23" cy="14" rx="1.5" ry="1.9"/><ellipse cx="52" cy="14" rx="5" ry="8" transform="rotate(10 52 14)"/><ellipse cx="46" cy="29" rx="1.6" ry="2"/><ellipse cx="51" cy="31" rx="1.6" ry="2"/><ellipse cx="56" cy="30" rx="1.6" ry="2"/><ellipse cx="60" cy="27" rx="1.5" ry="1.9"/><ellipse cx="94" cy="26" rx="5" ry="8" transform="rotate(-12 94 26)"/><ellipse cx="89" cy="12" rx="1.6" ry="2"/><ellipse cx="94" cy="10" rx="1.6" ry="2"/><ellipse cx="99" cy="11" rx="1.6" ry="2"/><ellipse cx="103" cy="14" rx="1.5" ry="1.9"/></g></svg>');
+    lg.querySelector('.content').appendChild(fp);
+    var f = lg.querySelector('#panel-password');
+    if (f) {
+      var go = f.querySelector('input[type="submit"]'); if (go) { go.value = 'Ouvrir la carte'; }
+      var lk = f.querySelector('a[href*="sendpassword"]');
+      var ck = f.querySelector('#autologin'), ckdl = ck ? ck.closest('dl') : null;
+      if (lk && ckdl) { lk.textContent = 'Mot de passe oublié ?'; lk.className = (lk.className + ' rv-lg-lk').replace(/^\s+/, ''); var dd = el('dd', 'rv-lg-lkdd'); dd.appendChild(lk); ckdl.appendChild(dd); ckdl.className += ' rv-lg-row'; }
+    }
+    /* carte inscription */
+    var reg = lg.nextElementSibling;
+    if (reg && /panel/.test(reg.className)) {
+      var link = reg.querySelector('a[href*="register"]'), href = link ? link.getAttribute('href') : '/register';
+      reg.className += ' rv-lg-reg';
+      var c = reg.querySelector('.content');
+      if (c) {
+        c.innerHTML = '';
+        c.appendChild(el('div', 'rv-lg-eye', 'Pas encore de compte ?'));
+        c.appendChild(el('div', 'rv-lg-names', 'Messieurs Lunard, Queudver, Patmol et Cornedrue'));
+        c.appendChild(el('div', 'rv-lg-pres', 'fournisseurs d’accessoires pour sorciers facétieux, sont fiers de vous présenter'));
+        c.appendChild(el('div', 'rv-lg-big', 'Revelio'));
+        var a = el('a', 'rv-lg-join', 'Rejoindre Poudlard'); a.href = href; c.appendChild(a);
+      }
+    }
+  }
+  try { if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); } } catch (e) { }
+})();

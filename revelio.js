@@ -149,6 +149,18 @@
       var ck = f.querySelector('#autologin'), ckdl = ck ? ck.closest('dl') : null;
       if (lk && ckdl) { lk.textContent = 'Mot de passe oublié ?'; lk.className = (lk.className + ' rv-lg-lk').replace(/^\s+/, ''); var dd = el('dd', 'rv-lg-lkdd'); dd.appendChild(lk); ckdl.appendChild(dd); ckdl.className += ' rv-lg-row'; }
     }
+    /* force la largeur : neutralise marges/paddings/largeurs des conteneurs entre les champs et la carte */
+    if (f) {
+      var fix = function (n) {
+        var st = [['width', '100%'], ['max-width', 'none'], ['min-width', '0'], ['margin-left', '0'], ['margin-right', '0'], ['padding-left', '0'], ['padding-right', '0'], ['float', 'none'], ['box-sizing', 'border-box']];
+        for (var i = 0; i < st.length; i++) n.style.setProperty(st[i][0], st[i][1], 'important');
+      };
+      var ins = f.querySelectorAll('input.inputbox, .password-container');
+      for (var k = 0; k < ins.length; k++) { var n = ins[k]; while (n && n !== lg.querySelector('.content')) { if (n.tagName !== 'LABEL') fix(n); n = n.parentNode; } }
+      var lb = lg.querySelector('.login-body'); if (lb) { lb.style.setProperty('text-align', 'center', 'important'); }
+      var sb = f.querySelector('input[type="submit"]');
+      if (sb) { sb.style.setProperty('display', 'block', 'important'); sb.style.setProperty('margin', '0 auto', 'important'); sb.style.setProperty('float', 'none', 'important'); var p = sb.parentNode; if (p) { p.style.setProperty('text-align', 'center', 'important'); p.style.setProperty('display', 'block', 'important'); } }
+    }
     /* carte inscription */
     var reg = lg.nextElementSibling;
     if (reg && /panel/.test(reg.className)) {

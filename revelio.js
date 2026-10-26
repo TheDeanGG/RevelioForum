@@ -659,7 +659,7 @@
 			var posts = parseInt((f['messages'] || '0').replace(/\D/g, ''), 10) || 0;
 			var days = null, dm = (f['date d inscription'] || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
 			if (dm) { days = Math.floor((Date.now() - new Date(+dm[3], +dm[2] - 1, +dm[1]).getTime()) / 864e5); }
-			var staff = parseStaff(f['hauts faits#html']);
+			var staff = parseStaff(f['hauts faits#html'] || f['haut faits#html'] || f['haut fait#html'] || f['hauts fait#html']);
 			var all = DEFS.map(function (d) {
 				var x = d[6] || {}, r = R[d[1]], got = false, cur = null, max = null, date = '', nm = d[3], desc = d[4], secret = !!x.secret, ic = d[2];
 				if (x.posts) { cur = Math.min(posts, x.posts); max = x.posts; got = posts >= x.posts; }

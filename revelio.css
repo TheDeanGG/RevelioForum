@@ -612,3 +612,5 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #rv-hf .hf-note{margin-top:34px;max-width:760px;font-weight:300;font-size:12.5px;line-height:1.8;color:#8f8878}
 @container hf (max-width:1199px){#rv-hf .hf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#rv-hf .hf-top{grid-template-columns:1fr}}
 @container hf (max-width:699px){#rv-hf.hf-root,#rv-hf .hf-root{padding:8px 0 30px}#rv-hf .hf-grid{grid-template-columns:1fr}#rv-hf h1{font-size:28px}}
+#rv-hf h1,#rv-hf h3,#rv-hf h4{border:0 !important;background:none !important;padding:0 !important;box-shadow:none !important}
+#rv-hf h1{margin:10px 0 0 !important}#rv-hf .hf-next h3{margin:6px 0 4px !important}

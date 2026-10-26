@@ -1069,3 +1069,76 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
+
+/* ===== REVELIO : fiche de présentation postée (met en page le code généré) ===== */
+(function () {
+	var HOUSES = { 'gryffondor': ['#d65a6b', 'Gryffondor'], 'serdaigle': ['#6fb0cf', 'Serdaigle'], 'serpentard': ['#5fc4a0', 'Serpentard'], 'poufsouffle': ['#d9b650', 'Poufsouffle'] };
+	var HEADS = ['IDENTITÉ', 'ALLÉGEANCE ET RANG', 'PHYSIQUE', 'CARACTÈRE', 'MOTIVATION', 'DERRIÈRE LE PERSONNAGE'];
+	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+	function plain(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
+	function paras(t) { return t.split(/\n\s*\n/).map(function (p) { return p.replace(/^\s+|\s+$/g, ''); }).filter(Boolean).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join(''); }
+	function words(s) { var m = s.match(/\S+/g); return m ? m.length : 0; }
+	function run() {
+		var main = document.getElementById('main-content');
+		if (!main || main.querySelector('.rv-fiche')) { return; }
+		var cs = main.querySelectorAll('.postbody .content, .post .content'), c = null, i;
+		for (i = 0; i < cs.length; i++) { var tx = cs[i].textContent; if (tx.indexOf('IDENTITÉ') > -1 && tx.indexOf('ALLÉGEANCE ET RANG') > -1) { c = cs[i]; break; } }
+		if (!c) { return; }
+		var post = c.closest('.post') || c.parentNode;
+		var clone = c.cloneNode(true), img = null, sp = clone.querySelector('dl.codebox.spoiler, dl.spoiler'), hist = '';
+		Array.prototype.forEach.call(clone.querySelectorAll('img'), function (im) { if (!img && !/smil|emoticon|icon_/i.test(im.getAttribute('src') || '') && !im.closest('dl')) { img = im.getAttribute('src'); } });
+		if (sp) { var sc2 = sp.querySelector('.spoiler_content'); hist = sc2 ? sc2.innerHTML.replace(/<br\s*\/?>/gi, '\n') : ''; hist = plain(hist); sp.parentNode.removeChild(sp); }
+		Array.prototype.forEach.call(clone.querySelectorAll('img,script,style'), function (n) { n.parentNode.removeChild(n); });
+		var lines = plain(clone.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(div|p|li)>/gi, '\n')).replace(/ /g, ' ').split('\n').map(function (l) { return l.replace(/^\s+|\s+$/g, ''); });
+		var idx = -1; for (i = 0; i < lines.length; i++) { if (lines[i].toUpperCase() === 'IDENTITÉ') { idx = i; break; } }
+		if (idx < 0) { return; }
+		var head = lines.slice(0, idx).filter(Boolean), alias = '', tags = '', fc = '', nm = head[0] || '';
+		head.slice(1).forEach(function (h) { if (h.charAt(0) === '«') { alias = h; } else if (h.indexOf(' · ') > -1) { tags = h; } else { fc = h; } });
+		var S = {}, cur = null, buf = [];
+		function flush() { if (cur) { S[cur] = buf.slice(); } buf = []; }
+		for (i = idx; i < lines.length; i++) { var up = lines[i].toUpperCase(); if (HEADS.indexOf(up) > -1) { flush(); cur = up; } else { buf.push(lines[i]); } }
+		flush();
+		function kv(sec) { var o = {}; (S[sec] || []).forEach(function (l) { var m = /^([^:]+?)\s*:\s*(.*)$/.exec(l); if (m) { o[m[1]] = m[2]; } }); return o; }
+		var id = kv('IDENTITÉ'), al = kv('ALLÉGEANCE ET RANG'), me = kv('DERRIÈRE LE PERSONNAGE');
+		function txt(sec) { return (S[sec] || []).join('\n').replace(/^\s+|\s+$/g, ''); }
+		var first = id['Prénom'] || nm.split(' ')[0] || '', last = id['Nom'] || nm.split(' ').slice(1).join(' ');
+		var hk = (al['Maison'] || '').toLowerCase(), H = HOUSES[hk.normalize ? hk.normalize('NFD').replace(/[̀-ͯ]/g, '') : hk] || ['#d9b36a', al['Maison'] || ''];
+		var base = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/', sc = document.querySelector('script[src*="revelio.js"]');
+		if (sc) { base = sc.getAttribute('src').replace(/revelio\.js.*$/, ''); }
+		var crest = H[1] ? base + 'img/ecussons/' + H[1] + '.png' : '';
+		var path = (document.querySelector('.sub-header-path') || { textContent: '' }).textContent;
+		var ST = /Valid/i.test(path) ? ['Validée', '#8cc7a0', 'M5 12l5 5L20 7', 'Bienvenue à Poudlard. Ce personnage est répertorié dans le Registre des sorciers.']
+			: /Refus/i.test(path) ? ['Refusée', '#e08a8a', 'M12 8v5M12 17h.01M12 3l10 18H2z', 'Cette fiche n’a pas été retenue. Le staff explique pourquoi dans les réponses.']
+			: /Abandon/i.test(path) ? ['Abandonnée', '#8f8878', 'M6 6l12 12M18 6L6 18', 'Cette fiche n’est plus suivie par son joueur.']
+			: ['En attente', '#d9b36a', 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z', 'Cette fiche attend la relecture d’un membre du staff.'];
+		var tg = []; if (al['Faction']) { tg.push('<span class="pp-tag c">' + esc(al['Faction']) + '</span>'); } if (al['Maison']) { tg.push('<span class="pp-tag c">' + esc(al['Maison']) + '</span>'); } if (id['Statut du sang']) { tg.push('<span class="pp-tag">' + esc(id['Statut du sang']) + '</span>'); } if (id['Âge']) { tg.push('<span class="pp-tag">' + esc(id['Âge']) + '</span>'); }
+		var facts = [['Âge', id['Âge']], ['Naissance', id['Naissance']], ['Origine', id['Origine']], ['Statut du sang', id['Statut du sang']], ['Faction', al['Faction']], ['Maison', al['Maison']], ['Année', al['Année']], ['Karma', al['Karma']]].filter(function (f) { return f[1]; });
+		var mot = txt('MOTIVATION'), phy = txt('PHYSIQUE'), car = txt('CARACTÈRE');
+		var author = post.querySelector('.postprofile .author a, .postprofile dt a, a.username, .postprofile a[href^="/u"]');
+		var edit = post.querySelector('a[href*="mode=editpost"]'), quote = post.querySelector('a[href*="mode=quote"]');
+		var h = '<article class="pp-card" style="--c:' + H[0] + '">' + (crest ? '<img class="pp-wm" src="' + esc(crest) + '" alt="">' : '') +
+			'<header class="pp-hero"><div class="pp-por">' + (img ? '<img src="' + esc(img) + '" alt="">' : '') + '<i></i><i></i>' + (fc ? '<em>' + esc(fc) + '</em>' : '') + '</div>' +
+			'<div class="pp-id"><div class="pp-tags">' + tg.join('') + '</div><h2 class="pp-name"><span>' + esc(first) + '</span>' + esc(last) + '</h2>' + (alias ? '<p class="pp-alias">' + esc(alias) + '</p>' : '') +
+			(mot ? '<div class="pp-quote"><small>Motivation</small>' + esc(mot) + '</div>' : '') + '</div></header>' +
+			(facts.length ? '<div class="pp-facts">' + facts.map(function (f) { return '<div><span>' + f[0] + '</span><b>' + esc(f[1]) + '</b></div>'; }).join('') + '</div>' : '') +
+			((phy || car) ? '<div class="pp-sec"><div class="pp-two">' + (phy ? '<div><h3 class="pp-h">Physique</h3><div class="pp-tx">' + paras(phy) + '</div></div>' : '') + (car ? '<div><h3 class="pp-h">Caractère</h3><div class="pp-tx">' + paras(car) + '</div></div>' : '') + '</div></div>' : '') +
+			(hist ? '<div class="pp-sec"><h3 class="pp-h">Histoire</h3><div class="pp-spo"><button type="button" class="pp-spt" aria-expanded="false"><i class="d"></i><b>Spoiler</b><em>Histoire de ' + esc((first + ' ' + last).replace(/^\s+|\s+$/g, '')) + '</em><span>' + words(hist) + ' mots · cliquer pour lire</span></button><div class="pp-spb" style="display:none"><div class="pp-tx">' + paras(hist) + '</div><button type="button" class="pp-btn pp-close" style="margin-top:20px">Fermer le spoiler</button></div></div></div>' : '') +
+			(Object.keys(me).length ? '<div class="pp-sec"><h3 class="pp-h">Derrière le personnage</h3><div class="pp-me">' + Object.keys(me).map(function (k) { return '<div><span>' + esc(k) + '</span><b>' + esc(me[k]) + '</b></div>'; }).join('') + '</div></div>' : '') +
+			'<footer class="pp-act"><span class="sp"></span>' + (quote ? '<a class="pp-btn" href="' + esc(quote.getAttribute('href')) + '">Citer</a>' : '') + (edit ? '<a class="pp-btn g" href="' + esc(edit.getAttribute('href')) + '">Modifier</a>' : '') + '</footer></article>';
+		var side = '<aside class="pp-side"><section class="pp-box" style="--s:' + ST[1] + '"><h3>Décision du staff</h3><div class="pp-dec"><div class="ic"><svg viewBox="0 0 24 24"><path d="' + ST[2] + '"/></svg></div><div><strong>' + ST[0] + '</strong><p>' + ST[3] + '</p></div></div></section>' +
+			(author ? '<section class="pp-box"><h3>La fiche</h3><div class="pp-row"><span>Joueur</span><b>' + esc((author.textContent || '').replace(/^\s+|\s+$/g, '')) + '</b></div></section>' : '') +
+			(author ? '<section class="pp-box"><h3>Aller plus loin</h3><a class="pp-lk" href="' + esc(author.getAttribute('href') || '#') + '">Voir son profil</a></section>' : '') + '</aside>';
+		var wrap = document.createElement('div'); wrap.className = 'rv-fiche'; wrap.innerHTML = '<div class="pp-main">' + h + side + '</div>';
+		post.parentNode.insertBefore(wrap, post); post.style.display = 'none';
+		wrap.addEventListener('click', function (e) {
+			var b = e.target.closest ? e.target.closest('button') : null; if (!b) { return; }
+			var spo = wrap.querySelector('.pp-spo'); if (!spo) { return; }
+			if (b.className.indexOf('pp-spt') > -1 || b.className.indexOf('pp-close') > -1) {
+				var body = spo.querySelector('.pp-spb'), open = body.style.display === 'none';
+				body.style.display = open ? 'block' : 'none'; spo.querySelector('.pp-spt').setAttribute('aria-expanded', open ? 'true' : 'false');
+				var s = spo.querySelector('.pp-spt span'); if (s) { s.textContent = words(hist) + (open ? ' mots · ouvert' : ' mots · cliquer pour lire'); }
+			}
+		});
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 50); }); } else { setTimeout(run, 50); }
+})();

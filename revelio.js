@@ -1126,7 +1126,7 @@
 			(Object.keys(me).length ? '<div class="pp-sec"><h3 class="pp-h">Derrière le personnage</h3><div class="pp-me">' + Object.keys(me).map(function (k) { return '<div><span>' + esc(k) + '</span><b>' + esc(me[k]) + '</b></div>'; }).join('') + '</div></div>' : '') +
 			'<footer class="pp-act"><span class="sp"></span>' + (quote ? '<a class="pp-btn" href="' + esc(quote.getAttribute('href')) + '">Citer</a>' : '') + (edit ? '<a class="pp-btn g" href="' + esc(edit.getAttribute('href')) + '">Modifier</a>' : '') + '</footer></article>';
 		var wrap = document.createElement('div'); wrap.className = 'rv-fiche'; wrap.innerHTML = '<div class="pp-main">' + h + '</div>';
-		post.parentNode.insertBefore(wrap, post); post.style.display = 'none';
+		post.parentNode.insertBefore(wrap, post); post.style.display = 'none'; document.body.className += ' rv-fp';
 		wrap.addEventListener('click', function (e) {
 			var b = e.target.closest ? e.target.closest('button') : null; if (!b) { return; }
 			var spo = wrap.querySelector('.pp-spo'); if (!spo) { return; }

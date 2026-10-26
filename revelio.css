@@ -934,3 +934,5 @@ body:has(.rv-sf) form[name=jumpbox] select{padding:8px 12px;background:#0f0e0b;b
 #main-content .rv-fiche .pp-stat small{display:block;font:700 8px 'Montserrat',sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:#8f8878}
 #main-content .rv-fiche .pp-stat strong{display:block;margin-top:2px;font:700 11px 'Montserrat',sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:var(--s)}
 @container rvf (max-width: 799px){#main-content .rv-fiche .pp-stat{position:static;margin:14px 20px 0;align-self:flex-start;display:inline-flex}}
+body.rv-fp .rv-vt>.rv-aside{display:none !important}
+body.rv-fp .rv-vt{grid-template-columns:minmax(0,1fr) !important}

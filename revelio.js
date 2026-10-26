@@ -934,3 +934,138 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
+
+/* ===== REVELIO : formulaire de présentation (génère le code BBCode) ===== */
+(function () {
+	var PRES_FORUM = 8;               /* id du forum « Les Présentations » */
+	var KEY = 'rv_pres_draft';
+	var BLOODS = ['Sang-pur', 'Sang-mêlé', 'Né-moldu', 'Cracmol'];
+	var FACS = [['Élève de Poudlard', '#d9b36a'], ['Personnel de Poudlard', '#a9764a'], ['Ministère', '#7fa8d8'], ['Sorcier', '#8cc7a0'], ['Mage noir', '#b79be0'], ['Sans pouvoirs magiques', '#FFA57D']];
+	var HOUSES = [['Gryffondor', '#d65a6b', 'Courage'], ['Serdaigle', '#6fb0cf', 'Sagesse'], ['Serpentard', '#5fc4a0', 'Ambition'], ['Poufsouffle', '#d9b650', 'Loyauté']];
+	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+
+	/* --- côté éditeur : pré-remplit le message depuis la fiche --- */
+	function fillEditor() {
+		var raw; try { raw = localStorage.getItem(KEY); } catch (e) { return; }
+		if (!raw) { return; }
+		var d; try { d = JSON.parse(raw); } catch (e) { return; }
+		var ta = document.querySelector('textarea[name=message]'), sj = document.querySelector('input[name=subject]');
+		if (!ta || !d || (Date.now() - d.t) > 3600000) { return; }
+		ta.value = d.body; if (sj && !sj.value) { sj.value = d.subject; }
+		try { ta.dispatchEvent(new Event('input', { bubbles: true })); localStorage.removeItem(KEY); } catch (e) { }
+	}
+	if (/mode=newtopic/.test(location.search) || /\/post/.test(location.pathname)) {
+		if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fillEditor); } else { fillEditor(); }
+	}
+
+	/* --- côté page « Présentation » --- */
+	function run() {
+		var box = document.getElementById('rv-pres');
+		if (!box || box.getAttribute('data-ok')) { return; }
+		box.setAttribute('data-ok', '1');
+		var S = { blood: 0, fac: 0, house: 0, reg: false };
+		function field(id, lab, ph, req, tag) { return '<div><label class="pf-lab" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><input id="pf-' + id + '" class="pf-in" type="text" placeholder="' + esc(ph) + '"></div>'; }
+		function area(id, lab, ph, req, cls) { return '<label class="pf-lab' + (cls === 'gap' ? ' pf-gap' : '') + '" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><textarea id="pf-' + id + '" class="pf-in pf-ta' + (cls === 'tall' ? ' tall' : '') + '" placeholder="' + esc(ph) + '"></textarea>'; }
+		function sec(n, t, sub, inner) { return '<div class="pf-sec"><h2 class="pf-h"><i><b>' + n + '</b></i>' + t + '</h2><p class="pf-sub">' + sub + '</p>' + inner + '</div>'; }
+		var html = '<div class="pf-root"><div class="pf-main"><form class="pf-box" onsubmit="return false">' +
+			sec('I', 'Identité', 'L’essentiel de ton personnage, tel qu’il apparaîtra dans sa fiche.',
+				'<div class="pf-row3">' + field('n', 'Prénom', 'Elijah', 1) + field('p', 'Nom', 'Gaunt', 1) + field('a', 'Alias', 'Le Corbeau') + '</div>' +
+				'<div class="pf-row3 pf-gap">' + field('ag', 'Âge', '18 à 25 ans', 1) + field('b', 'Date et lieu de naissance', '12 mars 1978 · Londres') + field('o', 'Origine', 'Famille de sorciers') + '</div>' +
+				'<div class="pf-gap"><span class="pf-lab">Statut du sang <em>*</em></span><div class="pf-pills" data-g="blood">' + BLOODS.map(function (b, i) { return '<button type="button" class="pf-pill' + (i ? '' : ' on') + '" data-i="' + i + '">' + b + '</button>'; }).join('') + '</div></div>') +
+			sec('II', 'Allégeance et rang', 'Poudlard est une université : on y entre à 18 ans. Choisis ta faction, ta maison et ton année.',
+				'<span class="pf-lab">Faction <em>*</em></span><div class="pf-pills" data-g="fac">' + FACS.map(function (f, i) { return '<button type="button" class="pf-pill' + (i ? '' : ' on') + '" style="--c:' + f[1] + '" data-i="' + i + '"><i></i>' + f[0] + '</button>'; }).join('') + '</div>' +
+				'<div class="pf-gap"><span class="pf-lab">Maison <em>*</em></span><div class="pf-houses" data-g="house">' + HOUSES.map(function (h, i) { return '<button type="button" class="pf-house' + (i ? '' : ' on') + '" style="--c:' + h[1] + '" data-i="' + i + '"><span class="sh"></span><b>' + h[0] + '</b>' + h[2] + '</button>'; }).join('') + '</div></div>' +
+				'<div class="pf-row pf-gap">' + field('y', 'Année', 'Première année') + field('k', 'Karma', 'Neutre, bienveillant…') + '</div>') +
+			sec('III', 'Faceclaim', 'Le visage de ton personnage. Tu es responsable des images que tu importes.',
+				'<div class="pf-row">' + field('f', 'Faceclaim', 'Nom de l’acteur ou de l’actrice', 1) + field('u', 'Lien de l’image', 'https://…') + '</div><p class="pf-hint">Un faceclaim par personnage. Il apparaît dans le Registre des sorciers.</p>') +
+			sec('IV', 'Physique et caractère', 'Quelques lignes suffisent. Ce qu’on voit, puis ce qu’on devine.',
+				area('ph', 'Physique', 'Taille, silhouette, signes distinctifs…') + area('c', 'Caractère', 'Qualités, défauts, peurs, manies…', 1, 'gap') + '<div class="pf-gap">' + field('m', 'Motivation', 'Ce qui le pousse à franchir les portes de Poudlard') + '</div>') +
+			sec('V', 'Histoire', 'Son passé, sa famille, son rapport au monde de Grindelwald. Minimum 400 mots.',
+				area('h', 'Histoire', 'Il était une fois…', 1, 'tall') + '<p class="pf-wc" id="pf-wc">0 / 400 mots</p>') +
+			sec('VI', 'Derrière le personnage', 'Quelques mots sur toi, pour que le staff et les joueurs te connaissent.',
+				'<div class="pf-row">' + field('pr', 'Pseudo / prénom', 'Comment t’appeler') + field('fr', 'Fréquence de jeu', 'Ex : une réponse par semaine') + '</div>' +
+				'<div class="pf-gap">' + field('co', 'Comment as-tu découvert Revelio ?', 'Facultatif') + '</div>' +
+				'<div class="pf-gap"><span class="pf-lab">Règlement <em>*</em></span><div class="pf-pills"><button type="button" class="pf-pill" id="pf-reg"><i></i>J’ai lu et j’accepte le règlement</button></div></div>') +
+			'<div class="pf-acts"><p>Le formulaire écrit ta fiche pour toi : tu récupères le code prêt à coller, ou tu l’envoies directement dans l’éditeur.</p><div><button type="button" class="pf-btn" id="pf-go">Générer ma fiche</button></div></div>' +
+			'<div class="pf-out" id="pf-out" style="display:none"></div>' +
+			'</form><aside class="pf-side">' +
+			'<section class="pf-box pf-card"><h3>Aperçu de la fiche</h3><div class="pf-pv" id="pf-pv"></div></section>' +
+			'<section class="pf-box pf-card"><h3>Avancement</h3><div class="pf-prog"><b id="pf-pb" style="width:0"></b></div><ul class="pf-ck" id="pf-ck"></ul></section>' +
+			'<section class="pf-box pf-card"><h3>Avant d’envoyer</h3><p class="pf-rules"><b>Un seul personnage</b> par joueur. <b>Majeur</b> : 18 ans minimum, Poudlard étant une université. <b>Contexte</b> : Grindelwald a vaincu Dumbledore, ton histoire doit en tenir compte.</p></section>' +
+			'</aside></div></div>';
+		box.innerHTML = html;
+		function $(id) { return document.getElementById('pf-' + id); }
+		function v(id) { var e = $(id); return e ? e.value.replace(/^\s+|\s+$/g, '') : ''; }
+		function words(s) { var m = s.match(/\S+/g); return m ? m.length : 0; }
+		function fullName() { return (v('n') + ' ' + v('p')).replace(/^\s+|\s+$/g, ''); }
+		function missing() {
+			var m = [];
+			if (!v('n') || !v('p')) { m.push('prénom et nom'); }
+			if (!v('ag')) { m.push('âge'); }
+			if (!v('f')) { m.push('faceclaim'); }
+			if (!v('c')) { m.push('caractère'); }
+			if (words(v('h')) < 400) { m.push('histoire (400 mots minimum)'); }
+			if (!S.reg) { m.push('acceptation du règlement'); }
+			return m;
+		}
+		function update() {
+			var f = FACS[S.fac], h = HOUSES[S.house], nm = fullName() || 'Prénom Nom', al = v('a');
+			var ini = ((v('n').charAt(0) || 'P') + (v('p').charAt(0) || 'N')).toUpperCase();
+			$('pv').style.setProperty('--c', f[1]);
+			$('pv').innerHTML = '<div class="av"><i></i><b>' + esc(ini) + '</b></div><strong>' + esc(nm) + '</strong>' + (al ? '<small>« ' + esc(al) + ' »</small>' : '') +
+				'<ul><span>Faction</span><li>' + f[0] + '</li><span>Maison</span><li>' + h[0] + '</li><span>Sang</span><li>' + BLOODS[S.blood] + '</li><span>Statut</span><li>En attente de validation</li></ul>';
+			var w = words(v('h')), wc = $('wc'); wc.textContent = w + ' / 400 mots'; wc.className = 'pf-wc' + (w >= 400 ? ' ok' : '');
+			var ck = [[v('n') && v('p') && v('ag'), 'Identité renseignée'], [true, 'Faction et maison choisies'], [v('f'), 'Faceclaim ajouté'], [v('c'), 'Caractère décrit'], [w >= 400, 'Histoire de 400 mots minimum'], [S.reg, 'Règlement accepté']];
+			var n = 0; $('ck').innerHTML = ck.map(function (c) { if (c[0]) { n++; } return '<li' + (c[0] ? ' class="ok"' : '') + '>' + c[1] + '</li>'; }).join('');
+			$('pb').style.width = Math.round(n / ck.length * 100) + '%';
+		}
+		function line(k, val) { return val ? '[b]' + k + ' :[/b] ' + val + '\n' : ''; }
+		function build() {
+			var f = FACS[S.fac], h = HOUSES[S.house], c = f[1], t = '';
+			t += '[center][size=30][b][color=' + c + ']' + fullName().toUpperCase() + '[/color][/b][/size]\n';
+			if (v('a')) { t += '[i]« ' + v('a') + ' »[/i]\n'; }
+			t += '[size=13][color=#a8a193]' + f[0] + ' · ' + h[0] + ' · ' + BLOODS[S.blood] + '[/color][/size]\n';
+			if (v('u')) { t += '\n[img]' + v('u') + '[/img]\n'; }
+			t += '[i]' + v('f') + '[/i][/center]\n\n';
+			t += '[b][color=' + c + ']IDENTITÉ[/color][/b]\n';
+			t += line('Prénom', v('n')) + line('Nom', v('p')) + line('Alias', v('a')) + line('Âge', v('ag')) + line('Naissance', v('b')) + line('Origine', v('o')) + line('Statut du sang', BLOODS[S.blood]);
+			t += '\n[b][color=' + c + ']ALLÉGEANCE ET RANG[/color][/b]\n';
+			t += line('Faction', f[0]) + line('Maison', h[0]) + line('Année', v('y')) + line('Karma', v('k')) + line('Faceclaim', v('f'));
+			if (v('ph')) { t += '\n[b][color=' + c + ']PHYSIQUE[/color][/b]\n' + v('ph') + '\n'; }
+			t += '\n[b][color=' + c + ']CARACTÈRE[/color][/b]\n' + v('c') + '\n';
+			if (v('m')) { t += '\n[b][color=' + c + ']MOTIVATION[/color][/b]\n' + v('m') + '\n'; }
+			t += '\n[spoiler="Histoire de ' + fullName() + '"]' + v('h') + '[/spoiler]\n';
+			var d = (v('pr') ? line('Pseudo', v('pr')) : '') + line('Fréquence de jeu', v('fr')) + line('Découverte', v('co'));
+			if (d) { t += '\n[b][color=' + c + ']DERRIÈRE LE PERSONNAGE[/color][/b]\n' + d; }
+			return t.replace(/\n+$/, '') + '\n';
+		}
+		box.addEventListener('click', function (e) {
+			var b = e.target.closest ? e.target.closest('button') : null; if (!b) { return; }
+			var g = b.parentNode.getAttribute('data-g');
+			if (g) { S[g] = parseInt(b.getAttribute('data-i'), 10); Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = x.className.replace(/\bon\b/, '').replace(/\s+$/, ''); }); b.className += ' on'; update(); return; }
+			if (b.id === 'pf-reg') { S.reg = !S.reg; b.className = 'pf-pill' + (S.reg ? ' on' : ''); update(); return; }
+			if (b.id === 'pf-go') { gen(); }
+		});
+		box.addEventListener('input', update);
+		function gen() {
+			var out = $('out'), m = missing(), code = build(), subject = fullName() + (v('f') ? ' | ' + v('f') : '') + ' | ' + FACS[S.fac][0];
+			if (m.length) {
+				out.style.display = 'block';
+				out.innerHTML = '<div class="pf-err"><b>Il manque encore :</b> ' + m.join(', ') + '.<br>Tu peux quand même copier le code ci-dessous, mais le staff refusera une fiche incomplète.</div>';
+			} else { out.style.display = 'block'; out.innerHTML = ''; }
+			out.innerHTML += '<span class="pf-lab" style="margin-top:' + (m.length ? 16 : 0) + 'px">Ton code, prêt à coller</span><textarea id="pf-code" readonly></textarea>' +
+				'<div class="pf-bar2"><button type="button" class="pf-btn" id="pf-copy">Copier le code</button><a class="pf-btn ghost" id="pf-open" href="/post?mode=newtopic&f=' + PRES_FORUM + '">Ouvrir l’éditeur avec ma fiche</a><span class="pf-ok" id="pf-msg"></span></div>' +
+				'<p class="pf-hint">Titre conseillé : <b>' + esc(subject) + '</b></p>';
+			$('code').value = code;
+			$('copy').onclick = function () {
+				var ta = $('code'); ta.select();
+				var done = function () { $('msg').textContent = 'Code copié.'; };
+				if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(code).then(done, function () { try { document.execCommand('copy'); done(); } catch (e) { } }); } else { try { document.execCommand('copy'); done(); } catch (e) { } }
+			};
+			$('open').onclick = function () { try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), body: code, subject: subject })); } catch (e) { } };
+			out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		}
+		update();
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

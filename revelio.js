@@ -940,7 +940,10 @@
 	var PRES_FORUM = 8;               /* id du forum « Les Présentations » */
 	var KEY = 'rv_pres_draft';
 	var BLOODS = ['Sang-pur', 'Sang-mêlé', 'Né-moldu', 'Cracmol'];
-	var FACS = [['Élève de Poudlard', '#d9b36a'], ['Personnel de Poudlard', '#a9764a'], ['Ministère', '#7fa8d8'], ['Sorcier', '#8cc7a0'], ['Mage noir', '#b79be0'], ['Sans pouvoirs magiques', '#FFA57D']];
+	var FACS = [['Élève de Poudlard', '#d9b36a'], ['Personnel de Poudlard', '#c98a52'], ['Ministère', '#8f94e0'], ['Sorcier', '#8fb0d8'], ['Mage noir', '#aeb6c2'], ['Sans pouvoirs magiques', '#FFA57D']];
+	var FCREST = ['Poudlard-4-maisons.png', 'Poudlard-4-maisons.png', 'Ministere-de-la-Magie.png', 'sor.png', 'mag.png', 'mol.png'];
+	var BASE = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
+	(function () { var q = document.querySelector('script[src*="revelio.js"]'); if (q) { BASE = q.getAttribute('src').replace(/revelio\.js.*$/, ''); } })();
 	var HOUSES = [['Gryffondor', '#d65a6b', 'Courage'], ['Serdaigle', '#6fb0cf', 'Sagesse'], ['Serpentard', '#5fc4a0', 'Ambition'], ['Poufsouffle', '#d9b650', 'Loyauté']];
 	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
@@ -973,7 +976,7 @@
 				'<div class="pf-row3 pf-gap">' + field('ag', 'Âge', '18 à 25 ans', 1) + field('b', 'Date et lieu de naissance', '12 mars 1978 · Londres') + field('o', 'Origine', 'Famille de sorciers') + '</div>' +
 				'<div class="pf-gap"><span class="pf-lab">Statut du sang <em>*</em></span><div class="pf-pills" data-g="blood" id="pf-bloods"></div></div>') +
 			sec('II', 'Allégeance et rang', 'Élève à Poudlard (18 ans minimum), membre du personnel, du Ministère, sorcier libre, mage noir ou sans pouvoirs magiques : choisis ta place dans ce monde.',
-				'<span class="pf-lab">Faction <em>*</em></span><div class="pf-pills" data-g="fac">' + FACS.map(function (f, i) { return '<button type="button" class="pf-pill' + (i ? '' : ' on') + '" style="--c:' + f[1] + '" data-i="' + i + '"><i></i>' + f[0] + '</button>'; }).join('') + '</div>' +
+				'<span class="pf-lab">Faction <em>*</em></span><div class="pf-pills" data-g="fac">' + FACS.map(function (f, i) { return '<button type="button" class="pf-pill' + (i ? '' : ' on') + '" style="--c:' + f[1] + '" data-i="' + i + '"><img class="pf-fc2" src="' + BASE + 'img/ecussons/' + FCREST[i] + '" alt="">' + f[0] + '</button>'; }).join('') + '</div>' +
 				'<div class="pf-gap" id="pf-hwrap"><span class="pf-lab" id="pf-hlab">Maison <em>*</em></span><div class="pf-houses" data-g="house">' + HOUSES.map(function (h, i) { return '<button type="button" class="pf-house' + (i ? '' : ' on') + '" style="--c:' + h[1] + '" data-i="' + i + '"><span class="sh"></span><b>' + h[0] + '</b>' + h[2] + '</button>'; }).join('') + '</div></div>' +
 				'<div class="pf-row pf-gap"><div id="pf-ywrap">' + field('y', 'Année', 'Première année') + '</div>' + field('k', 'Karma', 'Neutre, bienveillant…') + '</div>' +
 				'<div class="pf-row pf-gap" id="pf-fnwrap"><div><label class="pf-lab" for="pf-fn" id="pf-fnlab">Fonction</label><input id="pf-fn" class="pf-in" type="text" placeholder=""></div>' + field('lv', 'Lieu de vie', 'Ex : Pré-au-Lard, Londres, un manoir en Écosse') + '</div>') +
@@ -1028,7 +1031,8 @@
 			var f = FACS[S.fac], h = HOUSES[S.house] || ['#d9b36a', '—'], nm = fullName() || 'Prénom Nom', al = v('a');
 			var ini = ((v('n').charAt(0) || 'P') + (v('p').charAt(0) || 'N')).toUpperCase();
 			$('pv').style.setProperty('--c', f[1]);
-			$('pv').innerHTML = '<div class="av"><i></i><b>' + esc(ini) + '</b></div><strong>' + esc(nm) + '</strong>' + (al ? '<small>« ' + esc(al) + ' »</small>' : '') +
+			var cr = (S.house >= 0 && S.fac <= 1) ? BASE + 'img/ecussons/' + h[1] + '.png' : BASE + 'img/ecussons/' + FCREST[S.fac];
+			$('pv').innerHTML = '<img class="pf-wm2" src="' + cr + '" alt=""><div class="av"><i></i><b>' + esc(ini) + '</b></div><strong>' + esc(nm) + '</strong>' + (al ? '<small>« ' + esc(al) + ' »</small>' : '') +
 				'<ul><span>Faction</span><li>' + f[0] + '</li>' + (S.house >= 0 ? '<span>Maison</span><li>' + h[0] + '</li>' : '') + (S.fac !== 0 && v('fn') ? '<span>Fonction</span><li>' + esc(v('fn')) + '</li>' : '') + '<span>Sang</span><li>' + bl()[S.blood] + '</li><span>Statut</span><li>En attente de validation</li></ul>';
 			var w = words(v('h')), wc = $('wc'); wc.textContent = w + ' / 400 mots'; wc.className = 'pf-wc' + (w >= 400 ? ' ok' : '');
 			var ck = [[v('n') && v('p') && v('ag'), 'Identité renseignée'], [S.fac !== 0 || S.house >= 0, S.fac === 0 ? 'Faction et maison choisies' : 'Faction choisie'], [v('f'), 'Faceclaim ajouté'], [v('c'), 'Caractère décrit'], [w >= 400, 'Histoire de 400 mots minimum'], [S.reg, 'Règlement accepté']];
@@ -1062,7 +1066,7 @@
 				var iv = parseInt(b.getAttribute('data-i'), 10);
 				if (g === 'house' && S.fac !== 0 && S.house === iv) { S.house = -1; } else { S[g] = iv; }
 				if (g === 'fac') { applyFac(); }
-				else { Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = x.className.replace(/\bon\b/, '').replace(/\s+$/, ''); }); if (S[g] === iv) { b.className += ' on'; } }
+				{ Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = x.className.replace(/\bon\b/, '').replace(/\s+$/, ''); }); if (S[g] === iv) { b.className += ' on'; } }
 				update(); return;
 			}
 			if (b.id === 'pf-reg') { S.reg = !S.reg; b.className = 'pf-pill' + (S.reg ? ' on' : ''); update(); return; }
@@ -1124,11 +1128,12 @@
 		var id = kv('IDENTITÉ'), al = kv('ALLÉGEANCE ET RANG'), me = kv('DERRIÈRE LE PERSONNAGE');
 		function txt(sec) { return (S[sec] || []).join('\n').replace(/^\s+|\s+$/g, ''); }
 		var first = id['Prénom'] || nm.split(' ')[0] || '', last = id['Nom'] || nm.split(' ').slice(1).join(' ');
-		var FCOL = { 'élève de poudlard': '#d9b36a', 'personnel de poudlard': '#a9764a', 'ministère': '#7fa8d8', 'sorcier': '#8cc7a0', 'mage noir': '#b79be0', 'sans pouvoirs magiques': '#FFA57D' };
+		var FCOL = { 'élève de poudlard': '#d9b36a', 'personnel de poudlard': '#c98a52', 'ministère': '#8f94e0', 'sorcier': '#8fb0d8', 'mage noir': '#aeb6c2', 'sans pouvoirs magiques': '#FFA57D' };
+		var FCR = { 'élève de poudlard': 'Poudlard-4-maisons.png', 'personnel de poudlard': 'Poudlard-4-maisons.png', 'ministère': 'Ministere-de-la-Magie.png', 'sorcier': 'sor.png', 'mage noir': 'mag.png', 'sans pouvoirs magiques': 'mol.png' };
 		var hk = (al['Maison'] || '').toLowerCase(), H = HOUSES[hk.normalize ? hk.normalize('NFD').replace(/[̀-ͯ]/g, '') : hk] || [FCOL[(al['Faction'] || '').toLowerCase()] || '#d9b36a', al['Maison'] || ''];
 		var base = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/', sc = document.querySelector('script[src*="revelio.js"]');
 		if (sc) { base = sc.getAttribute('src').replace(/revelio\.js.*$/, ''); }
-		var crest = H[1] ? base + 'img/ecussons/' + H[1] + '.png' : '';
+		var fk = (al['Faction'] || '').toLowerCase(), crest = HOUSES[hk.normalize ? hk.normalize('NFD').replace(/[̀-ͯ]/g, '') : hk] ? base + 'img/ecussons/' + H[1] + '.png' : (FCR[fk] ? base + 'img/ecussons/' + FCR[fk] : '');
 		var path = (document.querySelector('.sub-header-path') || { textContent: '' }).textContent;
 		var ST = /Valid/i.test(path) ? ['Validée', '#8cc7a0', 'M5 12l5 5L20 7', 'Bienvenue à Poudlard. Ce personnage est répertorié dans le Registre des sorciers.']
 			: /Refus/i.test(path) ? ['Refusée', '#e08a8a', 'M12 8v5M12 17h.01M12 3l10 18H2z', 'Cette fiche n’a pas été retenue. Le staff explique pourquoi dans les réponses.']

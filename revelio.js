@@ -916,3 +916,21 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
+
+/* ===== REVELIO : formulaire de recherche avancée ===== */
+(function () {
+	function run() {
+		var main = document.getElementById('main-content');
+		var f = main ? main.querySelector('form[name=searchform]') : null;
+		if (!f) { return; }
+		var t = main.querySelector('h1.page-title');
+		if (t) { var e = document.createElement('div'); e.className = 'rs-eyebrow'; e.textContent = 'Recherche'; t.parentNode.insertBefore(e, t); }
+		var MAP = { 'Sujets': 'Prophéties', 'Messages': 'Hiboux', 'Tous mes messages': 'Tous mes hiboux', 'Sujet du Message': 'Prophétie du hibou', 'Heure du Message': 'Heure du hibou', 'Titre du Sujet': 'Titre de la prophétie' };
+		Array.prototype.forEach.call(f.querySelectorAll('label, option'), function (n) {
+			Array.prototype.forEach.call(n.childNodes, function (c) { if (c.nodeType === 3) { var k = c.nodeValue.replace(/^\s+|\s+$/g, ''); if (MAP[k]) { c.nodeValue = c.nodeValue.replace(k, MAP[k]); } } });
+		});
+		Array.prototype.forEach.call(f.querySelectorAll('dt label'), function (l) { l.textContent = l.textContent.replace(/\s*:\s*$/, ''); });
+		main.className += ' rv-sf';
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

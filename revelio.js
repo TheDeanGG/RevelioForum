@@ -971,11 +971,12 @@
 			sec('I', 'Identité', 'L’essentiel de ton personnage, tel qu’il apparaîtra dans sa fiche.',
 				'<div class="pf-row3">' + field('n', 'Prénom', 'Elijah', 1) + field('p', 'Nom', 'Gaunt', 1) + field('a', 'Alias', 'Le Corbeau') + '</div>' +
 				'<div class="pf-row3 pf-gap">' + field('ag', 'Âge', '18 à 25 ans', 1) + field('b', 'Date et lieu de naissance', '12 mars 1978 · Londres') + field('o', 'Origine', 'Famille de sorciers') + '</div>' +
-				'<div class="pf-gap"><span class="pf-lab">Statut du sang <em>*</em></span><div class="pf-pills" data-g="blood">' + BLOODS.map(function (b, i) { return '<button type="button" class="pf-pill' + (i ? '' : ' on') + '" data-i="' + i + '">' + b + '</button>'; }).join('') + '</div></div>') +
-			sec('II', 'Allégeance et rang', 'Poudlard est une université : on y entre à 18 ans. Choisis ta faction, ta maison et ton année.',
+				'<div class="pf-gap"><span class="pf-lab">Statut du sang <em>*</em></span><div class="pf-pills" data-g="blood" id="pf-bloods"></div></div>') +
+			sec('II', 'Allégeance et rang', 'Élève à Poudlard (18 ans minimum), membre du personnel, du Ministère, sorcier libre, mage noir ou sans pouvoirs magiques : choisis ta place dans ce monde.',
 				'<span class="pf-lab">Faction <em>*</em></span><div class="pf-pills" data-g="fac">' + FACS.map(function (f, i) { return '<button type="button" class="pf-pill' + (i ? '' : ' on') + '" style="--c:' + f[1] + '" data-i="' + i + '"><i></i>' + f[0] + '</button>'; }).join('') + '</div>' +
-				'<div class="pf-gap"><span class="pf-lab">Maison <em>*</em></span><div class="pf-houses" data-g="house">' + HOUSES.map(function (h, i) { return '<button type="button" class="pf-house' + (i ? '' : ' on') + '" style="--c:' + h[1] + '" data-i="' + i + '"><span class="sh"></span><b>' + h[0] + '</b>' + h[2] + '</button>'; }).join('') + '</div></div>' +
-				'<div class="pf-row pf-gap">' + field('y', 'Année', 'Première année') + field('k', 'Karma', 'Neutre, bienveillant…') + '</div>') +
+				'<div class="pf-gap" id="pf-hwrap"><span class="pf-lab" id="pf-hlab">Maison <em>*</em></span><div class="pf-houses" data-g="house">' + HOUSES.map(function (h, i) { return '<button type="button" class="pf-house' + (i ? '' : ' on') + '" style="--c:' + h[1] + '" data-i="' + i + '"><span class="sh"></span><b>' + h[0] + '</b>' + h[2] + '</button>'; }).join('') + '</div></div>' +
+				'<div class="pf-row pf-gap"><div id="pf-ywrap">' + field('y', 'Année', 'Première année') + '</div>' + field('k', 'Karma', 'Neutre, bienveillant…') + '</div>' +
+				'<div class="pf-row pf-gap" id="pf-fnwrap"><div><label class="pf-lab" for="pf-fn" id="pf-fnlab">Fonction</label><input id="pf-fn" class="pf-in" type="text" placeholder=""></div>' + field('lv', 'Lieu de vie', 'Ex : Pré-au-Lard, Londres, un manoir en Écosse') + '</div>') +
 			sec('III', 'Faceclaim', 'Le visage de ton personnage. Tu es responsable des images que tu importes.',
 				'<div class="pf-row">' + field('f', 'Faceclaim', 'Nom de l’acteur ou de l’actrice', 1) + field('u', 'Lien de l’image', 'https://…') + '</div><p class="pf-hint">Un faceclaim par personnage. Il apparaît dans le Registre des sorciers.</p>') +
 			sec('IV', 'Physique et caractère', 'Quelques lignes suffisent. Ce qu’on voit, puis ce qu’on devine.',
@@ -991,10 +992,23 @@
 			'</form><aside class="pf-side">' +
 			'<section class="pf-box pf-card"><h3>Aperçu de la fiche</h3><div class="pf-pv" id="pf-pv"></div></section>' +
 			'<section class="pf-box pf-card"><h3>Avancement</h3><div class="pf-prog"><b id="pf-pb" style="width:0"></b></div><ul class="pf-ck" id="pf-ck"></ul></section>' +
-			'<section class="pf-box pf-card"><h3>Avant d’envoyer</h3><p class="pf-rules"><b>Un seul personnage</b> par joueur. <b>Majeur</b> : 18 ans minimum, Poudlard étant une université. <b>Contexte</b> : Grindelwald a vaincu Dumbledore, ton histoire doit en tenir compte.</p></section>' +
+			'<section class="pf-box pf-card"><h3>Avant d’envoyer</h3><p class="pf-rules"><b>Un seul personnage</b> par joueur. <b>Élèves</b> : 18 ans minimum, Poudlard étant une université. <b>Contexte</b> : Grindelwald a vaincu Dumbledore, ton histoire doit en tenir compte.</p></section>' +
 			'</aside></div></div>';
 		box.innerHTML = html;
 		function $(id) { return document.getElementById('pf-' + id); }
+		var MUG = ['Moldu', 'Cracmol'], FN = [['', ''], ['Fonction', 'Professeur de Botanique, infirmière, concierge…'], ['Département et fonction', 'Auror, Département des Mystères…'], ['Profession ou activité', 'Apothicaire, journaliste, guérisseur…'], ['Rôle', 'Espion, recruteur, chasseur de prime…'], ['Profession', 'Libraire, médecin, journaliste…']];
+		function bl() { return S.fac === 5 ? MUG : BLOODS.slice(0, 3); }
+		function applyFac() {
+			var stu = S.fac === 0, house = S.fac <= 1;
+			$('hwrap').style.display = house ? '' : 'none'; $('ywrap').style.display = stu ? '' : 'none'; $('fnwrap').style.display = stu ? 'none' : '';
+			$('hlab').innerHTML = stu ? 'Maison <em>*</em>' : 'Maison <span style="text-transform:none;letter-spacing:0;font-weight:300">(facultatif)</span>';
+			$('fnlab').innerHTML = (FN[S.fac][0] || 'Fonction') + (stu ? '' : ' <em>*</em>'); $('fn').placeholder = FN[S.fac][1];
+			$('ag').placeholder = stu ? '18 à 25 ans' : 'Son âge';
+			var B = bl(); if (S.blood >= B.length) { S.blood = 0; }
+			$('bloods').innerHTML = B.map(function (b, i) { return '<button type="button" class="pf-pill' + (i === S.blood ? ' on' : '') + '" data-i="' + i + '">' + b + '</button>'; }).join('');
+			if (!house) { S.house = -1; } else if (S.house < 0 && stu) { S.house = 0; }
+			Array.prototype.forEach.call(box.querySelectorAll('.pf-house'), function (x, i) { x.className = 'pf-house' + (i === S.house ? ' on' : ''); });
+		}
 		function v(id) { var e = $(id); return e ? e.value.replace(/^\s+|\s+$/g, '') : ''; }
 		function words(s) { var m = s.match(/\S+/g); return m ? m.length : 0; }
 		function fullName() { return (v('n') + ' ' + v('p')).replace(/^\s+|\s+$/g, ''); }
@@ -1002,6 +1016,8 @@
 			var m = [];
 			if (!v('n') || !v('p')) { m.push('prénom et nom'); }
 			if (!v('ag')) { m.push('âge'); }
+			if (S.fac === 0 && S.house < 0) { m.push('maison'); }
+			if (S.fac !== 0 && !v('fn')) { m.push((FN[S.fac][0] || 'fonction').toLowerCase()); }
 			if (!v('f')) { m.push('faceclaim'); }
 			if (!v('c')) { m.push('caractère'); }
 			if (words(v('h')) < 400) { m.push('histoire (400 mots minimum)'); }
@@ -1009,28 +1025,28 @@
 			return m;
 		}
 		function update() {
-			var f = FACS[S.fac], h = HOUSES[S.house], nm = fullName() || 'Prénom Nom', al = v('a');
+			var f = FACS[S.fac], h = HOUSES[S.house] || ['#d9b36a', '—'], nm = fullName() || 'Prénom Nom', al = v('a');
 			var ini = ((v('n').charAt(0) || 'P') + (v('p').charAt(0) || 'N')).toUpperCase();
 			$('pv').style.setProperty('--c', f[1]);
 			$('pv').innerHTML = '<div class="av"><i></i><b>' + esc(ini) + '</b></div><strong>' + esc(nm) + '</strong>' + (al ? '<small>« ' + esc(al) + ' »</small>' : '') +
-				'<ul><span>Faction</span><li>' + f[0] + '</li><span>Maison</span><li>' + h[0] + '</li><span>Sang</span><li>' + BLOODS[S.blood] + '</li><span>Statut</span><li>En attente de validation</li></ul>';
+				'<ul><span>Faction</span><li>' + f[0] + '</li>' + (S.house >= 0 ? '<span>Maison</span><li>' + h[0] + '</li>' : '') + (S.fac !== 0 && v('fn') ? '<span>Fonction</span><li>' + esc(v('fn')) + '</li>' : '') + '<span>Sang</span><li>' + bl()[S.blood] + '</li><span>Statut</span><li>En attente de validation</li></ul>';
 			var w = words(v('h')), wc = $('wc'); wc.textContent = w + ' / 400 mots'; wc.className = 'pf-wc' + (w >= 400 ? ' ok' : '');
-			var ck = [[v('n') && v('p') && v('ag'), 'Identité renseignée'], [true, 'Faction et maison choisies'], [v('f'), 'Faceclaim ajouté'], [v('c'), 'Caractère décrit'], [w >= 400, 'Histoire de 400 mots minimum'], [S.reg, 'Règlement accepté']];
+			var ck = [[v('n') && v('p') && v('ag'), 'Identité renseignée'], [S.fac !== 0 || S.house >= 0, S.fac === 0 ? 'Faction et maison choisies' : 'Faction choisie'], [v('f'), 'Faceclaim ajouté'], [v('c'), 'Caractère décrit'], [w >= 400, 'Histoire de 400 mots minimum'], [S.reg, 'Règlement accepté']];
 			var n = 0; $('ck').innerHTML = ck.map(function (c) { if (c[0]) { n++; } return '<li' + (c[0] ? ' class="ok"' : '') + '>' + c[1] + '</li>'; }).join('');
 			$('pb').style.width = Math.round(n / ck.length * 100) + '%';
 		}
 		function line(k, val) { return val ? '[b]' + k + ' :[/b] ' + val + '\n' : ''; }
 		function build() {
-			var f = FACS[S.fac], h = HOUSES[S.house], c = f[1], t = '';
+			var f = FACS[S.fac], h = HOUSES[S.house], c = f[1], t = '', sg = bl()[S.blood];
 			t += '[center][size=30][b][color=' + c + ']' + fullName().toUpperCase() + '[/color][/b][/size]\n';
 			if (v('a')) { t += '[i]« ' + v('a') + ' »[/i]\n'; }
-			t += '[size=13][color=#a8a193]' + f[0] + ' · ' + h[0] + ' · ' + BLOODS[S.blood] + '[/color][/size]\n';
+			t += '[size=13][color=#a8a193]' + f[0] + (h ? ' · ' + h[0] : '') + ' · ' + sg + '[/color][/size]\n';
 			if (v('u')) { t += '\n[img]' + v('u') + '[/img]\n'; }
 			t += '[i]' + v('f') + '[/i][/center]\n\n';
 			t += '[b][color=' + c + ']IDENTITÉ[/color][/b]\n';
-			t += line('Prénom', v('n')) + line('Nom', v('p')) + line('Alias', v('a')) + line('Âge', v('ag')) + line('Naissance', v('b')) + line('Origine', v('o')) + line('Statut du sang', BLOODS[S.blood]);
+			t += line('Prénom', v('n')) + line('Nom', v('p')) + line('Alias', v('a')) + line('Âge', v('ag')) + line('Naissance', v('b')) + line('Origine', v('o')) + line('Statut du sang', sg);
 			t += '\n[b][color=' + c + ']ALLÉGEANCE ET RANG[/color][/b]\n';
-			t += line('Faction', f[0]) + line('Maison', h[0]) + line('Année', v('y')) + line('Karma', v('k')) + line('Faceclaim', v('f'));
+			t += line('Faction', f[0]) + (h ? line('Maison', h[0]) : '') + (S.fac === 0 ? line('Année', v('y')) : line('Fonction', v('fn')) + line('Lieu de vie', v('lv'))) + line('Karma', v('k')) + line('Faceclaim', v('f'));
 			if (v('ph')) { t += '\n[b][color=' + c + ']PHYSIQUE[/color][/b]\n' + v('ph') + '\n'; }
 			t += '\n[b][color=' + c + ']CARACTÈRE[/color][/b]\n' + v('c') + '\n';
 			if (v('m')) { t += '\n[b][color=' + c + ']MOTIVATION[/color][/b]\n' + v('m') + '\n'; }
@@ -1042,7 +1058,13 @@
 		box.addEventListener('click', function (e) {
 			var b = e.target.closest ? e.target.closest('button') : null; if (!b) { return; }
 			var g = b.parentNode.getAttribute('data-g');
-			if (g) { S[g] = parseInt(b.getAttribute('data-i'), 10); Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = x.className.replace(/\bon\b/, '').replace(/\s+$/, ''); }); b.className += ' on'; update(); return; }
+			if (g) {
+				var iv = parseInt(b.getAttribute('data-i'), 10);
+				if (g === 'house' && S.fac !== 0 && S.house === iv) { S.house = -1; } else { S[g] = iv; }
+				if (g === 'fac') { applyFac(); }
+				else { Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = x.className.replace(/\bon\b/, '').replace(/\s+$/, ''); }); if (S[g] === iv) { b.className += ' on'; } }
+				update(); return;
+			}
 			if (b.id === 'pf-reg') { S.reg = !S.reg; b.className = 'pf-pill' + (S.reg ? ' on' : ''); update(); return; }
 			if (b.id === 'pf-go') { gen(); }
 		});
@@ -1065,7 +1087,7 @@
 			$('open').onclick = function () { try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), body: code, subject: subject })); } catch (e) { } };
 			out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 		}
-		update();
+		applyFac(); update();
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
@@ -1102,7 +1124,8 @@
 		var id = kv('IDENTITÉ'), al = kv('ALLÉGEANCE ET RANG'), me = kv('DERRIÈRE LE PERSONNAGE');
 		function txt(sec) { return (S[sec] || []).join('\n').replace(/^\s+|\s+$/g, ''); }
 		var first = id['Prénom'] || nm.split(' ')[0] || '', last = id['Nom'] || nm.split(' ').slice(1).join(' ');
-		var hk = (al['Maison'] || '').toLowerCase(), H = HOUSES[hk.normalize ? hk.normalize('NFD').replace(/[̀-ͯ]/g, '') : hk] || ['#d9b36a', al['Maison'] || ''];
+		var FCOL = { 'élève de poudlard': '#d9b36a', 'personnel de poudlard': '#a9764a', 'ministère': '#7fa8d8', 'sorcier': '#8cc7a0', 'mage noir': '#b79be0', 'sans pouvoirs magiques': '#FFA57D' };
+		var hk = (al['Maison'] || '').toLowerCase(), H = HOUSES[hk.normalize ? hk.normalize('NFD').replace(/[̀-ͯ]/g, '') : hk] || [FCOL[(al['Faction'] || '').toLowerCase()] || '#d9b36a', al['Maison'] || ''];
 		var base = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/', sc = document.querySelector('script[src*="revelio.js"]');
 		if (sc) { base = sc.getAttribute('src').replace(/revelio\.js.*$/, ''); }
 		var crest = H[1] ? base + 'img/ecussons/' + H[1] + '.png' : '';
@@ -1112,7 +1135,7 @@
 			: /Abandon/i.test(path) ? ['Abandonnée', '#8f8878', 'M6 6l12 12M18 6L6 18', 'Cette fiche n’est plus suivie par son joueur.']
 			: ['En attente', '#d9b36a', 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z', 'Cette fiche attend la relecture d’un membre du staff.'];
 		var tg = []; if (al['Faction']) { tg.push('<span class="pp-tag c">' + esc(al['Faction']) + '</span>'); } if (al['Maison']) { tg.push('<span class="pp-tag c">' + esc(al['Maison']) + '</span>'); } if (id['Statut du sang']) { tg.push('<span class="pp-tag">' + esc(id['Statut du sang']) + '</span>'); } if (id['Âge']) { tg.push('<span class="pp-tag">' + esc(id['Âge']) + '</span>'); }
-		var facts = [['Âge', id['Âge']], ['Naissance', id['Naissance']], ['Origine', id['Origine']], ['Statut du sang', id['Statut du sang']], ['Faction', al['Faction']], ['Maison', al['Maison']], ['Année', al['Année']], ['Karma', al['Karma']]].filter(function (f) { return f[1]; });
+		var facts = [['Âge', id['Âge']], ['Naissance', id['Naissance']], ['Origine', id['Origine']], ['Statut du sang', id['Statut du sang']], ['Faction', al['Faction']], ['Maison', al['Maison']], ['Année', al['Année']], ['Fonction', al['Fonction']], ['Lieu de vie', al['Lieu de vie']], ['Karma', al['Karma']]].filter(function (f) { return f[1]; });
 		var mot = txt('MOTIVATION'), phy = txt('PHYSIQUE'), car = txt('CARACTÈRE');
 		var author = post.querySelector('.postprofile .author a, .postprofile dt a, a.username, .postprofile a[href^="/u"]');
 		var edit = post.querySelector('a[href*="mode=editpost"]'), quote = post.querySelector('a[href*="mode=quote"]');

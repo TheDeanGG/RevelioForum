@@ -548,7 +548,6 @@
 (function () {
 	function run() {
 		var root = document.getElementById('rv-hf');
-		if (!root) { return; }
 		function h(tag, cls, txt) { var e = document.createElement(tag); if (cls) { e.className = cls; } if (txt !== undefined && txt !== null) { e.textContent = txt; } return e; }
 		function norm(s) { s = (s || '').toLowerCase(); if (s.normalize) { s = s.normalize('NFD').replace(/[̀-ͯ]/g, ''); } return s.replace(/[^a-z0-9?]+/g, ' ').replace(/^ | $/g, ''); }
 		var ICON = {
@@ -624,9 +623,10 @@
 		var qs = (location.search.match(/[?&]u=(\d+)/) || [])[1];
 		var ud = window._userdata || {};
 		var uid = qs || (ud.user_id > 0 ? String(ud.user_id) : '');
-		root.className = (root.className ? root.className + ' ' : '') + 'hf-root';
-		if (!uid) { root.appendChild(h('div', 'hf-empty', 'Connecte-toi pour voir tes hauts-faits.')); return; }
-		root.appendChild(h('div', 'hf-empty', 'Chargement des hauts-faits…'));
+		if (root) {
+			root.className = (root.className ? root.className + ' ' : '') + 'hf-root';
+			if (uid) { root.appendChild(h('div', 'hf-empty', 'Chargement des hauts-faits…')); }
+		}
 
 		function fields(doc) {
 			var out = {};
@@ -676,6 +676,43 @@
 			if (plat) { plat.cur = others.filter(function (a) { return a.got; }).length; plat.max = others.length; plat.got = plat.cur === plat.max; }
 			return all;
 		}
+		/* ---- Aperçu sur le profil : <div class="rv-hfmini" data-u="ID" data-n="Nom"> ---- */
+		function mini(box) {
+			var u = box.getAttribute('data-u');
+			if (!u) { return; }
+			var x = new XMLHttpRequest();
+			x.open('GET', '/u' + u, true);
+			x.onload = function () {
+				if (x.status !== 200) { return; }
+				var f = fields(new DOMParser().parseFromString(x.responseText, 'text/html'));
+				var all = build(f, '');
+				var got = all.filter(function (a) { return a.got; });
+				var order = { L: 0, E: 1, R: 2, C: 3 };
+				got.sort(function (a, b) { return order[a.rk] - order[b.rk]; });
+				box.innerHTML = '';
+				var top = h('div', 'hfm-top'); top.appendChild(h('b', '', String(got.length))); top.appendChild(document.createTextNode(' / ' + all.length + ' hauts-faits obtenus'));
+				box.appendChild(top);
+				if (!got.length) { box.appendChild(h('p', 'hfm-none', 'Aucun haut-fait pour le moment.')); return; }
+				var list = h('div', 'hfm-list');
+				got.forEach(function (a) {
+					var it = h('div', 'hfm-it'); it.title = a.name + ' · ' + a.r.label + (a.date ? ' · ' + a.date : '');
+					it.style.setProperty('--c', a.r.c); it.style.setProperty('--t', a.r.t);
+					var hx = h('span', 'hfm-hex'); hx.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="' + ICON[a.icon] + '"/></svg>';
+					it.appendChild(hx); it.appendChild(h('span', 'hfm-n', a.name)); list.appendChild(it);
+				});
+				box.appendChild(list);
+			};
+			x.send();
+		}
+		window.RVHF = { fields: fields, build: build };
+		var tries = 0, iv = setInterval(function () {
+			var b = document.querySelector('.rv-hfmini:not([data-done])');
+			if (b) { b.setAttribute('data-done', '1'); mini(b); clearInterval(iv); }
+			else if (++tries > 40) { clearInterval(iv); }
+		}, 150);
+		if (!root) { return; }
+		if (!uid) { root.appendChild(h('div', 'hf-empty', 'Connecte-toi pour voir tes hauts-faits.')); return; }
+
 		function render(all, name, f, S) {
 			root.innerHTML = '';
 			var on = all.filter(function (a) { return a.got; }).length, total = all.length;

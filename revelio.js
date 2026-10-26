@@ -860,3 +860,59 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
+
+/* ===== REVELIO : résultats de recherche (messages) ===== */
+(function () {
+	function run() {
+		var main = document.getElementById('main-content');
+		var posts = main ? main.querySelectorAll('.search.post') : [];
+		if (!posts.length || main.querySelector('.rs-list')) { return; }
+		function h(tag, cls, txt) { var e = document.createElement(tag); if (cls) { e.className = cls; } if (txt !== undefined && txt !== null) { e.textContent = txt; } return e; }
+		function clean(s) { return (s || '').replace(/ /g, ' ').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, ''); }
+		var wrap = h('div', 'rs-msgs');
+		var first = posts[0];
+		Array.prototype.forEach.call(posts, function (p) {
+			var pp = p.querySelector('.postprofile'), pb = p.querySelector('.postbody');
+			if (!pp || !pb) { return; }
+			var au = pp.querySelector('dt.author a'), col = '', cs = au ? au.querySelector('[style*="color"]') : null;
+			if (cs) { col = cs.style.color; }
+			var dds = pp.querySelectorAll('dd'), date = clean(dds[0] ? dds[0].textContent : '');
+			var links = pp.querySelectorAll('a.postdetails'), fa = links[0], ta = links[1];
+			var strongs = pp.querySelectorAll('dd strong'), rep = '', vue = '';
+			Array.prototype.forEach.call(dds, function (d) { var t = clean(d.textContent); if (/^Réponses/i.test(t)) { rep = t.replace(/\D/g, ''); } if (/^Vues/i.test(t)) { vue = t.replace(/\D/g, ''); } });
+			var h2 = pb.querySelector('h2'), href = h2 && h2.querySelector('a') ? h2.querySelector('a').getAttribute('href') : (ta ? ta.getAttribute('href') : '#');
+			var parts = clean(ta ? ta.textContent : (h2 ? h2.textContent : '')).split('|').map(clean).filter(Boolean);
+			var art = h('article', 'rs-msg'); art.style.setProperty('--l', col || '#d9b36a');
+			var hd = h('header', 'rs-mh');
+			var av = h('div', 'rs-lav'); av.appendChild(h('i')); av.appendChild(h('b', '', au ? clean(au.textContent).charAt(0).toUpperCase() : '✦')); hd.appendChild(av);
+			var tx = h('div', 'rs-mt'), t2 = h('h2'), a = h('a', '', parts[0] || 'Message'); a.href = href; t2.appendChild(a); tx.appendChild(t2);
+			var meta = h('div', 'rs-meta');
+			if (au) { meta.appendChild(document.createTextNode('par ')); var b = h('b', '', clean(au.textContent)); if (col) { b.style.color = col; } meta.appendChild(b); }
+			if (date) { meta.appendChild(h('span', '', date)); }
+			if (fa) { meta.appendChild(document.createTextNode('dans ')); var f = h('a', 'rs-in', clean(fa.textContent)); f.href = fa.getAttribute('href'); meta.appendChild(f); }
+			parts.slice(1, 4).forEach(function (x) { meta.appendChild(h('span', 'rs-chip', x)); });
+			tx.appendChild(meta); hd.appendChild(tx);
+			var st = h('div', 'rs-ms');
+			[['Réponses', rep], ['Vues', vue]].forEach(function (x) { if (x[1] !== '') { var s = h('div', 'rs-mn'); s.appendChild(h('b', '', x[1])); s.appendChild(h('small', '', x[0])); st.appendChild(s); } });
+			hd.appendChild(st);
+			art.appendChild(hd);
+			var body = h('div', 'postbody'), ct = h('div', 'content');
+			Array.prototype.slice.call(pb.childNodes).forEach(function (n) { if (n !== h2) { ct.appendChild(n); } });
+			body.appendChild(ct); art.appendChild(body);
+			var ft = h('footer', 'rs-mf'), tg = h('button', 'rs-tg', 'Déplier'); tg.type = 'button';
+			tg.addEventListener('click', function () { var o = art.classList.toggle('rs-open'); tg.textContent = o ? 'Replier' : 'Déplier'; });
+			var go = h('a', 'rs-go', 'Voir le message'); go.href = href;
+			ft.appendChild(tg); ft.appendChild(go); art.appendChild(ft);
+			wrap.appendChild(art);
+		});
+		first.parentNode.insertBefore(wrap, first);
+		Array.prototype.forEach.call(posts, function (p) { p.parentNode.removeChild(p); });
+		wrap.className = 'rs-list rs-msgs';
+		function chk() { Array.prototype.forEach.call(wrap.querySelectorAll('.rs-msg'), function (m) { var c = m.querySelector('.content'); if (c && c.scrollHeight > 330) { m.classList.add('rs-long'); } }); }
+		chk(); setTimeout(chk, 800);
+		var title = main.querySelector('h1.page-title');
+		if (title) { title.parentNode.insertBefore(h('div', 'rs-eyebrow', 'Recherche'), title); }
+		main.className += ' rv-sr rv-srm';
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

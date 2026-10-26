@@ -630,13 +630,14 @@
 
 		function fields(doc) {
 			var out = {};
-			Array.prototype.forEach.call(doc.querySelectorAll('dl'), function (dl) {
-				var dts = dl.querySelectorAll('dt'), dds = dl.querySelectorAll('dd');
-				if (dts.length === 1 && dds.length >= 1) {
-					var k = norm(dts[0].textContent);
-					if (k && !(k in out)) { out[k] = dds[0].textContent.replace(/ /g, ' ').replace(/^\s+|\s+$/g, ''); out[k + '#html'] = dds[0]; }
-				}
+			Array.prototype.forEach.call(doc.querySelectorAll('dt'), function (dt) {
+				var dd = dt.nextElementSibling;
+				while (dd && dd.tagName !== 'DD') { dd = dd.nextElementSibling; }
+				if (!dd) { return; }
+				var k = norm(dt.textContent);
+				if (k && !(k in out)) { out[k] = dd.textContent.replace(/\u00a0/g, ' ').replace(/^\s+|\s+$/g, ''); out[k + '#html'] = dd; }
 			});
+			if (location.hash === '#debug') { try { console.log('RV champs', Object.keys(out).filter(function (x) { return x.indexOf('#') < 0; })); } catch (e) { } }
 			return out;
 		}
 		function parseStaff(node) {

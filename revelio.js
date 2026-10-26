@@ -543,3 +543,205 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
+
+/* ===== REVELIO : page Hauts-faits (page HTML contenant <div id="rv-hf"></div>) ===== */
+(function () {
+	function run() {
+		var root = document.getElementById('rv-hf');
+		if (!root) { return; }
+		function h(tag, cls, txt) { var e = document.createElement(tag); if (cls) { e.className = cls; } if (txt !== undefined && txt !== null) { e.textContent = txt; } return e; }
+		function norm(s) { s = (s || '').toLowerCase(); if (s.normalize) { s = s.normalize('NFD').replace(/[̀-ͯ]/g, ''); } return s.replace(/[^a-z0-9?]+/g, ' ').replace(/^ | $/g, ''); }
+		var ICON = {
+			wand: 'M4 20L16 8M16 8l2-2M14 3v2M20 9h2M18 5l1-1M21 3l-1 1', flame: 'M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1 1 2 2 3-4z',
+			shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', bolt: 'M13 2L4 14h7l-1 8 9-12h-7z',
+			feather: 'M20.2 3.8a6 6 0 0 0-8.5 0L5 10.5V19h8.5l6.7-6.7a6 6 0 0 0 0-8.5zM16 8 3 21M17.5 15H9', moon: 'M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z',
+			star: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
+			key: 'M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.8 7.8 5.5 5.5 0 0 1 7.8-7.8zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4',
+			eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', flask: 'M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3M8 15h8',
+			book: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z', scroll: 'M8 21h11a2 2 0 0 0 2-2v-1H10v1a2 2 0 0 1-2 2zM8 21a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2h4M19 18V5a2 2 0 0 0-2-2H6',
+			bag: 'M6 8h12l1.5 12h-15zM9 8V6a3 3 0 0 1 6 0v2', gem: 'M6 3h12l4 6-10 12L2 9zM2 9h20M12 21 8 9l4-6 4 6z', broom: 'M3 21l9-9M12 12l5-5 4 4-5 5zM15 9l3 3',
+			lock: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4', heart: 'M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10z',
+			rings: 'M9 12m-5.5 0a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0M15 12m-5.5 0a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0'
+		};
+		var R = { C: { label: 'Commun', c: '#a8a193', t: '#d4cfc0' }, R: { label: 'Rare', c: '#4f9fc9', t: '#8fcbea' }, E: { label: 'Épique', c: '#9a62c9', t: '#c9a2ec' }, L: { label: 'Légendaire', c: '#c9972f', t: '#f0d28f' } };
+		var CATS = ['Tous', 'RP', 'IRL', 'IG', 'Monde'];
+		/* [catégorie, rareté, icône, nom, description, source, règle automatique ou clé secrète] */
+		var DEFS = [
+			['RP', 'C', 'feather', 'Premier hibou', 'Poster son premier message.', 'auto', { posts: 1 }],
+			['RP', 'C', 'scroll', 'Conteur', 'Poster dix messages.', 'auto', { posts: 10 }],
+			['RP', 'R', 'feather', 'Plume d’or', 'Poster 250 messages.', 'auto', { posts: 250 }],
+			['RP', 'L', 'star', 'Légende de Poudlard', 'Poster 1 000 messages.', 'auto', { posts: 1000 }],
+			['RP', 'C', 'moon', 'Retourneur de temps', 'Écrire son premier flashback.', 'staff'],
+			['RP', 'C', 'book', 'Élève de première classe', 'Assister à son premier cours.', 'staff'],
+			['RP', 'R', 'flame', 'Duelliste', 'Remporter un duel officiel.', 'staff'],
+			['RP', 'R', 'book', 'Fresque vivante', 'Participer à cinq RP de groupe.', 'staff'],
+			['RP', 'R', 'heart', 'Les histoires de camarades', 'Terminer le fil RP de trois personnages du forum.', 'staff'],
+			['RP', 'R', 'flame', 'Y’a pas de troll !', 'Survivre à un événement du staff à Pré-au-Lard.', 'staff'],
+			['RP', 'R', 'broom', 'Un bon coup de balai', 'Battre le temps d’Imelda lors d’une course de balai.', 'staff'],
+			['RP', 'E', 'rings', 'Serment tenu', 'Prononcer un serment inviolable.', 'staff'],
+			['RP', 'E', 'star', 'Champion du Tournoi', 'Participer à un Event du staff.', 'staff'],
+			['RP', 'E', 'eye', 'Par la barbe de Merlin !', 'Réussir une série d’épreuves lancée par le staff.', 'staff'],
+			['RP', 'E', 'shield', 'Gardien des créatures', 'Sauver une créature lors d’un événement.', 'staff'],
+			['RP', 'L', 'eye', '???', 'Ce haut-fait reste secret.', 'staff', { secret: 'Secret RP' }],
+			['IRL', 'C', 'shield', 'Bienvenue', 'Faire valider sa fiche : rejoindre le groupe des élèves.', 'staff'],
+			['IRL', 'C', 'scroll', 'Une Répartition fracassante', 'Être réparti dans une maison.', 'staff'],
+			['IRL', 'R', 'bolt', 'Fidèle', 'Être inscrit depuis trente jours.', 'auto', { days: 30 }],
+			['IRL', 'E', 'moon', 'Une année à Poudlard', 'Être inscrit depuis un an.', 'auto', { days: 365 }],
+			['IRL', 'R', 'heart', 'Parrain', 'Parrainer un nouveau membre.', 'staff'],
+			['IRL', 'R', 'star', 'Révélation du mois', 'Être choisi comme meilleur nouveau venu.', 'staff'],
+			['IRL', 'E', 'feather', 'Plume du mois', 'Signer le meilleur RP du mois.', 'staff'],
+			['IRL', 'E', 'shield', 'Esprit de maison', 'Faire vivre sa maison au quotidien.', 'staff'],
+			['IRL', 'E', 'heart', 'Élu', 'Être choisi par le peuple du forum.', 'staff'],
+			['IRL', 'E', 'moon', 'Pionnier', 'Avoir rejoint REVELIO pendant sa première année.', 'staff'],
+			['IRL', 'L', 'gem', 'Coupe des maisons', 'Faire gagner sa maison en fin d’année.', 'staff'],
+			['IRL', 'L', 'gem', 'Maître de Poudlard', 'Obtenir tous les autres hauts-faits.', 'staff', { plat: true }],
+			['IG', 'C', 'wand', 'Premier sort', 'Lancer un sort pour la première fois.', 'staff'],
+			['IG', 'R', 'flask', 'Maître des potions', 'Réussir dix potions.', 'staff'],
+			['IG', 'R', 'key', 'Chasseur de trésors', 'Trouver cinq objets cachés.', 'staff'],
+			['IG', 'R', 'wand', 'Sur le bout de la baguette', 'Apprendre tous les sortilèges du guidebook.', 'staff'],
+			['IG', 'R', 'book', 'Main verte', 'Réussir tous les cours de botanique.', 'staff'],
+			['IG', 'R', 'shield', 'Jamais deux sans trois', 'Améliorer un équipement trois fois.', 'staff'],
+			['IG', 'E', 'bag', 'Millionnaire', 'Posséder 10 000 gallions.', 'staff'],
+			['IG', 'E', 'flask', 'Potions à profusion', 'Préparer tous les types de potions.', 'staff'],
+			['IG', 'E', 'gem', 'Collectionnite', 'Compléter toutes les collections de la fiche technique.', 'staff'],
+			['IG', 'E', 'scroll', 'Une bonne âme', 'Terminer toutes les quêtes annexes.', 'staff'],
+			['IG', 'L', 'star', 'Un effort exceptionnel', 'Atteindre le niveau maximum.', 'staff'],
+			['IG', 'L', 'broom', 'Animagus', 'Découvrir sa forme animale.', 'staff'],
+			['Monde', 'C', 'key', 'Premiers pas', 'Jouer une scène au Grand Hall.', 'staff'],
+			['Monde', 'C', 'broom', 'Escapade à Pré-au-Lard', 'Jouer une scène au village.', 'staff'],
+			['Monde', 'R', 'book', 'Cartographe', 'Jouer dans les six ailes du château.', 'staff'],
+			['Monde', 'R', 'moon', 'Sous la surface', 'Jouer dans les sous-sols du château.', 'staff'],
+			['Monde', 'R', 'flame', 'Au cœur de la forêt', 'Jouer une scène dans la Forêt interdite.', 'staff'],
+			['Monde', 'R', 'key', 'Une vue imprenable', 'Jouer une scène au sommet de la tour du directeur.', 'staff'],
+			['Monde', 'R', 'wand', '???', 'Ce haut-fait reste secret.', 'staff', { secret: 'Secret Monde 1' }],
+			['Monde', 'E', 'eye', 'Salle sur demande', 'Trouver la salle qui apparaît à qui la cherche.', 'staff'],
+			['Monde', 'E', 'key', 'Soif d’aventure', 'Découvrir tous les lieux de la carte.', 'staff'],
+			['Monde', 'E', 'eye', '???', 'Ce haut-fait reste secret.', 'staff', { secret: 'Secret Monde 2' }],
+			['Monde', 'L', 'gem', 'Explorateur du monde', 'Jouer dans les douze hameaux du monde.', 'staff'],
+			['Monde', 'L', 'eye', '???', 'Ce haut-fait reste secret.', 'staff', { secret: 'Secret Monde 3' }]
+		];
+
+		var qs = (location.search.match(/[?&]u=(\d+)/) || [])[1];
+		var ud = window._userdata || {};
+		var uid = qs || (ud.user_id > 0 ? String(ud.user_id) : '');
+		root.className = (root.className ? root.className + ' ' : '') + 'hf-root';
+		if (!uid) { root.appendChild(h('div', 'hf-empty', 'Connecte-toi pour voir tes hauts-faits.')); return; }
+		root.appendChild(h('div', 'hf-empty', 'Chargement des hauts-faits…'));
+
+		function fields(doc) {
+			var out = {};
+			Array.prototype.forEach.call(doc.querySelectorAll('dl'), function (dl) {
+				var dts = dl.querySelectorAll('dt'), dds = dl.querySelectorAll('dd');
+				if (dts.length === 1 && dds.length >= 1) {
+					var k = norm(dts[0].textContent);
+					if (k && !(k in out)) { out[k] = dds[0].textContent.replace(/ /g, ' ').replace(/^\s+|\s+$/g, ''); out[k + '#html'] = dds[0]; }
+				}
+			});
+			return out;
+		}
+		function parseStaff(node) {
+			var map = {};
+			if (!node) { return map; }
+			var txt = node.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
+			txt.split(/\n+/).forEach(function (line) {
+				var p = line.split('|').map(function (x) { return x.replace(/^\s+|\s+$/g, ''); });
+				if (!p[0]) { return; }
+				var e = { date: '', cur: null, max: null, reveal: '' };
+				var m = (p[1] || '').match(/^(\d+)\s*\/\s*(\d+)$/);
+				if (m) { e.cur = parseInt(m[1], 10); e.max = parseInt(m[2], 10); } else { e.date = p[1] || ''; }
+				e.reveal = p[2] || '';
+				map[norm(p[0])] = e;
+			});
+			return map;
+		}
+		function build(f, name) {
+			var posts = parseInt((f['messages'] || '0').replace(/\D/g, ''), 10) || 0;
+			var days = null, dm = (f['date d inscription'] || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+			if (dm) { days = Math.floor((Date.now() - new Date(+dm[3], +dm[2] - 1, +dm[1]).getTime()) / 864e5); }
+			var staff = parseStaff(f['hauts faits#html']);
+			var all = DEFS.map(function (d) {
+				var x = d[6] || {}, r = R[d[1]], got = false, cur = null, max = null, date = '', nm = d[3], desc = d[4], secret = !!x.secret, ic = d[2];
+				if (x.posts) { cur = Math.min(posts, x.posts); max = x.posts; got = posts >= x.posts; }
+				else if (x.days) { cur = Math.min(days || 0, x.days); max = x.days; got = days !== null && days >= x.days; }
+				else if (!x.plat) {
+					var s = staff[norm(secret ? x.secret : nm)];
+					if (s) { if (s.date) { got = true; date = /^\d/.test(s.date) ? s.date : ''; } else if (s.max) { cur = s.cur; max = s.max; got = s.cur >= s.max; } else { got = true; }
+						if (got && secret) { secret = false; if (s.reveal) { nm = s.reveal; } desc = 'Haut-fait secret découvert.'; ic = d[2]; } }
+				}
+				return { cat: d[0], rk: d[1], r: r, icon: secret ? 'lock' : ic, name: nm, desc: desc, src: d[5], got: got, secret: secret, cur: cur, max: max, date: date, plat: !!x.plat };
+			});
+			var others = all.filter(function (a) { return !a.plat; });
+			var plat = all.filter(function (a) { return a.plat; })[0];
+			if (plat) { plat.cur = others.filter(function (a) { return a.got; }).length; plat.max = others.length; plat.got = plat.cur === plat.max; }
+			return all;
+		}
+		function render(all, name, f, S) {
+			root.innerHTML = '';
+			var on = all.filter(function (a) { return a.got; }).length, total = all.length;
+			var who = h('div', 'hf-who'), dm = h('div', 'hf-dm'); dm.appendChild(h('span', '', (name || '?').replace(/[^A-Za-zÀ-ÿ ]/g, '').split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase()));
+			who.appendChild(dm);
+			var wt = h('div'); wt.appendChild(h('div', 'hf-eyebrow', 'Revelio · Profil de ' + name)); wt.appendChild(h('h1', '', 'Hauts-faits'));
+			var meta = [];
+			var an = (f['annee scolaire'] || '').replace(/^[\s-]+|[\s-]+$/g, ''); if (an) { meta.push(an); }
+			var ti = f['titre'] || ''; if (ti && !/^aucun/i.test(ti)) { meta.push(ti.length > 40 ? '' : ti); }
+			meta = meta.filter(Boolean);
+			if (meta.length) { var mm = h('div', 'hf-m'); meta.forEach(function (t, i) { if (i) { mm.appendChild(h('i')); } mm.appendChild(h('b', '', t)); }); wt.appendChild(mm); }
+			who.appendChild(wt); root.appendChild(who);
+			root.appendChild(h('p', 'hf-lead', 'Chaque haut-fait raconte un moment du personnage ou de son joueur : un sort lancé, un coin du château exploré, un titre remporté ou un cap franchi sur le forum.'));
+			var top = h('div', 'hf-top');
+			var sum = h('section', 'hf-sum'), sn = h('div', 'hf-sum-n', String(on)); sn.appendChild(h('i', '', '/ ' + total)); sn.appendChild(h('span', '', 'hauts-faits obtenus')); sum.appendChild(sn);
+			var bar = h('div', 'hf-bar'), bb = h('b'); bb.style.width = Math.round(on / total * 100) + '%'; bar.appendChild(bb); sum.appendChild(bar);
+			var rar = h('div', 'hf-rar');
+			['C', 'R', 'E', 'L'].forEach(function (k) { var d = h('div'); d.style.setProperty('--c', R[k].c); d.appendChild(h('i')); d.appendChild(h('b', '', String(all.filter(function (a) { return a.got && a.rk === k; }).length))); d.appendChild(document.createTextNode(' ' + R[k].label + 's')); rar.appendChild(d); });
+			sum.appendChild(rar);
+			var nAuto = all.filter(function (a) { return a.src === 'auto'; }).length;
+			var pts = h('div', 'hf-pts'); pts.appendChild(h('b', '', String(nAuto))); pts.appendChild(document.createTextNode(' automatiques · ')); pts.appendChild(h('b', '', String(total - nAuto))); pts.appendChild(document.createTextNode(' validés par le staff'));
+			sum.appendChild(pts); top.appendChild(sum);
+			var best = null;
+			all.forEach(function (a) { if (!a.got && a.max && !a.secret && !a.plat && (!best || a.cur / a.max > best.cur / best.max)) { best = a; } });
+			if (best) {
+				var nx = h('section', 'hf-next'), hx = h('div', 'hf-hex'); hx.style.setProperty('--c', best.r.c); hx.style.setProperty('--t', best.r.t);
+				hx.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="' + ICON[best.icon] + '"/></svg>'; nx.appendChild(hx);
+				var nb = h('div'); nb.style.cssText = 'flex:1;min-width:0'; nb.appendChild(h('small', '', 'Presque là')); nb.appendChild(h('h3', '', best.name)); nb.appendChild(h('p', '', best.desc));
+				var pw = h('div', 'hf-pgw'); pw.style.setProperty('--c', best.r.c); var pg = h('div', 'hf-pg'), pi = h('i'); pi.style.width = Math.round(best.cur / best.max * 100) + '%'; pg.appendChild(pi); pw.appendChild(pg);
+				var pc = h('span', '', best.cur + ' / ' + best.max); pc.style.cssText = 'font-size:11px;color:#cfc9ba'; pw.appendChild(pc); nb.appendChild(pw); nx.appendChild(nb); top.appendChild(nx);
+			}
+			root.appendChild(top);
+			var tools = h('div', 'hf-tools'), tabs = h('div', 'hf-tabs'), sts = h('div', 'hf-st');
+			CATS.forEach(function (l, i) { var b = h('button', 'hf-tab' + (i === S.cat ? ' on' : ''), l); b.type = 'button'; b.appendChild(h('em', '', String(i === 0 ? total : all.filter(function (a) { return a.cat === l; }).length))); b.addEventListener('click', function () { S.cat = i; render(all, name, f, S); }); tabs.appendChild(b); });
+			['Tous', 'Obtenus', 'À débloquer'].forEach(function (l, i) { var b = h('button', 'hf-tab' + (i === S.st ? ' on' : ''), l); b.type = 'button'; b.addEventListener('click', function () { S.st = i; render(all, name, f, S); }); sts.appendChild(b); });
+			tools.appendChild(tabs); tools.appendChild(sts); root.appendChild(tools);
+			var grid = h('div', 'hf-grid'), n = 0;
+			all.forEach(function (a) {
+				if (S.cat && a.cat !== CATS[S.cat]) { return; }
+				if (S.st === 1 && !a.got) { return; } if (S.st === 2 && a.got) { return; }
+				n++;
+				var hasPg = !a.got && a.max && !a.secret;
+				var c = h('article', 'hf-card' + (a.got ? '' : ' off') + (a.secret ? ' hf-secret' : '')); c.style.setProperty('--c', a.r.c); c.style.setProperty('--t', a.r.t);
+				var hx = h('div', 'hf-hex'); hx.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="' + ICON[a.icon] + '"/></svg>'; c.appendChild(hx);
+				var b = h('div', 'hf-b'); b.appendChild(h('span', 'hf-r', a.r.label + ' · ' + a.cat)); b.appendChild(h('h4', '', a.name)); b.appendChild(h('p', '', a.desc));
+				var me = h('div', 'hf-meta');
+				if (hasPg) { var pw = h('div', 'hf-pgw'), pg = h('div', 'hf-pg'), pi = h('i'); pi.style.width = Math.round(a.cur / a.max * 100) + '%'; pg.appendChild(pi); pw.appendChild(pg); pw.appendChild(h('span', '', a.cur + ' / ' + a.max)); me.appendChild(pw); }
+				else { me.appendChild(h('span', '', a.got ? (a.date ? 'Décerné le ' + a.date : 'Débloqué') : 'À débloquer')); }
+				me.appendChild(h('span', 'hf-staff', a.src === 'auto' ? 'Automatique' : 'Staff'));
+				b.appendChild(me); c.appendChild(b); grid.appendChild(c);
+			});
+			root.appendChild(grid);
+			if (!n) { root.appendChild(h('div', 'hf-empty', 'Aucun haut-fait ici pour l’instant.')); }
+			root.appendChild(h('p', 'hf-note', 'Les hauts-faits secrets restent masqués jusqu’à leur obtention. Les hauts-faits « Automatique » se débloquent d’eux-mêmes grâce aux données du forum (nombre de messages, date d’inscription). Les autres sont validés par le staff, qui les inscrit sur ton profil.'));
+		}
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '/u' + uid, true);
+		xhr.onload = function () {
+			if (xhr.status !== 200) { root.innerHTML = ''; root.appendChild(h('div', 'hf-empty', 'Profil introuvable.')); return; }
+			var doc = new DOMParser().parseFromString(xhr.responseText, 'text/html');
+			var f = fields(doc);
+			var name = (!qs && ud.username) ? String(ud.username) : '';
+			if (!name) { var t = (doc.title || '').split(' - ')[0].replace(/^Profil de\s*/i, '').replace(/^Voir le profil\s*:?\s*/i, ''); name = t || 'ce membre'; }
+			render(build(f, name), name, f, { cat: 0, st: 0 });
+		};
+		xhr.onerror = function () { root.innerHTML = ''; root.appendChild(h('div', 'hf-empty', 'Impossible de charger le profil.')); };
+		xhr.send();
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

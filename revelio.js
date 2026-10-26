@@ -737,7 +737,9 @@
 			if (xhr.status !== 200) { root.innerHTML = ''; root.appendChild(h('div', 'hf-empty', 'Profil introuvable.')); return; }
 			var doc = new DOMParser().parseFromString(xhr.responseText, 'text/html');
 			var f = fields(doc);
-			var name = (!qs && ud.username) ? String(ud.username) : '';
+			var nq = (location.search.match(/[?&]n=([^&]+)/) || [])[1], name = '';
+			try { if (nq) { name = decodeURIComponent(nq.replace(/\+/g, ' ')); } } catch (e) { }
+			if (!name && !qs && ud.username) { name = String(ud.username); }
 			if (!name) { var t = (doc.title || '').split(' - ')[0].replace(/^Profil de\s*/i, '').replace(/^Voir le profil\s*:?\s*/i, ''); name = t || 'ce membre'; }
 			render(build(f, name), name, f, { cat: 0, st: 0 });
 		};

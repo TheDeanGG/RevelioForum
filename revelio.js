@@ -854,6 +854,8 @@
 		forabg.style.display = 'none';
 		var sh = main.querySelector('.sub-header .sub-header-info');
 		if (sh) { var t = sh.querySelector('.page-title'); if (t) { sh.insertBefore(h('div', 'rs-eyebrow', 'Recherche'), sh.firstChild); } }
+		var sp = main.querySelector('.sub-header-path');
+		if (sp) { Array.prototype.forEach.call(sp.childNodes, function (n) { if (n.nodeType === 3) { n.nodeValue = n.nodeValue.replace(/\s*::\s*/g, '  ›  '); } }); }
 		main.className += ' rv-sr';
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }

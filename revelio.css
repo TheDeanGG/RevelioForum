@@ -536,3 +536,12 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .cp-t.empty img{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);height:56px;opacity:.28}
 @container cp (max-width:1100px){#main-content .cp-grid,#main-content .cp-hg{grid-template-columns:repeat(2,minmax(0,1fr))}#main-content .cp-st{position:static;padding:0 44px 24px}#main-content .cp-hero{display:flex;flex-direction:column}#main-content .cp-last{position:static;flex-wrap:wrap;margin:0 44px 26px}}
 @container cp (max-width:640px){#main-content .cp-grid,#main-content .cp-hg{grid-template-columns:1fr}#main-content .cp-hero h1{font-size:34px}#main-content .cp-hi{padding:26px 22px}#main-content .cp-st{padding:0 22px 22px}#main-content .cp-last{margin:0 22px 22px}}
+/* Catégorie Poudlard : maisons, images plus lisibles */
+#main-content .cp-hh{min-height:84px;align-items:flex-start}
+#main-content .cp-hh p{font-size:14px}
+#main-content .cp-ht{grid-template-columns:1fr;gap:10px}
+#main-content .cp-t{height:118px;background-position:center 40%}
+#main-content .cp-t::before{background:linear-gradient(0deg,rgba(5,4,3,.78),rgba(5,4,3,0) 46%)}
+#main-content .cp-t:not(.empty){filter:brightness(1.3) saturate(1.08)}
+#main-content .cp-t:not(.empty) span{text-shadow:0 1px 6px rgba(0,0,0,.9)}
+#main-content .cp-t.empty img{height:64px;opacity:.35}

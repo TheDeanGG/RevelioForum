@@ -1116,7 +1116,7 @@
 		var mot = txt('MOTIVATION'), phy = txt('PHYSIQUE'), car = txt('CARACTÈRE');
 		var author = post.querySelector('.postprofile .author a, .postprofile dt a, a.username, .postprofile a[href^="/u"]');
 		var edit = post.querySelector('a[href*="mode=editpost"]'), quote = post.querySelector('a[href*="mode=quote"]');
-		var h = '<article class="pp-card" style="--c:' + H[0] + '">' + (crest ? '<img class="pp-wm" src="' + esc(crest) + '" alt="">' : '') +
+		var h = '<article class="pp-card" style="--c:' + H[0] + '">' + (crest ? '<img class="pp-wm" src="' + esc(crest) + '" alt="">' : '') + '<div class="pp-stat" style="--s:' + ST[1] + '" title="' + esc(ST[3]) + '"><div class="ic"><svg viewBox="0 0 24 24"><path d="' + ST[2] + '"/></svg></div><div><small>Décision du staff</small><strong>' + ST[0] + '</strong></div></div>' +
 			'<header class="pp-hero"><div class="pp-por">' + (img ? '<img src="' + esc(img) + '" alt="">' : '') + '<i></i><i></i>' + (fc ? '<em>' + esc(fc) + '</em>' : '') + '</div>' +
 			'<div class="pp-id"><div class="pp-tags">' + tg.join('') + '</div><h2 class="pp-name"><span>' + esc(first) + '</span>' + esc(last) + '</h2>' + (alias ? '<p class="pp-alias">' + esc(alias) + '</p>' : '') +
 			(mot ? '<div class="pp-quote"><small>Motivation</small>' + esc(mot) + '</div>' : '') + '</div></header>' +
@@ -1125,10 +1125,7 @@
 			(hist ? '<div class="pp-sec"><h3 class="pp-h">Histoire</h3><div class="pp-spo"><button type="button" class="pp-spt" aria-expanded="false"><i class="d"></i><b>Spoiler</b><em>Histoire de ' + esc((first + ' ' + last).replace(/^\s+|\s+$/g, '')) + '</em><span>' + words(hist) + ' mots · cliquer pour lire</span></button><div class="pp-spb" style="display:none"><div class="pp-tx">' + paras(hist) + '</div><button type="button" class="pp-btn pp-close" style="margin-top:20px">Fermer le spoiler</button></div></div></div>' : '') +
 			(Object.keys(me).length ? '<div class="pp-sec"><h3 class="pp-h">Derrière le personnage</h3><div class="pp-me">' + Object.keys(me).map(function (k) { return '<div><span>' + esc(k) + '</span><b>' + esc(me[k]) + '</b></div>'; }).join('') + '</div></div>' : '') +
 			'<footer class="pp-act"><span class="sp"></span>' + (quote ? '<a class="pp-btn" href="' + esc(quote.getAttribute('href')) + '">Citer</a>' : '') + (edit ? '<a class="pp-btn g" href="' + esc(edit.getAttribute('href')) + '">Modifier</a>' : '') + '</footer></article>';
-		var side = '<aside class="pp-side"><section class="pp-box" style="--s:' + ST[1] + '"><h3>Décision du staff</h3><div class="pp-dec"><div class="ic"><svg viewBox="0 0 24 24"><path d="' + ST[2] + '"/></svg></div><div><strong>' + ST[0] + '</strong><p>' + ST[3] + '</p></div></div></section>' +
-			(author ? '<section class="pp-box"><h3>La fiche</h3><div class="pp-row"><span>Joueur</span><b>' + esc((author.textContent || '').replace(/^\s+|\s+$/g, '')) + '</b></div></section>' : '') +
-			(author ? '<section class="pp-box"><h3>Aller plus loin</h3><a class="pp-lk" href="' + esc(author.getAttribute('href') || '#') + '">Voir son profil</a></section>' : '') + '</aside>';
-		var wrap = document.createElement('div'); wrap.className = 'rv-fiche'; wrap.innerHTML = '<div class="pp-main">' + h + side + '</div>';
+		var wrap = document.createElement('div'); wrap.className = 'rv-fiche'; wrap.innerHTML = '<div class="pp-main">' + h + '</div>';
 		post.parentNode.insertBefore(wrap, post); post.style.display = 'none';
 		wrap.addEventListener('click', function (e) {
 			var b = e.target.closest ? e.target.closest('button') : null; if (!b) { return; }

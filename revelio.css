@@ -926,3 +926,11 @@ body:has(.rv-sf) form[name=jumpbox] select{padding:8px 12px;background:#0f0e0b;b
 #main-content .rv-fiche .pp-main{margin-top:0}
 #main-content .rv-fiche .pp-por img{max-width:none}
 #main-content .rv-fiche .pp-lk{color:#cfc9ba}
+#main-content .rv-fiche .pp-main{grid-template-columns:minmax(0,1fr)}
+#main-content .rv-fiche .pp-stat{position:absolute;right:28px;top:24px;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 18px 8px 8px;background:rgba(5,4,3,.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+#main-content .rv-fiche .pp-stat .ic{flex:none;width:38px;height:38px;position:relative;display:flex;align-items:center;justify-content:center}
+#main-content .rv-fiche .pp-stat .ic:before{content:'';position:absolute;left:5px;top:5px;width:28px;height:28px;transform:rotate(45deg);border:1.5px solid var(--s)}
+#main-content .rv-fiche .pp-stat .ic svg{position:relative;width:15px;height:15px;stroke:var(--s);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#main-content .rv-fiche .pp-stat small{display:block;font:700 8px 'Montserrat',sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:#8f8878}
+#main-content .rv-fiche .pp-stat strong{display:block;margin-top:2px;font:700 11px 'Montserrat',sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:var(--s)}
+@container rvf (max-width: 799px){#main-content .rv-fiche .pp-stat{position:static;margin:14px 20px 0;align-self:flex-start;display:inline-flex}}

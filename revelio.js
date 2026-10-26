@@ -1177,3 +1177,44 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 50); }); } else { setTimeout(run, 50); }
 })();
+
+/* REVELIO — carrousel d'accueil */
+(function () {
+  function init() {
+    var R = document.querySelector('.rvc'); if (!R || R.__rvc) { return; } R.__rvc = 1;
+    var S = R.querySelectorAll('.rvc-sl'), T = R.querySelectorAll('.rvc-tab'), N = S.length, cur = 0, prog = 0, paused = false, hover = false;
+    try { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { paused = true; } } catch (e) {}
+    var btnP = R.querySelector('[data-rvc=pause]'), stage = R.querySelector('.rvc-stage'), roll = R.querySelector('.rvc-ht');
+    function paint() {
+      for (var i = 0; i < N; i++) {
+        var on = i === cur; S[i].classList.toggle('on', on); S[i].setAttribute('aria-hidden', on ? 'false' : 'true');
+        S[i].style.opacity = on ? 1 : 0; S[i].style.visibility = on ? 'visible' : 'hidden';
+        T[i].classList.toggle('on', on); T[i].setAttribute('aria-current', on ? 'true' : 'false');
+        T[i].querySelector('b').style.width = on ? Math.round(prog) + '%' : (i < cur ? '100%' : '0%');
+      }
+    }
+    function go(i) { cur = (i + N) % N; prog = 0; paint(); }
+    function state() {
+      if (roll) { roll.style.animationPlayState = hover ? 'paused' : 'running'; }
+      stage.querySelector('.rvc-slides').setAttribute('aria-live', (paused || hover) ? 'polite' : 'off');
+      btnP.setAttribute('aria-label', paused ? 'Reprendre le défilement' : 'Mettre le défilement en pause'); btnP.title = btnP.getAttribute('aria-label');
+      btnP.querySelector('.ic-p').style.display = paused ? 'none' : ''; btnP.querySelector('.ic-g').style.display = paused ? '' : 'none';
+    }
+    for (var k = 0; k < T.length; k++) { (function (j) { T[j].addEventListener('click', function () { go(j); }); })(k); }
+    R.querySelector('[data-rvc=prev]').addEventListener('click', function () { go(cur - 1); });
+    R.querySelector('[data-rvc=next]').addEventListener('click', function () { go(cur + 1); });
+    btnP.addEventListener('click', function () { paused = !paused; state(); });
+    stage.addEventListener('mouseenter', function () { hover = true; state(); }); stage.addEventListener('mouseleave', function () { hover = false; state(); });
+    stage.addEventListener('focusin', function () { hover = true; state(); }); stage.addEventListener('focusout', function () { hover = false; state(); });
+    setInterval(function () { if (hover || paused || document.hidden) { return; } prog += 100 / 80; if (prog >= 100) { go(cur + 1); } else { paint(); } }, 100);
+    // personnage connecté
+    try {
+      var u = window._userdata || {}, nm = u.username || '', logged = u.session_logged_in === 1 || u.session_logged_in === '1';
+      var f = R.querySelector('[data-rvc=first]'), l = R.querySelector('[data-rvc=last]'), av = R.querySelector('[data-rvc=avatar]');
+      if (logged && nm && f && l) { var p = String(nm).split(/\s+/); f.textContent = p.shift(); l.textContent = p.join(' '); if (!p.length) { l.textContent = ''; } }
+      if (av) { var src = (u.avatar && /src="([^"]+)"/.exec(u.avatar)); src = src ? src[1] : (/^https?:/.test(u.avatar || '') ? u.avatar : ''); if (src) { av.src = src; } else { av.parentNode.style.display = 'none'; } }
+    } catch (x) {}
+    paint(); state();
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+})();

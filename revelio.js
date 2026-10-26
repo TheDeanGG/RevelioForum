@@ -1218,3 +1218,30 @@
   }
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
 })();
+
+/* REVELIO — carrousel : derniers hiboux */
+(function () {
+  function go() {
+    var T = document.querySelector('.rvc-ht'); if (!T || T.__rvh) { return; } T.__rvh = 1;
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    var ICO = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" style="position:absolute;left:12px;top:12px;color:#a88a4c"><circle cx="12" cy="9" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>';
+    var xhr = new XMLHttpRequest(); xhr.open('GET', '/search?search_id=newposts'); xhr.onload = function () {
+      try {
+        var doc = new DOMParser().parseFromString(xhr.responseText, 'text/html'), A = doc.querySelectorAll('a.topictitle'), out = [], seen = {};
+        for (var i = 0; i < A.length && out.length < 4; i++) {
+          var a = A[i], href = a.getAttribute('href'); if (seen[href]) { continue; } seen[href] = 1;
+          var row = a.closest('li.row, tr, dl.row-item, .topic-row') || a.parentNode.parentNode, lp = row.querySelector('.lastpost, dd.lastpost, .topic-lastpost') || row;
+          var who = lp.querySelector('a[href^="/u"], a.username, a.username-coloured'), forum = row.querySelector('a[href^="/f"]:not(.topictitle)');
+          var cnt = row.querySelector('.posts, dd.posts, .topic-posts'), when = (lp.textContent || '').replace(/\s+/g, ' ').match(/(Aujourd'hui[^\d]*\d{1,2}:\d{2}|Hier[^\d]*\d{1,2}:\d{2}|\d{1,2} \S+ \d{4}[^\d]*\d{1,2}:\d{2}|\w+ \d{1,2} \w+ \d{4})/i);
+          out.push({ t: a.textContent.trim(), h: href, by: who ? who.textContent.trim() : '', w: when ? when[1].replace(/\s+/g, ' ') : '', f: forum ? forum.textContent.trim() : '', n: cnt ? (parseInt(cnt.textContent, 10) || 0) + ' msg' : '' });
+        }
+        if (!out.length) { return; }
+        while (out.length < 4) { out.push(out[out.length % Math.max(1, out.length)]); }
+        var h = ''; for (var k = 0; k < 8; k++) { var o = out[k % 4]; h += '<div class="rvc-hi" style="--r:#a88a4c"><div class="rvc-av"><i></i>' + ICO + '</div><div style="min-width:0"><a href="' + esc(o.h) + '">' + esc(o.t) + '</a><small><b>' + esc(o.by) + '</b>' + (o.w ? ' · ' + esc(o.w) : '') + (o.f ? ' · ' + esc(o.f) : '') + '</small></div><span class="n">' + esc(o.n) + '</span></div>'; }
+        T.innerHTML = h;
+      } catch (e) {}
+    };
+    xhr.send();
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+})();

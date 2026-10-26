@@ -686,21 +686,31 @@
 				if (x.status !== 200) { return; }
 				var f = fields(new DOMParser().parseFromString(x.responseText, 'text/html'));
 				var all = build(f, '');
-				var got = all.filter(function (a) { return a.got; });
-				var order = { L: 0, E: 1, R: 2, C: 3 };
-				got.sort(function (a, b) { return order[a.rk] - order[b.rk]; });
+				var on = all.filter(function (a) { return a.got; }).length;
+				var bx = box.closest ? box.closest('.pa-badgebox') : null;
+				if (bx) {
+					var bn = bx.querySelector('.pa-bh-n'), bb = bx.querySelector('.pa-bar b');
+					if (bn) { bn.innerHTML = on + '<i> / ' + all.length + '</i>'; }
+					if (bb) { bb.style.width = Math.round(on / all.length * 100) + '%'; }
+				}
 				box.innerHTML = '';
-				var top = h('div', 'hfm-top'); top.appendChild(h('b', '', String(got.length))); top.appendChild(document.createTextNode(' / ' + all.length + ' hauts-faits obtenus'));
-				box.appendChild(top);
-				if (!got.length) { box.appendChild(h('p', 'hfm-none', 'Aucun haut-fait pour le moment.')); return; }
-				var list = h('div', 'hfm-list');
-				got.forEach(function (a) {
-					var it = h('div', 'hfm-it'); it.title = a.name + ' · ' + a.r.label + (a.date ? ' · ' + a.date : '');
-					it.style.setProperty('--c', a.r.c); it.style.setProperty('--t', a.r.t);
-					var hx = h('span', 'hfm-hex'); hx.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="' + ICON[a.icon] + '"/></svg>';
-					it.appendChild(hx); it.appendChild(h('span', 'hfm-n', a.name)); list.appendChild(it);
+				var GROUPS = [['RP', 'Récompenses RP'], ['IRL', 'Récompenses IRL'], ['IG', 'Récompenses IG'], ['Monde', 'Exploration du monde']];
+				GROUPS.forEach(function (g) {
+					var items = all.filter(function (a) { return a.cat === g[0]; });
+					var n = items.filter(function (a) { return a.got; }).length;
+					var row = h('div', 'pa-brow'), tag = h('div', 'pa-btag');
+					tag.appendChild(h('span', '', g[1]));
+					var em = h('em'); em.appendChild(h('b', '', String(n))); em.appendChild(document.createTextNode(' / ' + items.length + ' obtenus')); tag.appendChild(em);
+					row.appendChild(tag);
+					var grid = h('div', 'pa-bgrid');
+					items.slice().sort(function (a, b) { return (b.got ? 1 : 0) - (a.got ? 1 : 0); }).forEach(function (a) {
+						var bd = h('div', 'pa-badge' + (a.got ? '' : ' pa-badge-off'));
+						bd.title = a.got ? a.name + (a.date ? ' · ' + a.date : '') : (a.secret ? 'Haut-fait secret' : a.name + ' · à débloquer');
+						bd.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="' + ICON[a.icon] + '"/></svg>';
+						grid.appendChild(bd);
+					});
+					row.appendChild(grid); box.appendChild(row);
 				});
-				box.appendChild(list);
 			};
 			x.send();
 		}

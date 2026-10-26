@@ -614,11 +614,25 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 @container hf (max-width:699px){#rv-hf.hf-root,#rv-hf .hf-root{padding:8px 0 30px}#rv-hf .hf-grid{grid-template-columns:1fr}#rv-hf h1{font-size:28px}}
 #rv-hf h1,#rv-hf h3,#rv-hf h4{border:0 !important;background:none !important;padding:0 !important;box-shadow:none !important}
 #rv-hf h1{margin:10px 0 0 !important}#rv-hf .hf-next h3{margin:6px 0 4px !important}
-/* Aperçu hauts-faits sur le profil */
-.rv-pv .rv-hfmini{margin:0 0 14px;color:#a8a193}
-.rv-pv .hfm-top{margin-bottom:16px;font:300 13px 'Poppins',sans-serif;color:#a8a193}.rv-pv .hfm-top b{font:600 26px 'Cinzel',serif;color:#f4efe0}
-.rv-pv .hfm-none{margin:0 0 10px}
-.rv-pv .hfm-list{display:flex;flex-wrap:wrap;gap:10px}
-.rv-pv .hfm-it{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;background:rgba(255,255,255,.05);border-left:2px solid var(--c);font:600 11px 'Montserrat',sans-serif;letter-spacing:1.2px;text-transform:uppercase;color:#f4efe0}
-.rv-pv .hfm-hex{flex:none;width:34px;height:38px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:linear-gradient(150deg,var(--t),var(--c));color:#0b0a08}
-.rv-pv .hfm-hex svg{width:17px;height:17px}
+/* Aperçu hauts-faits sur le profil (maquette) */
+.rv-pv .pa-bh-c{display:flex;align-items:center;gap:16px;min-width:260px}
+.rv-pv .pa-bh-n{font:600 34px/1 'Cinzel',serif;color:var(--pa-line)}
+.rv-pv .pa-bh-n i{font-style:normal;font-size:18px;color:#8f8878}
+.rv-pv .pa-bar{flex:1;height:4px;background:rgba(255,255,255,.1);position:relative}
+.rv-pv .pa-bar b{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--pa-line),var(--pa-tint));box-shadow:0 0 10px var(--pa-glow)}
+.rv-pv .pa-badgerows{padding:8px 30px 8px;display:flex;flex-direction:column}
+.rv-pv .pa-brow{display:flex;align-items:center;gap:26px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.rv-pv .pa-brow:last-child{border-bottom:0}
+.rv-pv .pa-btag{flex:none;width:150px;display:flex;flex-direction:column;gap:7px;padding:0 0 0 14px;border-left:2px solid var(--pa-line)}
+.rv-pv .pa-btag span{font:500 15px/1.2 'Cinzel',serif;letter-spacing:1.5px;text-transform:uppercase;color:#e8e4d8}
+.rv-pv .pa-btag em{font:400 12px 'Poppins',sans-serif;font-style:normal;color:#8f8878}
+.rv-pv .pa-btag em b{color:var(--pa-line);font-weight:600}
+.rv-pv .pa-bgrid{flex:1 1 0;min-width:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,64px));gap:12px;justify-content:start}
+.rv-pv .pa-badge{position:relative;aspect-ratio:1/1.1;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:linear-gradient(150deg,var(--pa-tint),var(--pa-line));color:#0b0a08;transition:transform .2s,filter .2s;cursor:default}
+.rv-pv .pa-badge svg{position:relative;filter:drop-shadow(0 1px 0 rgba(255,255,255,.3))}
+.rv-pv .pa-badge:hover{transform:translateY(-3px) scale(1.08)}
+.rv-pv .pa-badge-off{background:#1b1812;color:#4d473a}
+.rv-pv .pa-badge-off:hover{transform:none}
+.rv-pv .pa-badgefoot{padding:0 30px 26px;font:300 14px 'Poppins',sans-serif}
+.rv-pv .pa-badgefoot a{color:var(--pa-line);border-bottom:1px solid rgba(255,255,255,.2)}
+@media (max-width:699px){.rv-pv .pa-brow{flex-direction:column;align-items:flex-start;gap:14px}.rv-pv .pa-btag{width:auto}.rv-pv .pa-badgerows,.rv-pv .pa-badgefoot{padding-left:18px;padding-right:18px}}

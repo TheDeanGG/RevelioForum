@@ -740,7 +740,12 @@
 			var nq = (location.search.match(/[?&]n=([^&]+)/) || [])[1], name = '';
 			try { if (nq) { name = decodeURIComponent(nq.replace(/\+/g, ' ')); } } catch (e) { }
 			if (!name && !qs && ud.username) { name = String(ud.username); }
-			if (!name) { var t = (doc.title || '').split(' - ')[0].replace(/^Profil de\s*/i, '').replace(/^Voir le profil\s*:?\s*/i, ''); name = t || 'ce membre'; }
+			if (!name) {
+				var sl = doc.querySelector('a[href^="/spa/"], a[href^="/st/"], a[href^="/sta/"]');
+				if (sl) { try { name = decodeURIComponent((sl.getAttribute('href') || '').replace(/^\/(spa|st|sta)\//, '').replace(/\+/g, ' ').replace(/\?.*$/, '')); } catch (e) { } }
+			}
+			if (!name && !qs && ud.username) { name = String(ud.username); }
+			if (!name) { name = 'ce membre'; }
 			render(build(f, name), name, f, { cat: 0, st: 0 });
 		};
 		xhr.onerror = function () { root.innerHTML = ''; root.appendChild(h('div', 'hf-empty', 'Impossible de charger le profil.')); };

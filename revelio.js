@@ -944,6 +944,7 @@
 	var FCREST = ['Poudlard-4-maisons.png', 'Poudlard-4-maisons.png', 'Ministere-de-la-Magie.png', 'sor.png', 'mag.png', 'mol.png'];
 	var BASE = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
 	(function () { var q = document.querySelector('script[src*="revelio.js"]'); if (q) { BASE = q.getAttribute('src').replace(/revelio\.js.*$/, ''); } })();
+	var FTAG = ['Élève', 'Personnel', 'Ministère', 'Sorcier libre', 'Mage noir', 'Moldu ou Cracmol'], FDESC = ['Dès 18 ans · choisis ta maison, la Répartition est faite par le staff.', 'Professeur, médicomage, concierge… tu fais vivre le château.', 'Auror, Département des Mystères… tu fais respecter la loi.', 'Apothicaire, journaliste, guérisseur… sans allégeance au château.', 'Espion, recruteur, chasseur de prime… tu sers l’ombre.', 'Un regard extérieur sur un monde qu’on ne te montre pas.'];
 	var HOUSES = [['Gryffondor', '#d65a6b', 'Courage'], ['Serdaigle', '#6fb0cf', 'Sagesse'], ['Serpentard', '#5fc4a0', 'Ambition'], ['Poufsouffle', '#d9b650', 'Loyauté']];
 	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
@@ -970,25 +971,27 @@
 		function field(id, lab, ph, req, tag) { return '<div><label class="pf-lab" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><input id="pf-' + id + '" class="pf-in" type="text" placeholder="' + esc(ph) + '"></div>'; }
 		function area(id, lab, ph, req, cls) { return '<label class="pf-lab' + (cls === 'gap' ? ' pf-gap' : '') + '" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><textarea id="pf-' + id + '" class="pf-in pf-ta' + (cls === 'tall' ? ' tall' : '') + '" placeholder="' + esc(ph) + '"></textarea>'; }
 		function sec(n, t, sub, inner, extra) { return '<div class="pf-sec"><h2 class="pf-h"><i><b>' + n + '</b></i>' + t + (extra || '') + '</h2><p class="pf-sub">' + sub + '</p>' + inner + '</div>'; }
-		var html = '<div class="pf-root"><div class="pf-main"><form class="pf-box" onsubmit="return false">' +
-			sec('I', 'Identité', 'L’essentiel de ton personnage, tel qu’il apparaîtra dans sa fiche.',
+		var html = '<div class="pf-root"><div class="pf-head" style="background-image:linear-gradient(180deg,rgba(11,10,8,.55),rgba(11,10,8,.92)),url(' + BASE + 'img/lieux/bibliotheque.jpg)"><span class="pf-eye">Le Choixpeau magique</span><h1>Nouvelle <em>présentation</em></h1><p class="pf-tag">Raconte-nous qui franchit les portes de Poudlard.</p></div><div class="pf-main"><form class="pf-box" onsubmit="return false">' +
+			sec('I', 'Quel personnage veux-tu incarner ?', 'C’est le premier choix, et il décide du reste de ta fiche. Tu pourras créer d’autres personnages plus tard.',
+				'<div class="pf-types" data-g="fac" role="group" aria-label="Type de personnage">' + FACS.map(function (f, i) { return '<button type="button" class="pf-ty' + (i ? '' : ' on') + '" style="--c:' + f[1] + '" data-i="' + i + '"><span class="ck"></span><img src="' + BASE + 'img/ecussons/' + FCREST[i] + '" alt=""><strong>' + f[0] + '</strong><em>' + FTAG[i] + '</em><small>' + FDESC[i] + '</small></button>'; }).join('') + '</div>') +
+			sec('II', 'Identité', 'L’essentiel de ton personnage, tel qu’il apparaîtra dans sa fiche.',
 				'<div class="pf-row3">' + field('n', 'Prénom', 'Elijah', 1) + field('p', 'Nom', 'Gaunt', 1) + field('a', 'Alias', 'Le Corbeau') + '</div>' +
 				'<div class="pf-row3 pf-gap">' + field('ag', 'Âge', '18 à 25 ans', 1) + field('b', 'Date et lieu de naissance', '12 mars 1978 · Londres') + field('o', 'Origine', 'Famille de sorciers') + '</div>' +
+				'<div class="pf-gap pf-cit"><label class="pf-lab" for="pf-ci">Citation</label><textarea id="pf-ci" class="pf-in pf-ta" placeholder="Une phrase qui te ressemble, dite par ton personnage ou à son sujet…"></textarea><p class="pf-hint">Facultatif. Elle s’affiche en grand en tête de ta fiche.</p></div>' +
 				'<div class="pf-gap"><span class="pf-lab">Statut du sang <em>*</em></span><div class="pf-pills" data-g="blood" id="pf-bloods"></div></div>') +
-			sec('II', 'Allégeance et rang', 'Élève à Poudlard (18 ans minimum), membre du personnel, du Ministère, sorcier libre, mage noir ou sans pouvoirs magiques : choisis ta place dans ce monde.',
-				'<span class="pf-lab">Faction <em>*</em></span><div class="pf-pills" data-g="fac">' + FACS.map(function (f, i) { return '<button type="button" class="pf-pill' + (i ? '' : ' on') + '" style="--c:' + f[1] + '" data-i="' + i + '"><img class="pf-fc2" src="' + BASE + 'img/ecussons/' + FCREST[i] + '" alt="">' + f[0] + '</button>'; }).join('') + '</div>' +
+			sec('III', 'Rang et maison', 'Les détails qui dépendent du type de personnage choisi plus haut.',
 				'<div class="pf-gap" id="pf-hwrap"><span class="pf-lab" id="pf-hlab">Maison <em>*</em></span><div class="pf-houses" data-g="house">' + HOUSES.map(function (h, i) { return '<button type="button" class="pf-house' + (i ? '' : ' on') + '" style="--c:' + h[1] + '" data-i="' + i + '"><span class="sh"></span><b>' + h[0] + '</b>' + h[2] + '</button>'; }).join('') + '</div></div>' +
 				'<div class="pf-row pf-gap"><div id="pf-ywrap">' + field('y', 'Année', 'Première année') + '</div>' + field('k', 'Karma', 'Neutre, bienveillant…') + '</div>' +
 				'<div class="pf-row pf-gap" id="pf-fnwrap"><div><label class="pf-lab" for="pf-fn" id="pf-fnlab">Fonction</label><input id="pf-fn" class="pf-in" type="text" placeholder=""></div>' + field('lv', 'Lieu de vie', 'Ex : Pré-au-Lard, Londres, un manoir en Écosse') + '</div>') +
-			sec('III', 'Faceclaim', 'Le visage de ton personnage. Tu es responsable des images que tu importes.',
+			sec('IV', 'Faceclaim', 'Le visage de ton personnage. Tu es responsable des images que tu importes.',
 				'<div class="pf-row">' + field('f', 'Faceclaim', 'Nom de l’acteur ou de l’actrice', 1) + field('u', 'Lien de l’image', 'https://…') + '</div><p class="pf-hint">Un faceclaim par personnage. Il apparaît dans le Registre des sorciers.</p>') +
-			sec('IV', 'Physique et caractère', 'Quelques lignes suffisent. Ce qu’on voit, puis ce qu’on devine.',
+			sec('V', 'Physique et caractère', 'Quelques lignes suffisent. Ce qu’on voit, puis ce qu’on devine.',
 				area('ph', 'Physique', 'Taille, silhouette, signes distinctifs…') + area('c', 'Caractère', 'Qualités, défauts, peurs, manies…', 1, 'gap') + '<div class="pf-gap">' + field('m', 'Motivation', 'Ce qui le pousse à franchir les portes de Poudlard') + '</div>') +
-			sec('V', 'Histoire', 'Son passé, sa famille, son rapport au monde de Grindelwald. Minimum 400 mots.',
+			sec('VI', 'Histoire', 'Son passé, sa famille, son rapport au monde de Grindelwald. Minimum 400 mots.',
 				'<div id="pf-i2wrap" style="display:none;margin-bottom:18px">' + field('i2', 'Image d’illustration', 'https://… (un lieu, un objet, une scène)') + '<p class="pf-hint">Facultatif. Cette image est affichée au-dessus de ton histoire, pour personnaliser ta fiche.</p></div>' +
 				area('h', 'Histoire', 'Il était une fois…', 1, 'tall') + '<p class="pf-wc" id="pf-wc">0 / 400 mots</p>',
 				'<button type="button" class="pf-ico" id="pf-i2btn" title="Ajouter une image d’illustration" aria-label="Ajouter une image d’illustration"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="1.6"/><path d="M3 17l5-5 4 4 3-3 6 6"/></svg></button>') +
-			sec('VI', 'Derrière le personnage', 'Quelques mots sur toi, pour que le staff et les joueurs te connaissent.',
+			sec('VII', 'Derrière le personnage', 'Quelques mots sur toi, pour que le staff et les joueurs te connaissent.',
 				'<div class="pf-row">' + field('pr', 'Pseudo / prénom', 'Comment t’appeler') + field('fr', 'Fréquence de jeu', 'Ex : une réponse par semaine') + '</div>' +
 				'<div class="pf-gap">' + field('co', 'Comment as-tu découvert Revelio ?', 'Facultatif') + '</div>' +
 				'<div class="pf-gap"><span class="pf-lab">Règlement <em>*</em></span><div class="pf-pills"><button type="button" class="pf-pill" id="pf-reg"><i></i>J’ai lu et j’accepte le règlement</button></div></div>') +
@@ -1046,6 +1049,7 @@
 			var f = FACS[S.fac], h = HOUSES[S.house], c = f[1], t = '', sg = bl()[S.blood];
 			t += '[center][size=30][b][color=' + c + ']' + fullName().toUpperCase() + '[/color][/b][/size]\n';
 			if (v('a')) { t += '[i]« ' + v('a') + ' »[/i]\n'; }
+			if (v('ci')) { t += '[size=15][i]“' + v('ci').replace(/\s*\n+\s*/g, ' ') + '”[/i][/size]\n'; }
 			t += '[size=13][color=#a8a193]' + f[0] + (h ? ' · ' + h[0] : '') + ' · ' + sg + '[/color][/size]\n';
 			if (v('u')) { t += '\n[img]' + v('u') + '[/img]\n'; }
 			t += '[i]' + v('f') + '[/i][/center]\n\n';
@@ -1128,8 +1132,8 @@
 		var lines = plain(clone.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(div|p|li)>/gi, '\n')).replace(/ /g, ' ').split('\n').map(function (l) { return l.replace(/^\s+|\s+$/g, ''); });
 		var idx = -1; for (i = 0; i < lines.length; i++) { if (lines[i].toUpperCase() === 'IDENTITÉ') { idx = i; break; } }
 		if (idx < 0) { return; }
-		var head = lines.slice(0, idx).filter(Boolean), alias = '', tags = '', fc = '', nm = head[0] || '';
-		head.slice(1).forEach(function (h) { if (h.charAt(0) === '«') { alias = h; } else if (h.indexOf(' · ') > -1) { tags = h; } else { fc = h; } });
+		var head = lines.slice(0, idx).filter(Boolean), cit = '', alias = '', tags = '', fc = '', nm = head[0] || '';
+		head.slice(1).forEach(function (h) { if (h.charAt(0) === '“' || h.charAt(0) === '"') { cit = h.replace(/^[“"]\s*/, '').replace(/\s*[”"]$/, ''); } else if (h.charAt(0) === '«') { alias = h.replace(/^«\s*/, '').replace(/\s*»$/, ''); } else if (h.indexOf(' · ') > -1) { tags = h; } else { fc = h; } });
 		var S = {}, cur = null, buf = [];
 		function flush() { if (cur) { S[cur] = buf.slice(); } buf = []; }
 		for (i = idx; i < lines.length; i++) { var up = lines[i].toUpperCase(); if (HEADS.indexOf(up) > -1) { flush(); cur = up; } else { buf.push(lines[i]); } }
@@ -1156,8 +1160,9 @@
 		var edit = post.querySelector('a[href*="mode=editpost"]'), quote = post.querySelector('a[href*="mode=quote"]');
 		var h = '<article class="pp-card" style="--c:' + H[0] + '">' + (crest ? '<img class="pp-wm" src="' + esc(crest) + '" alt="">' : '') + '<div class="pp-stat" style="--s:' + ST[1] + '" title="' + esc(ST[3]) + '"><div class="ic"><svg viewBox="0 0 24 24"><path d="' + ST[2] + '"/></svg></div><div><small>Décision du staff</small><strong>' + ST[0] + '</strong></div></div>' +
 			'<header class="pp-hero"><div class="pp-por">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span class="ini">' + esc(((first || ' ').charAt(0) + (last || ' ').charAt(0)).toUpperCase()) + '</span>') + '<i></i><i></i>' + (fc ? '<em>' + esc(fc) + '</em>' : '') + '</div>' +
-			'<div class="pp-id"><div class="pp-tags">' + tg.join('') + '</div><h2 class="pp-name"><span>' + esc(first) + '</span>' + esc(last) + '</h2>' + (alias ? '<p class="pp-alias">' + esc(alias) + '</p>' : '') +
+			'<div class="pp-id"><div class="pp-tags">' + tg.join('') + '</div><h2 class="pp-name"><span>' + esc(first) + '</span>' + esc(last) + '</h2>' + (alias ? '<p class="pp-alias"><small>Alias</small>' + esc(alias) + '</p>' : '') +
 			(mot ? '<div class="pp-quote"><small>Motivation</small>' + esc(mot) + '</div>' : '') + '</div></header>' +
+			(cit ? '<div class="pp-cit"><p>' + esc(cit) + '</p><footer>' + esc((first + ' ' + last).replace(/^\s+|\s+$/g, '')) + '</footer></div>' : '') +
 			(facts.length ? '<div class="pp-facts">' + facts.map(function (f) { return '<div><span>' + f[0] + '</span><b>' + esc(f[1]) + '</b></div>'; }).join('') + '</div>' : '') +
 			((phy || car) ? '<div class="pp-sec"><div class="pp-two">' + (phy ? '<div><h3 class="pp-h">Physique</h3><div class="pp-tx">' + paras(phy) + '</div></div>' : '') + (car ? '<div><h3 class="pp-h">Caractère</h3><div class="pp-tx">' + paras(car) + '</div></div>' : '') + '</div></div>' : '') +
 			(hist ? '<div class="pp-sec"><h3 class="pp-h">Histoire</h3>' + '<div class="pp-hist' + (img2 ? ' has' : '') + '">' + (img2 ? '<figure class="pp-ill"><img src="' + esc(img2) + '" alt=""></figure>' : '') + '<div class="pp-spo"><button type="button" class="pp-spt" aria-expanded="false"><i class="d"></i><b>Spoiler</b><em>Histoire de ' + esc((first + ' ' + last).replace(/^\s+|\s+$/g, '')) + '</em><span>' + words(hist) + ' mots · cliquer pour lire</span></button><div class="pp-spb" style="display:none"><div class="pp-tx">' + paras(hist) + '</div><button type="button" class="pp-btn pp-close" style="margin-top:20px">Fermer le spoiler</button></div></div></div></div>' : '') +

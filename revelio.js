@@ -945,6 +945,7 @@
 	var BASE = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
 	(function () { var q = document.querySelector('script[src*="revelio.js"]'); if (q) { BASE = q.getAttribute('src').replace(/revelio\.js.*$/, ''); } })();
 	var FTAG = ['Élève', 'Personnel', 'Ministère', 'Sorcier libre', 'Mage noir', 'Moldu ou Cracmol'], FDESC = ['Dès 18 ans · choisis ta maison, la Répartition est faite par le staff.', 'Professeur, médicomage, concierge… tu fais vivre le château.', 'Auror, Département des Mystères… tu fais respecter la loi.', 'Apothicaire, journaliste, guérisseur… sans allégeance au château.', 'Espion, recruteur, chasseur de prime… tu sers l’ombre.', 'Un regard extérieur sur un monde qu’on ne te montre pas.'];
+	var ROLES = [[], ['Professeur', 'Médicomage', 'Concierge', 'Bibliothécaire', 'Directeur de maison', 'Autre'], ['Auror', 'Ministre de la Magie', 'Langue-de-Plomb', 'Département des Mystères', 'Magenmagot', 'Régulation des créatures', 'Autre'], ['Apothicaire', 'Journaliste', 'Guérisseur', 'Chasseur de reliques', 'Autre'], ['Espion', 'Recruteur', 'Chasseur de prime', 'Autre'], ['Libraire', 'Médecin', 'Journaliste', 'Autre']];
 	var HOUSES = [['Gryffondor', '#d65a6b', 'Courage'], ['Serdaigle', '#6fb0cf', 'Sagesse'], ['Serpentard', '#5fc4a0', 'Ambition'], ['Poufsouffle', '#d9b650', 'Loyauté']];
 	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
@@ -967,7 +968,7 @@
 		var box = document.getElementById('rv-pres');
 		if (!box || box.getAttribute('data-ok')) { return; }
 		box.setAttribute('data-ok', '1');
-		var S = { blood: 0, fac: 0, house: 0, reg: false };
+		var S = { blood: 0, fac: 0, house: 0, reg: false, role: 0 };
 		function field(id, lab, ph, req, tag) { return '<div><label class="pf-lab" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><input id="pf-' + id + '" class="pf-in" type="text" placeholder="' + esc(ph) + '"></div>'; }
 		function area(id, lab, ph, req, cls) { return '<label class="pf-lab' + (cls === 'gap' ? ' pf-gap' : '') + '" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><textarea id="pf-' + id + '" class="pf-in pf-ta' + (cls === 'tall' ? ' tall' : '') + '" placeholder="' + esc(ph) + '"></textarea>'; }
 		function sec(n, t, sub, inner, extra) { return '<div class="pf-sec"><h2 class="pf-h"><i><b>' + n + '</b></i>' + t + (extra || '') + '</h2><p class="pf-sub">' + sub + '</p>' + inner + '</div>'; }
@@ -980,6 +981,7 @@
 				'<div class="pf-gap pf-cit"><label class="pf-lab" for="pf-ci">Citation</label><textarea id="pf-ci" class="pf-in pf-ta" placeholder="Une phrase qui te ressemble, dite par ton personnage ou à son sujet…"></textarea><p class="pf-hint">Facultatif. Elle s’affiche en grand en tête de ta fiche.</p></div>' +
 				'<div class="pf-gap"><span class="pf-lab">Statut du sang <em>*</em></span><div class="pf-pills" data-g="blood" id="pf-bloods"></div></div>') +
 			sec('III', 'Rang et maison', 'Les détails qui dépendent du type de personnage choisi plus haut.',
+				'<div id="pf-rwrap" style="margin-bottom:6px"><span class="pf-lab">Quel rôle ? <em>*</em></span><div class="pf-pills" data-g="role" id="pf-roles"></div></div>' +
 				'<div class="pf-gap" id="pf-hwrap"><span class="pf-lab" id="pf-hlab">Maison <em>*</em></span><div class="pf-houses" data-g="house">' + HOUSES.map(function (h, i) { return '<button type="button" class="pf-house' + (i ? '' : ' on') + '" style="--c:' + h[1] + '" data-i="' + i + '"><span class="sh"></span><b>' + h[0] + '</b>' + h[2] + '</button>'; }).join('') + '</div></div>' +
 				'<div class="pf-row pf-gap"><div id="pf-ywrap">' + field('y', 'Année', 'Première année') + '</div>' + field('k', 'Karma', 'Neutre, bienveillant…') + '</div>' +
 				'<div class="pf-row pf-gap" id="pf-fnwrap"><div><label class="pf-lab" for="pf-fn" id="pf-fnlab">Fonction</label><input id="pf-fn" class="pf-in" type="text" placeholder=""></div>' + field('lv', 'Lieu de vie', 'Ex : Pré-au-Lard, Londres, un manoir en Écosse') + '</div>') +
@@ -1004,13 +1006,15 @@
 			'</aside></div></div>';
 		box.innerHTML = html;
 		function $(id) { return document.getElementById('pf-' + id); }
-		var MUG = ['Moldu', 'Cracmol'], FN = [['', ''], ['Fonction', 'Professeur de Botanique, infirmière, concierge…'], ['Département et fonction', 'Auror, Département des Mystères…'], ['Profession ou activité', 'Apothicaire, journaliste, guérisseur…'], ['Rôle', 'Espion, recruteur, chasseur de prime…'], ['Profession', 'Libraire, médecin, journaliste…']];
+		var MUG = ['Moldu', 'Cracmol'], FN = [['', ''], ['Précision', 'Ex : Botanique, infirmerie nord…'], ['Précision', 'Ex : section des enquêtes, grade…'], ['Précision', 'Ex : Gazette du Sorcier, Pré-au-Lard…'], ['Précision', 'Ex : réseau, zone d’action…'], ['Précision', 'Ex : librairie du Londres moldu…']];
 		function bl() { return S.fac === 5 ? MUG : BLOODS.slice(0, 3); }
 		function applyFac() {
 			var stu = S.fac === 0, house = S.fac <= 1;
 			$('hwrap').style.display = house ? '' : 'none'; $('ywrap').style.display = stu ? '' : 'none'; $('fnwrap').style.display = stu ? 'none' : '';
 			$('hlab').innerHTML = stu ? 'Maison <em>*</em>' : 'Maison <span style="text-transform:none;letter-spacing:0;font-weight:300">(facultatif)</span>';
-			$('fnlab').innerHTML = (FN[S.fac][0] || 'Fonction') + (stu ? '' : ' <em>*</em>'); $('fn').placeholder = FN[S.fac][1];
+			$('fnlab').innerHTML = FN[S.fac][0] || 'Précision'; $('fn').placeholder = FN[S.fac][1];
+			$('rwrap').style.display = stu ? 'none' : ''; if (S.role >= ROLES[S.fac].length) { S.role = 0; }
+			$('roles').innerHTML = ROLES[S.fac].map(function (r, i) { return '<button type="button" class="pf-pill' + (i === S.role ? ' on' : '') + '" data-i="' + i + '"><i></i>' + r + '</button>'; }).join('');
 			$('ag').placeholder = stu ? '18 à 25 ans' : 'Son âge';
 			var B = bl(); if (S.blood >= B.length) { S.blood = 0; }
 			$('bloods').innerHTML = B.map(function (b, i) { return '<button type="button" class="pf-pill' + (i === S.blood ? ' on' : '') + '" data-i="' + i + '">' + b + '</button>'; }).join('');
@@ -1025,7 +1029,7 @@
 			if (!v('n') || !v('p')) { m.push('prénom et nom'); }
 			if (!v('ag')) { m.push('âge'); }
 			if (S.fac === 0 && S.house < 0) { m.push('maison'); }
-			if (S.fac !== 0 && !v('fn')) { m.push((FN[S.fac][0] || 'fonction').toLowerCase()); }
+			
 			if (!v('f')) { m.push('faceclaim'); }
 			if (!v('c')) { m.push('caractère'); }
 			if (words(v('h')) < 400) { m.push('histoire (400 mots minimum)'); }
@@ -1038,7 +1042,7 @@
 			$('pv').style.setProperty('--c', f[1]);
 			var cr = (S.house >= 0 && S.fac <= 1) ? BASE + 'img/ecussons/' + h[1] + '.png' : BASE + 'img/ecussons/' + FCREST[S.fac];
 			$('pv').innerHTML = '<img class="pf-wm2" src="' + cr + '" alt=""><div class="av"><i></i><b>' + esc(ini) + '</b></div><strong>' + esc(nm) + '</strong>' + (al ? '<small>« ' + esc(al) + ' »</small>' : '') +
-				'<ul><span>Faction</span><li>' + f[0] + '</li>' + (S.house >= 0 ? '<span>Maison</span><li>' + h[0] + '</li>' : '') + (S.fac !== 0 && v('fn') ? '<span>Fonction</span><li>' + esc(v('fn')) + '</li>' : '') + '<span>Sang</span><li>' + bl()[S.blood] + '</li><span>Statut</span><li>En attente de validation</li></ul>';
+				'<ul><span>Faction</span><li>' + f[0] + '</li>' + (S.house >= 0 ? '<span>Maison</span><li>' + h[0] + '</li>' : '') + (S.fac !== 0 ? '<span>Rôle</span><li>' + esc(ROLES[S.fac][S.role]) + '</li>' : '') + '<span>Sang</span><li>' + bl()[S.blood] + '</li><span>Statut</span><li>En attente de validation</li></ul>';
 			var w = words(v('h')), wc = $('wc'); wc.textContent = w + ' / 400 mots'; wc.className = 'pf-wc' + (w >= 400 ? ' ok' : '');
 			var ck = [[v('n') && v('p') && v('ag'), 'Identité renseignée'], [S.fac !== 0 || S.house >= 0, S.fac === 0 ? 'Faction et maison choisies' : 'Faction choisie'], [v('f'), 'Faceclaim ajouté'], [v('c'), 'Caractère décrit'], [w >= 400, 'Histoire de 400 mots minimum'], [S.reg, 'Règlement accepté']];
 			var n = 0; $('ck').innerHTML = ck.map(function (c) { if (c[0]) { n++; } return '<li' + (c[0] ? ' class="ok"' : '') + '>' + c[1] + '</li>'; }).join('');
@@ -1056,7 +1060,7 @@
 			t += '[b][color=' + c + ']IDENTITÉ[/color][/b]\n';
 			t += line('Prénom', v('n')) + line('Nom', v('p')) + line('Alias', v('a')) + line('Âge', v('ag')) + line('Naissance', v('b')) + line('Origine', v('o')) + line('Statut du sang', sg);
 			t += '\n[b][color=' + c + ']ALLÉGEANCE ET RANG[/color][/b]\n';
-			t += line('Faction', f[0]) + (h ? line('Maison', h[0]) : '') + (S.fac === 0 ? line('Année', v('y')) : line('Fonction', v('fn')) + line('Lieu de vie', v('lv'))) + line('Karma', v('k')) + line('Faceclaim', v('f'));
+			t += line('Faction', f[0]) + (h ? line('Maison', h[0]) : '') + (S.fac === 0 ? line('Année', v('y')) : line('Rôle', ROLES[S.fac][S.role]) + line('Précision', v('fn')) + line('Lieu de vie', v('lv'))) + line('Karma', v('k')) + line('Faceclaim', v('f'));
 			if (v('ph')) { t += '\n[b][color=' + c + ']PHYSIQUE[/color][/b]\n' + v('ph') + '\n'; }
 			t += '\n[b][color=' + c + ']CARACTÈRE[/color][/b]\n' + v('c') + '\n';
 			if (v('m')) { t += '\n[b][color=' + c + ']MOTIVATION[/color][/b]\n' + v('m') + '\n'; }
@@ -1072,7 +1076,7 @@
 			if (g) {
 				var iv = parseInt(b.getAttribute('data-i'), 10);
 				if (g === 'house' && S.fac !== 0 && S.house === iv) { S.house = -1; } else { S[g] = iv; }
-				if (g === 'fac') { applyFac(); }
+				if (g === 'fac') { S.role = 0; applyFac(); }
 				{ Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = x.className.replace(/\bon\b/, '').replace(/\s+$/, ''); }); if (S[g] === iv) { b.className += ' on'; } }
 				update(); return;
 			}
@@ -1153,8 +1157,8 @@
 			: /Refus/i.test(path) ? ['Refusée', '#e08a8a', 'M12 8v5M12 17h.01M12 3l10 18H2z', 'Cette fiche n’a pas été retenue. Le staff explique pourquoi dans les réponses.']
 			: /Abandon/i.test(path) ? ['Abandonnée', '#8f8878', 'M6 6l12 12M18 6L6 18', 'Cette fiche n’est plus suivie par son joueur.']
 			: ['En attente', '#d9b36a', 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z', 'Cette fiche attend la relecture d’un membre du staff.'];
-		var tg = []; if (al['Faction']) { tg.push('<span class="pp-tag c">' + esc(al['Faction']) + '</span>'); } if (al['Maison']) { tg.push('<span class="pp-tag c">' + esc(al['Maison']) + '</span>'); } if (id['Statut du sang']) { tg.push('<span class="pp-tag">' + esc(id['Statut du sang']) + '</span>'); } if (id['Âge']) { tg.push('<span class="pp-tag">' + esc(id['Âge']) + '</span>'); }
-		var facts = [['Âge', id['Âge']], ['Naissance', id['Naissance']], ['Origine', id['Origine']], ['Statut du sang', id['Statut du sang']], ['Faction', al['Faction']], ['Maison', al['Maison']], ['Année', al['Année']], ['Fonction', al['Fonction']], ['Lieu de vie', al['Lieu de vie']], ['Karma', al['Karma']]].filter(function (f) { return f[1]; });
+		var tg = []; if (al['Faction']) { tg.push('<span class="pp-tag c">' + esc(al['Faction']) + '</span>'); } if (al['Rôle']) { tg.push('<span class="pp-tag c">' + esc(al['Rôle']) + '</span>'); } if (al['Maison']) { tg.push('<span class="pp-tag c">' + esc(al['Maison']) + '</span>'); } if (id['Statut du sang']) { tg.push('<span class="pp-tag">' + esc(id['Statut du sang']) + '</span>'); } if (id['Âge']) { tg.push('<span class="pp-tag">' + esc(id['Âge']) + '</span>'); }
+		var facts = [['Âge', id['Âge']], ['Naissance', id['Naissance']], ['Origine', id['Origine']], ['Statut du sang', id['Statut du sang']], ['Faction', al['Faction']], ['Maison', al['Maison']], ['Année', al['Année']], ['Rôle', al['Rôle']], ['Fonction', al['Fonction']], ['Précision', al['Précision']], ['Lieu de vie', al['Lieu de vie']], ['Karma', al['Karma']]].filter(function (f) { return f[1]; });
 		var mot = txt('MOTIVATION'), phy = txt('PHYSIQUE'), car = txt('CARACTÈRE');
 		var author = post.querySelector('.postprofile .author a, .postprofile dt a, a.username, .postprofile a[href^="/u"]');
 		var edit = post.querySelector('a[href*="mode=editpost"]'), quote = post.querySelector('a[href*="mode=quote"]');

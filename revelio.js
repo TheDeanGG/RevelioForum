@@ -740,7 +740,7 @@
 			var nq = (location.search.match(/[?&]n=([^&]+)/) || [])[1], name = '';
 			try { if (nq) { name = decodeURIComponent(nq.replace(/\+/g, ' ')); } } catch (e) { }
 			if (!name && !qs && ud.username) { name = String(ud.username); }
-			if (!name) { var hn = doc.querySelector('h1 .usr_grp_clr, h1 strong, #profile-advanced-details h1'); if (hn) { name = hn.textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, ''); } }
+			if (!name) { var hn = (doc.querySelector('h1 .usr_grp_clr') || doc.querySelector('h1 strong') || doc.querySelector('#profile-advanced-details h1')); if (hn) { name = hn.textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '').replace(/^(tout|toutes?) (à|a) propos de\s*/i, '').replace(/^(profil|à propos) de\s*/i, ''); } }
 			if (!name) {
 				var sl = doc.querySelector('a[href^="/spa/"], a[href^="/st/"], a[href^="/sta/"]');
 				if (sl) { try { name = decodeURIComponent((sl.getAttribute('href') || '').replace(/^\/(spa|st|sta)\//, '').replace(/\+/g, ' ').replace(/\?.*$/, '')); } catch (e) { } }

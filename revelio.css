@@ -941,3 +941,11 @@ body.rv-fp .rv-vt{grid-template-columns:minmax(0,1fr) !important}
 #rv-pres .pf-wm2{position:absolute;right:-18px;top:6px;width:150px;opacity:.12;pointer-events:none}
 #rv-pres .pf-pv{overflow:hidden}
 #main-content .rv-fiche .pp-por .ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:500 54px 'Cinzel',serif;color:rgba(244,239,224,.5)}
+#rv-pres .pf-h{position:relative}
+#rv-pres .pf-ico{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.16);color:#a8a193;-webkit-appearance:none;appearance:none;box-shadow:none;border-radius:0;transition:all .2s}
+#rv-pres .pf-ico svg{width:17px;height:17px}
+#rv-pres .pf-ico:hover,#rv-pres .pf-ico.on{border-color:#d9b36a;color:#f0d28f;background:rgba(217,179,106,.1)}
+#rv-pres .pf-h:after{display:none}
+#main-content .rv-fiche .pp-ill{position:relative;margin:0 0 18px;height:260px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(217,179,106,.3)}
+#main-content .rv-fiche .pp-ill img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.95)}
+#main-content .rv-fiche .pp-ill:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(11,10,8,.6));pointer-events:none}

@@ -969,7 +969,7 @@
 		var S = { blood: 0, fac: 0, house: 0, reg: false };
 		function field(id, lab, ph, req, tag) { return '<div><label class="pf-lab" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><input id="pf-' + id + '" class="pf-in" type="text" placeholder="' + esc(ph) + '"></div>'; }
 		function area(id, lab, ph, req, cls) { return '<label class="pf-lab' + (cls === 'gap' ? ' pf-gap' : '') + '" for="pf-' + id + '">' + lab + (req ? ' <em>*</em>' : '') + '</label><textarea id="pf-' + id + '" class="pf-in pf-ta' + (cls === 'tall' ? ' tall' : '') + '" placeholder="' + esc(ph) + '"></textarea>'; }
-		function sec(n, t, sub, inner) { return '<div class="pf-sec"><h2 class="pf-h"><i><b>' + n + '</b></i>' + t + '</h2><p class="pf-sub">' + sub + '</p>' + inner + '</div>'; }
+		function sec(n, t, sub, inner, extra) { return '<div class="pf-sec"><h2 class="pf-h"><i><b>' + n + '</b></i>' + t + (extra || '') + '</h2><p class="pf-sub">' + sub + '</p>' + inner + '</div>'; }
 		var html = '<div class="pf-root"><div class="pf-main"><form class="pf-box" onsubmit="return false">' +
 			sec('I', 'Identité', 'L’essentiel de ton personnage, tel qu’il apparaîtra dans sa fiche.',
 				'<div class="pf-row3">' + field('n', 'Prénom', 'Elijah', 1) + field('p', 'Nom', 'Gaunt', 1) + field('a', 'Alias', 'Le Corbeau') + '</div>' +
@@ -985,7 +985,9 @@
 			sec('IV', 'Physique et caractère', 'Quelques lignes suffisent. Ce qu’on voit, puis ce qu’on devine.',
 				area('ph', 'Physique', 'Taille, silhouette, signes distinctifs…') + area('c', 'Caractère', 'Qualités, défauts, peurs, manies…', 1, 'gap') + '<div class="pf-gap">' + field('m', 'Motivation', 'Ce qui le pousse à franchir les portes de Poudlard') + '</div>') +
 			sec('V', 'Histoire', 'Son passé, sa famille, son rapport au monde de Grindelwald. Minimum 400 mots.',
-				area('h', 'Histoire', 'Il était une fois…', 1, 'tall') + '<p class="pf-wc" id="pf-wc">0 / 400 mots</p>') +
+				'<div id="pf-i2wrap" style="display:none;margin-bottom:18px">' + field('i2', 'Image d’illustration', 'https://… (un lieu, un objet, une scène)') + '<p class="pf-hint">Facultatif. Cette image est affichée au-dessus de ton histoire, pour personnaliser ta fiche.</p></div>' +
+				area('h', 'Histoire', 'Il était une fois…', 1, 'tall') + '<p class="pf-wc" id="pf-wc">0 / 400 mots</p>',
+				'<button type="button" class="pf-ico" id="pf-i2btn" title="Ajouter une image d’illustration" aria-label="Ajouter une image d’illustration"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="1.6"/><path d="M3 17l5-5 4 4 3-3 6 6"/></svg></button>') +
 			sec('VI', 'Derrière le personnage', 'Quelques mots sur toi, pour que le staff et les joueurs te connaissent.',
 				'<div class="pf-row">' + field('pr', 'Pseudo / prénom', 'Comment t’appeler') + field('fr', 'Fréquence de jeu', 'Ex : une réponse par semaine') + '</div>' +
 				'<div class="pf-gap">' + field('co', 'Comment as-tu découvert Revelio ?', 'Facultatif') + '</div>' +
@@ -1054,6 +1056,7 @@
 			if (v('ph')) { t += '\n[b][color=' + c + ']PHYSIQUE[/color][/b]\n' + v('ph') + '\n'; }
 			t += '\n[b][color=' + c + ']CARACTÈRE[/color][/b]\n' + v('c') + '\n';
 			if (v('m')) { t += '\n[b][color=' + c + ']MOTIVATION[/color][/b]\n' + v('m') + '\n'; }
+			if (v('i2')) { t += '\n[b][color=' + c + ']ILLUSTRATION[/color][/b]\n[center][img]' + v('i2') + '[/img][/center]\n'; }
 			t += '\n[spoiler="Histoire de ' + fullName() + '"]' + v('h') + '[/spoiler]\n';
 			var d = (v('pr') ? line('Pseudo', v('pr')) : '') + line('Fréquence de jeu', v('fr')) + line('Découverte', v('co'));
 			if (d) { t += '\n[b][color=' + c + ']DERRIÈRE LE PERSONNAGE[/color][/b]\n' + d; }
@@ -1069,6 +1072,7 @@
 				{ Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = x.className.replace(/\bon\b/, '').replace(/\s+$/, ''); }); if (S[g] === iv) { b.className += ' on'; } }
 				update(); return;
 			}
+			if (b.id === 'pf-i2btn') { var w = $('i2wrap'), op = w.style.display === 'none'; w.style.display = op ? '' : 'none'; b.className = 'pf-ico' + (op ? ' on' : ''); if (op) { $('i2').focus(); } return; }
 			if (b.id === 'pf-reg') { S.reg = !S.reg; b.className = 'pf-pill' + (S.reg ? ' on' : ''); update(); return; }
 			if (b.id === 'pf-go') { gen(); }
 		});
@@ -1099,7 +1103,7 @@
 /* ===== REVELIO : fiche de présentation postée (met en page le code généré) ===== */
 (function () {
 	var HOUSES = { 'gryffondor': ['#d65a6b', 'Gryffondor'], 'serdaigle': ['#6fb0cf', 'Serdaigle'], 'serpentard': ['#5fc4a0', 'Serpentard'], 'poufsouffle': ['#d9b650', 'Poufsouffle'] };
-	var HEADS = ['IDENTITÉ', 'ALLÉGEANCE ET RANG', 'PHYSIQUE', 'CARACTÈRE', 'MOTIVATION', 'DERRIÈRE LE PERSONNAGE'];
+	var HEADS = ['IDENTITÉ', 'ALLÉGEANCE ET RANG', 'PHYSIQUE', 'CARACTÈRE', 'MOTIVATION', 'ILLUSTRATION', 'DERRIÈRE LE PERSONNAGE'];
 	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 	function plain(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
 	function paras(t) { return t.split(/\n\s*\n/).map(function (p) { return p.replace(/^\s+|\s+$/g, ''); }).filter(Boolean).map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; }).join(''); }
@@ -1112,7 +1116,13 @@
 		if (!c) { return; }
 		var post = c.closest('.post') || c.parentNode;
 		var clone = c.cloneNode(true), img = null, sp = clone.querySelector('dl.codebox.spoiler, dl.spoiler'), hist = '';
-		Array.prototype.forEach.call(clone.querySelectorAll('img'), function (im) { if (!img && !/smil|emoticon|icon_/i.test(im.getAttribute('src') || '') && !im.closest('dl')) { img = im.getAttribute('src'); } });
+		var img2 = null, idEl = null;
+		Array.prototype.forEach.call(clone.querySelectorAll('strong, b'), function (st) { if (!idEl && st.textContent.replace(/\s+/g, '').toUpperCase() === 'IDENTITÉ') { idEl = st; } });
+		Array.prototype.forEach.call(clone.querySelectorAll('img'), function (im) {
+			if (/smil|emoticon|icon_/i.test(im.getAttribute('src') || '') || im.closest('dl')) { return; }
+			var after = idEl && (idEl.compareDocumentPosition(im) & 4);
+			if (after) { if (!img2) { img2 = im.getAttribute('src'); } } else if (!img) { img = im.getAttribute('src'); }
+		});
 		if (sp) { var sc2 = sp.querySelector('.spoiler_content'); hist = sc2 ? sc2.innerHTML.replace(/<br\s*\/?>/gi, '\n') : ''; hist = plain(hist); sp.parentNode.removeChild(sp); }
 		Array.prototype.forEach.call(clone.querySelectorAll('img,script,style'), function (n) { n.parentNode.removeChild(n); });
 		var lines = plain(clone.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(div|p|li)>/gi, '\n')).replace(/ /g, ' ').split('\n').map(function (l) { return l.replace(/^\s+|\s+$/g, ''); });
@@ -1150,7 +1160,7 @@
 			(mot ? '<div class="pp-quote"><small>Motivation</small>' + esc(mot) + '</div>' : '') + '</div></header>' +
 			(facts.length ? '<div class="pp-facts">' + facts.map(function (f) { return '<div><span>' + f[0] + '</span><b>' + esc(f[1]) + '</b></div>'; }).join('') + '</div>' : '') +
 			((phy || car) ? '<div class="pp-sec"><div class="pp-two">' + (phy ? '<div><h3 class="pp-h">Physique</h3><div class="pp-tx">' + paras(phy) + '</div></div>' : '') + (car ? '<div><h3 class="pp-h">Caractère</h3><div class="pp-tx">' + paras(car) + '</div></div>' : '') + '</div></div>' : '') +
-			(hist ? '<div class="pp-sec"><h3 class="pp-h">Histoire</h3><div class="pp-spo"><button type="button" class="pp-spt" aria-expanded="false"><i class="d"></i><b>Spoiler</b><em>Histoire de ' + esc((first + ' ' + last).replace(/^\s+|\s+$/g, '')) + '</em><span>' + words(hist) + ' mots · cliquer pour lire</span></button><div class="pp-spb" style="display:none"><div class="pp-tx">' + paras(hist) + '</div><button type="button" class="pp-btn pp-close" style="margin-top:20px">Fermer le spoiler</button></div></div></div>' : '') +
+			(hist ? '<div class="pp-sec"><h3 class="pp-h">Histoire</h3>' + (img2 ? '<figure class="pp-ill"><img src="' + esc(img2) + '" alt=""></figure>' : '') + '<div class="pp-spo"><button type="button" class="pp-spt" aria-expanded="false"><i class="d"></i><b>Spoiler</b><em>Histoire de ' + esc((first + ' ' + last).replace(/^\s+|\s+$/g, '')) + '</em><span>' + words(hist) + ' mots · cliquer pour lire</span></button><div class="pp-spb" style="display:none"><div class="pp-tx">' + paras(hist) + '</div><button type="button" class="pp-btn pp-close" style="margin-top:20px">Fermer le spoiler</button></div></div></div>' : '') +
 			(Object.keys(me).length ? '<div class="pp-sec"><h3 class="pp-h">Derrière le personnage</h3><div class="pp-me">' + Object.keys(me).map(function (k) { return '<div><span>' + esc(k) + '</span><b>' + esc(me[k]) + '</b></div>'; }).join('') + '</div></div>' : '') +
 			'<footer class="pp-act"><span class="sp"></span>' + (quote ? '<a class="pp-btn" href="' + esc(quote.getAttribute('href')) + '">Citer</a>' : '') + (edit ? '<a class="pp-btn g" href="' + esc(edit.getAttribute('href')) + '">Modifier</a>' : '') + '</footer></article>';
 		var wrap = document.createElement('div'); wrap.className = 'rv-fiche'; wrap.innerHTML = '<div class="pp-main">' + h + '</div>';

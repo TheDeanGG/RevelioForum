@@ -481,7 +481,7 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 .rv-catp .rv-hero,.rv-catp .rv-welcome,.rv-catp .rv-quick,.rv-catp .rv-enc-wrap,.rv-catp .rv-orn,.rv-catp .rv-cats-head,.rv-catp .rvx{display:none !important}
 #main-content .cpx,#main-content .cpx *{box-sizing:border-box}
 #main-content .cpx{container-type:inline-size;container-name:cp;color:#e8e4d8;font-family:'Poppins',sans-serif;margin:8px 0 40px}
-#main-content .cpx a{color:#e8e4d8;text-decoration:none;background:none}#main-content .cpx a:hover{color:#f0d28f}
+#main-content .cpx a{color:#e8e4d8;text-decoration:none}#main-content .cpx a:hover{color:#f0d28f}
 #main-content .cpx h1,#main-content .cpx h3,#main-content .cpx p{border:0;background:none;padding:0}
 #main-content .cp-hero{position:relative;margin-top:22px;min-height:340px;border:1px solid rgba(217,179,106,.3);border-radius:4px;overflow:hidden;background:#050403 var(--cp-img) 72% 38%/cover}
 #main-content .cp-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#050403 0,rgba(5,4,3,.92) 34%,rgba(5,4,3,.35) 70%,rgba(5,4,3,.55)),linear-gradient(0deg,rgba(5,4,3,.9),transparent 45%)}
@@ -545,4 +545,3 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 #main-content .cp-t:not(.empty){filter:brightness(1.3) saturate(1.08)}
 #main-content .cp-t:not(.empty) span{text-shadow:0 1px 6px rgba(0,0,0,.9)}
 #main-content .cp-t.empty img{height:64px;opacity:.35}
-#main-content .cp-t.empty img{left:0;top:0;transform:none;width:100%;height:100%;object-fit:cover;object-position:center 35%;opacity:.4}

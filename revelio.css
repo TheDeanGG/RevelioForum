@@ -636,3 +636,5 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 .rv-pv .pa-badgefoot{padding:0 30px 26px;font:300 14px 'Poppins',sans-serif}
 .rv-pv .pa-badgefoot a{color:var(--pa-line);border-bottom:1px solid rgba(255,255,255,.2)}
 @media (max-width:699px){.rv-pv .pa-brow{flex-direction:column;align-items:flex-start;gap:14px}.rv-pv .pa-btag{width:auto}.rv-pv .pa-badgerows,.rv-pv .pa-badgefoot{padding-left:18px;padding-right:18px}}
+#rv-hf .hf-who{padding:26px 0 0 28px}
+@container hf (max-width:699px){#rv-hf .hf-who{padding:22px 0 0 20px}}

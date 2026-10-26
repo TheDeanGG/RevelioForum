@@ -1145,7 +1145,7 @@
 		var author = post.querySelector('.postprofile .author a, .postprofile dt a, a.username, .postprofile a[href^="/u"]');
 		var edit = post.querySelector('a[href*="mode=editpost"]'), quote = post.querySelector('a[href*="mode=quote"]');
 		var h = '<article class="pp-card" style="--c:' + H[0] + '">' + (crest ? '<img class="pp-wm" src="' + esc(crest) + '" alt="">' : '') + '<div class="pp-stat" style="--s:' + ST[1] + '" title="' + esc(ST[3]) + '"><div class="ic"><svg viewBox="0 0 24 24"><path d="' + ST[2] + '"/></svg></div><div><small>Décision du staff</small><strong>' + ST[0] + '</strong></div></div>' +
-			'<header class="pp-hero"><div class="pp-por">' + (img ? '<img src="' + esc(img) + '" alt="">' : '') + '<i></i><i></i>' + (fc ? '<em>' + esc(fc) + '</em>' : '') + '</div>' +
+			'<header class="pp-hero"><div class="pp-por">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span class="ini">' + esc(((first || ' ').charAt(0) + (last || ' ').charAt(0)).toUpperCase()) + '</span>') + '<i></i><i></i>' + (fc ? '<em>' + esc(fc) + '</em>' : '') + '</div>' +
 			'<div class="pp-id"><div class="pp-tags">' + tg.join('') + '</div><h2 class="pp-name"><span>' + esc(first) + '</span>' + esc(last) + '</h2>' + (alias ? '<p class="pp-alias">' + esc(alias) + '</p>' : '') +
 			(mot ? '<div class="pp-quote"><small>Motivation</small>' + esc(mot) + '</div>' : '') + '</div></header>' +
 			(facts.length ? '<div class="pp-facts">' + facts.map(function (f) { return '<div><span>' + f[0] + '</span><b>' + esc(f[1]) + '</b></div>'; }).join('') + '</div>' : '') +

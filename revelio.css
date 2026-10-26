@@ -940,3 +940,4 @@ body.rv-fp .rv-vt{grid-template-columns:minmax(0,1fr) !important}
 #rv-pres .pf-pill i{display:none}
 #rv-pres .pf-wm2{position:absolute;right:-18px;top:6px;width:150px;opacity:.12;pointer-events:none}
 #rv-pres .pf-pv{overflow:hidden}
+#main-content .rv-fiche .pp-por .ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:500 54px 'Cinzel',serif;color:rgba(244,239,224,.5)}

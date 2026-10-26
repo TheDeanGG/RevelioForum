@@ -638,3 +638,42 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 @media (max-width:699px){.rv-pv .pa-brow{flex-direction:column;align-items:flex-start;gap:14px}.rv-pv .pa-btag{width:auto}.rv-pv .pa-badgerows,.rv-pv .pa-badgefoot{padding-left:18px;padding-right:18px}}
 #rv-hf .hf-who{padding:26px 0 0 28px}
 @container hf (max-width:699px){#rv-hf .hf-who{padding:22px 0 0 20px}}
+/* ===== REVELIO : résultats de recherche ===== */
+#main-content.rv-sr .sub-header{margin:8px 0 0;padding:0 0 22px;border-bottom:1px solid rgba(255,255,255,.1);background:none}
+#main-content.rv-sr .sub-header-info{padding:0}
+#main-content.rv-sr .rs-eyebrow{font:700 10px 'Montserrat',sans-serif;letter-spacing:3px;text-transform:uppercase;color:#d9b36a}
+#main-content.rv-sr h1.page-title{margin:10px 0 0 !important;font:500 34px/1.2 'Cinzel',serif !important;letter-spacing:3px;text-transform:uppercase;color:#f4efe0 !important;background:none !important;border:0 !important;padding:0 !important}
+#main-content.rv-sr .sub-header-path{margin-top:10px;font:600 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;color:#8f8878}
+#main-content.rv-sr .sub-header-path a{color:#a8a193}
+#main-content.rv-sr .rs-list{margin:26px 0 0;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.02));box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+#main-content.rv-sr .rs-cols,#main-content.rv-sr .rs-row{display:grid;grid-template-columns:64px minmax(0,1fr) 84px 84px 240px;align-items:center;gap:0 12px}
+#main-content.rv-sr .rs-cols{padding:13px 22px;border-bottom:1px solid rgba(217,179,106,.3);background:rgba(5,4,3,.55);font:700 9px 'Montserrat',sans-serif;letter-spacing:2.2px;text-transform:uppercase;color:#d9b36a}
+#main-content.rv-sr .rs-cols span:nth-child(3),#main-content.rv-sr .rs-cols span:nth-child(4){text-align:center}
+#main-content.rv-sr .rs-row{padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.07);transition:background .2s}
+#main-content.rv-sr .rs-row:last-child{border-bottom:0}
+#main-content.rv-sr .rs-row:hover{background:rgba(255,255,255,.04)}
+#main-content.rv-sr .rs-st{position:relative;width:38px;height:38px;margin:0 auto;display:flex;align-items:center;justify-content:center}
+#main-content.rv-sr .rs-st i{position:absolute;left:5px;top:5px;width:28px;height:28px;transform:rotate(45deg);border:1.5px solid var(--l);border-radius:2px;background:rgba(255,255,255,.03)}
+#main-content.rv-sr .rs-st span{position:relative;width:15px;height:15px;color:var(--l);display:flex}
+#main-content.rv-sr .rs-st svg{width:15px;height:15px}
+#main-content.rv-sr .rs-ti{min-width:0}
+#main-content.rv-sr .rs-ti h2{margin:0;padding:0;border:0;background:none;font:600 16px/1.35 'Montserrat',sans-serif;letter-spacing:.3px;color:#f4efe0}
+#main-content.rv-sr .rs-ti h2 a{color:#f4efe0;text-decoration:none}#main-content.rv-sr .rs-ti h2 a:hover{color:#f0d28f}
+#main-content.rv-sr .rs-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:8px;font:300 12px 'Poppins',sans-serif;color:#8f8878}
+#main-content.rv-sr .rs-meta b{font-weight:500;color:#cfc9ba}
+#main-content.rv-sr .rs-meta a.rs-in{color:#d9b36a;text-decoration:none}
+#main-content.rv-sr .rs-chip{padding:2px 9px;border:1px solid rgba(255,255,255,.16);border-radius:99px;font:700 8.5px 'Montserrat',sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#a8a193}
+#main-content.rv-sr .rs-chip.g{border-color:#d9b36a;color:#f0d28f}#main-content.rv-sr .rs-chip.w{border-color:rgba(255,255,255,.3);color:#cfc9ba}
+#main-content.rv-sr .rs-n{text-align:center;font:600 18px 'Cinzel',serif;color:#f4efe0}#main-content.rv-sr .rs-n small{display:none}
+#main-content.rv-sr .rs-lp{display:flex;align-items:center;gap:12px;min-width:0}
+#main-content.rv-sr .rs-lav{flex:none;width:34px;height:34px;position:relative;margin:0 3px}
+#main-content.rv-sr .rs-lav i{position:absolute;left:3px;top:3px;width:28px;height:28px;transform:rotate(45deg);border:1.5px solid var(--l);background:linear-gradient(150deg,#3a2c14,#16110a)}
+#main-content.rv-sr .rs-lav b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 12px 'Cinzel',serif;color:#f0d28f}
+#main-content.rv-sr .rs-lt{min-width:0;font:300 11px/1.5 'Poppins',sans-serif;color:#8f8878}
+#main-content.rv-sr .rs-lt strong{display:block;font:600 12.5px 'Poppins',sans-serif;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#main-content.rv-sr .pagination,#main-content.rv-sr p.pagination{margin:20px 0 0;color:#8f8878}
+body:has(.rs-list) form[name=jumpbox]{margin:26px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);font:300 12px 'Poppins',sans-serif;color:#8f8878}
+body:has(.rs-list) form[name=jumpbox] p.right{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0}
+body:has(.rs-list) form[name=jumpbox] input.button2{padding:9px 20px;background:#d9b36a;border:0;color:#0b0a08;font:700 10px 'Montserrat',sans-serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
+body:has(.rs-list) form[name=jumpbox] select{padding:8px 12px;background:#0f0e0b;border:1px solid rgba(255,255,255,.16);color:#e8e4d8;font:500 12px 'Poppins',sans-serif}
+@media (max-width:900px){#main-content.rv-sr .rs-cols{display:none}#main-content.rv-sr .rs-row{grid-template-columns:48px minmax(0,1fr);gap:10px 12px}#main-content.rv-sr .rs-n{display:none}#main-content.rv-sr .rs-lp{grid-column:1 / -1;padding-left:60px}#main-content.rv-sr h1.page-title{font-size:24px !important}}

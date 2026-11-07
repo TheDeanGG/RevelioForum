@@ -132,7 +132,7 @@
     /* en-tête */
     var head = el('div', 'rv-lg-head');
     head.appendChild(el('img', 'rv-lg-crest'));
-    head.firstChild.src = 'https://i.imgur.com/dw1TqNU.png'; head.firstChild.alt = 'Écusson de Poudlard';
+    head.firstChild.src = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@01c027f16067ad6fdf2c6ad1a46335cf2d039134/img/ecussons/Poudlard-4-maisons.png'; head.firstChild.alt = 'Écusson de Poudlard';
     head.appendChild(el('div', 'rv-lg-kick', 'Poudlard · Entrée des sorciers'));
     head.appendChild(el('div', 'rv-lg-oath', 'Je jure solennellement que mes <em>intentions sont mauvaises</em>'));
     head.appendChild(el('p', 'rv-lg-sub', 'Prononce le serment, la carte s’ouvrira.'));

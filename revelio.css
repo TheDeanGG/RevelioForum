@@ -471,7 +471,7 @@ form[name="form_login"] img.show_hide_pwd{position:relative !important;top:-10px
 .monomer-modal input.switcheroo__form-input:focus{box-shadow:0 0 0 3px rgba(217,179,106,.14) !important;border-color:#d9b36a !important}
 /* Switcheroo : écusson de Poudlard en filigrane */
 .monomer-modal{overflow:hidden !important}
-.monomer-modal::after{content:'';position:absolute;right:-34px;bottom:-34px;width:230px;height:260px;background:url(https://i.imgur.com/dw1TqNU.png) center/contain no-repeat;opacity:.09;pointer-events:none;z-index:0}
+.monomer-modal::after{content:'';position:absolute;right:-34px;bottom:-34px;width:230px;height:260px;background:url(https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@01c027f16067ad6fdf2c6ad1a46335cf2d039134/img/ecussons/Poudlard-4-maisons.png) center/contain no-repeat;opacity:.09;pointer-events:none;z-index:0}
 .monomer-modal>*{position:relative;z-index:1}
 /* Bandeau Informations : écusson centré derrière le nom */
 #main-content .rv-pe .rv-hid{position:relative}

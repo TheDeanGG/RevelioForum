@@ -2268,3 +2268,13 @@ html.rv-gaz .rv-aside { display: none !important; }
 .gz-ph { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
 .gz-port:has(.gz-ph) { height: 260px; }
 .gz-port:has(.gz-ph):after { display: none; }
+/* Gazette : bouton interview + remerciements */
+.gz-end { display: flex; justify-content: flex-end; margin-top: 44px; }
+.gz-btn { display: inline-flex; align-items: center; gap: 14px; padding: 16px 28px; font: 600 12px 'Poppins', sans-serif; letter-spacing: 2.4px; text-transform: uppercase; text-decoration: none !important; color: #0b0a08 !important; background: #d9b36a; border: 0; transition: background .2s, transform .2s; }
+.gz-btn span { font-size: 18px; letter-spacing: 0; transition: transform .2s; }
+.gz-btn:hover { background: #ecca8a; }
+.gz-btn:hover span { transform: translateX(5px); }
+.gz-thanks { margin: 56px auto 10px; max-width: 640px; padding-top: 34px; text-align: center; border-top: 3px double rgba(217, 179, 106, .7); }
+.gz-th-t { font: 600 26px 'Cinzel', serif; letter-spacing: 6px; text-transform: uppercase; color: #d9b36a; }
+.gz-thanks p { margin: 14px 0 0; font: italic 400 22px/1.6 'EB Garamond', serif; color: #cfc9ba; }
+@media (max-width: 640px) { .gz-end { justify-content: stretch; } .gz-btn { width: 100%; justify-content: space-between; box-sizing: border-box; } }

@@ -1802,25 +1802,42 @@
 		$('hp-cp').onclick = function () { var b = $('hp-bb'); b.select(); try { document.execCommand('copy'); $('hp-cp').textContent = 'Copié !'; setTimeout(function () { $('hp-cp').textContent = 'Copier'; }, 1500); } catch (e) { } };
 	}
 
-	/* --- messages : « RÉPARTITION DU CHOIXPEAU » / Élève : … / Maison : … --- */
-	function posts() {
-		var L = document.querySelectorAll('.post .content:not([data-rvh]), .post .postbody .content:not([data-rvh])'), i;
-		for (i = 0; i < L.length; i++) {
-			var c = L[i]; c.setAttribute('data-rvh', '1'); var tmp = document.createElement('div'); tmp.innerHTML = c.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n'); var tx = tmp.textContent || '';
-			if (tx.indexOf('RÉPARTITION DU CHOIXPEAU') < 0) { continue; }
-			var m = /Élève\s*:\s*([^\n\r]+)/.exec(tx), mh = /Maison\s*:\s*([^\n\r]+)/.exec(tx); if (!m || !mh) { continue; }
-			var name = m[1].replace(/\s+$/, ''), hk = norm(mh[1]); if (!H[hk]) { continue; }
-			var post = c.closest('.post') || c, pid = post.id || String(i), seenKey = 'rv_hat_' + pid, seen = false;
-			try { seen = !!localStorage.getItem(seenKey); } catch (e) { }
-			var card = document.createElement('div'); card.className = 'rv-hatcard'; card.style.setProperty('--hc', H[hk].c);
-			function draw(done) {
+	/* --- messages : « RÉPARTITION DU CHOIXPEAU » / Élève : … / Maison : … (uniquement dans un sujet de présentation) --- */
+	function isPres() {
+		if (document.querySelector('.rv-fiche')) { return true; }
+		var L = document.querySelectorAll('.post .content'), i; for (i = 0; i < L.length; i++) { if ((L[i].textContent || '').indexOf('ALLÉGEANCE ET RANG') > -1) { return true; } } return false;
+	}
+	function flat(s) { return norm(String(s).replace(/\s+/g, '')); }
+	function mk(c, i) {
+		var tmp = document.createElement('div'); tmp.innerHTML = c.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n'); var tx = tmp.textContent || '';
+		if (tx.indexOf('RÉPARTITION DU CHOIXPEAU') < 0) { return; }
+		var m = /Élève\s*:\s*([^\n\r]+)/.exec(tx), mh = /Maison\s*:\s*([^\n\r]+)/.exec(tx); if (!m || !mh) { return; }
+		var name = m[1].replace(/\s+$/, ''), hk = norm(mh[1]); if (!H[hk]) { return; }
+		var post = c.closest('.post') || c, pid = post.id || String(i), seenKey = 'rv_hat_' + pid, seen = false;
+		try { seen = !!localStorage.getItem(seenKey); } catch (e) { }
+		var cards = [], fiche = null;
+		function mkCard(extra) { var d = document.createElement('div'); d.className = 'rv-hatcard' + (extra || ''); d.style.setProperty('--hc', H[hk].c); cards.push(d); return d; }
+		function draw(done) {
+			cards.forEach(function (card) {
 				card.innerHTML = '<div class="hc-ic">' + faceHtml('che1') + '</div><div class="hc-tx"><span>Le Choixpeau a parlé</span><b>' + esc(name) + '</b>' + (done ? '<em>Réparti à <i>' + H[hk].n + '</i></em>' : '<em>Sa Répartition l’attend…</em>') + '</div><button type="button" class="hc-bt">' + (done ? 'Revoir la cérémonie' : 'Écouter le Choixpeau') + '</button>';
 				card.querySelector('.hc-bt').onclick = function () { play({ name: name, house: hk }, function () { try { localStorage.setItem(seenKey, '1'); } catch (e) { } draw(true); }); };
-			}
-			draw(seen); c.style.display = 'none'; c.parentNode.insertBefore(card, c);
-			var ud = window._userdata || {};
-			if (!seen && ud.user_id > 0 && norm(ud.username) === norm(name)) { setTimeout(function () { card.querySelector('.hc-bt').click(); }, 600); }
+			});
 		}
+		var main = mkCard(); main.className += ' in-reply';
+		function addFiche() {
+			if (fiche) { return true; } var pn = document.querySelector('.rv-fiche .pp-name'), hero = document.querySelector('.rv-fiche .pp-hero');
+			if (!pn || !hero || flat(pn.textContent) !== flat(name)) { return false; }
+			fiche = mkCard(' in-fiche'); hero.parentNode.insertBefore(fiche, hero); draw(seen); return true;
+		}
+		draw(seen); c.style.display = 'none'; c.parentNode.insertBefore(main, c);
+		if (!addFiche()) { setTimeout(addFiche, 700); setTimeout(addFiche, 2000); }
+		var ud = window._userdata || {};
+		if (!seen && ud.user_id > 0 && norm(ud.username) === norm(name)) { setTimeout(function () { var bt = (fiche || main).querySelector('.hc-bt'); if (bt) { bt.click(); } }, 700); }
+	}
+	function posts() {
+		if (!isPres()) { return; }
+		var L = document.querySelectorAll('.post .content:not([data-rvh])'), i;
+		for (i = 0; i < L.length; i++) { L[i].setAttribute('data-rvh', '1'); mk(L[i], i); }
 	}
 	function run() { page(); posts(); }
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 80); }); } else { setTimeout(run, 80); }

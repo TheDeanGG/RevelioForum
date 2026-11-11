@@ -1947,3 +1947,6 @@ body.rv-hat-on { overflow: hidden; }
 .rv-hat.shout .ht-hat { animation: htShake .5s ease 1; } @keyframes htShake { 0%, 100% { transform: translate(0, 0) scale(1); } 20% { transform: translate(-4px, 0) scale(1.06); } 50% { transform: translate(4px, -2px) scale(1.1); } 80% { transform: translate(-2px, 0) scale(1.06); } }
 .rv-quiz .qz-hat { width: 150px; } .rv-quiz .qz-hatw.big .qz-hat { width: 230px; }
 .rv-hatcard .hc-ic { width: 64px; } .rv-hatcard .ht-fr img { filter: drop-shadow(0 4px 6px rgba(0,0,0,.5)); }
+
+.rv-hatcard.in-fiche { margin: 14px 22px; }
+.rv-fiche .rv-hatcard.in-fiche { position: relative; z-index: 2; }

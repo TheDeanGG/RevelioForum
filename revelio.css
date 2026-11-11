@@ -2118,3 +2118,25 @@ body.rv-hat-on { overflow: hidden; }
 .gz-rules { margin: 0; padding: 0; list-style: none; }
 .gz-rules li { padding: 13px 0; border-top: 1px solid rgba(217, 179, 106, .14); font-weight: 300; font-size: 14px; line-height: 1.7; color: #cfc9ba; }
 @media (max-width: 860px) { .gz { padding: 24px 16px 48px; } .gz-n { width: 56px; font-size: 16px; } .gz-crest { width: 40px; height: 40px; } .gz-colh .sp { width: 40px; } }
+
+/* ===== REVELIO : messages de la Gazette ===== */
+.gp { max-width: 860px; margin: 8px auto; padding: 8px 4px 4px; color: #e8e4d8; font-family: 'Poppins', sans-serif; }
+.gp-mast { text-align: center; padding: 26px 0 24px; border-top: 1px solid rgba(217, 179, 106, .55); border-bottom: 1px solid rgba(217, 179, 106, .55); }
+.gp-meta { display: flex; justify-content: space-between; margin-bottom: 14px; font: 600 10px 'Poppins', sans-serif; letter-spacing: 2.5px; text-transform: uppercase; color: #8f8878; }
+.gp-mast h2 { margin: 0; padding: 0; border: 0; font-family: 'Cinzel', serif; font-weight: 500; font-size: clamp(24px, 5vw, 44px); letter-spacing: 5px; text-transform: uppercase; color: #f4efe0; }
+.gp-tag { margin: 10px 0 0; font: italic 400 20px 'EB Garamond', serif; color: #d9b36a; }
+.gp-body { padding: 26px 4px 0; }
+.gp-body p { margin: 0 0 18px; font-weight: 300; font-size: 15px; line-height: 1.85; color: #cfc9ba; }
+.gp-body h3 { margin: 30px 0 14px; padding: 0; border: 0; font: 700 11px 'Montserrat', 'Poppins', sans-serif; letter-spacing: 3px; text-transform: uppercase; color: #d9b36a; }
+.gp-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.gp-card { padding: 18px 20px; background: #100e0a; border: 1px solid rgba(217, 179, 106, .16); border-top: 2px solid #d9b36a; }
+.gp-card:nth-child(2) { border-top-color: #6fb0cf; }
+.gp-card:nth-child(3) { border-top-color: #5fc4a0; }
+.gp-card:nth-child(4) { border-top-color: #8f94e0; }
+.gp-card b { display: block; margin-bottom: 6px; font-family: 'Cinzel', serif; font-weight: 600; font-size: 15px; letter-spacing: 1.2px; text-transform: uppercase; color: #f4efe0; }
+.gp-card span { display: block; font-weight: 300; font-size: 13.5px; line-height: 1.7; color: #cfc9ba; }
+.gp-btn { display: inline-block; margin: 2px 0 8px; padding: 13px 26px; font: 600 11px 'Poppins', sans-serif; letter-spacing: 2px; text-transform: uppercase; text-decoration: none !important; color: #0b0a08 !important; background: #d9b36a; }
+.gp-btn:hover { background: #ecca8a; }
+.gp-body p.gp-note { margin: 28px 0 0; padding-top: 20px; border-top: 1px solid rgba(217, 179, 106, .22); text-align: center; font: italic 400 18px 'EB Garamond', serif; color: #a8a193; }
+@media (max-width: 640px) { .gp-cards { grid-template-columns: minmax(0, 1fr); } }
+.gp-cards { margin-bottom: 24px; }

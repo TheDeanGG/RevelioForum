@@ -2041,3 +2041,38 @@
 	}
 	setTimeout(mount, 60);
 })();
+
+/* ===== REVELIO : mise en page des messages de la Gazette (premier mot : « LA GAZETTE DU SORCIER ») ===== */
+(function () {
+	'use strict';
+	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+	function build(c) {
+		var cl = c.cloneNode(true), lists = [], links = [], i;
+		Array.prototype.forEach.call(cl.querySelectorAll('ul,ol'), function (u) { var items = []; Array.prototype.forEach.call(u.querySelectorAll('li'), function (li) { items.push(li.textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')); }); lists.push(items); u.parentNode.replaceChild(document.createTextNode('\n§L' + (lists.length - 1) + '§\n'), u); });
+		Array.prototype.forEach.call(cl.querySelectorAll('a[href]'), function (a) { links.push([a.getAttribute('href'), a.textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')]); a.parentNode.replaceChild(document.createTextNode('\n§A' + (links.length - 1) + '§\n'), a); });
+		var tmp = document.createElement('div'); tmp.innerHTML = cl.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li|h\d)>/gi, '\n');
+		var lines = (tmp.textContent || '').split('\n').map(function (l) { return l.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, ''); }).filter(Boolean);
+		if (!lines.length || lines[0].toUpperCase() !== 'LA GAZETTE DU SORCIER') { return null; }
+		var h = '<div class="gp"><header class="gp-mast"><div class="gp-meta"><span>Hors RP</span><span>Revelio</span></div><h2>' + esc(lines[0]) + '</h2>' + (lines[1] ? '<p class="gp-tag">' + esc(lines[1]) + '</p>' : '') + '</header><div class="gp-body">';
+		var rest = lines.slice(2), last = rest.length - 1;
+		rest.forEach(function (l, k) {
+			var m;
+			if ((m = /^§L(\d+)§$/.exec(l))) { h += '<div class="gp-cards">'; lists[+m[1]].forEach(function (t) { var p = t.indexOf(' : '), a = p > 0 ? t.slice(0, p) : '', b = p > 0 ? t.slice(p + 3) : t; h += '<div class="gp-card">' + (a ? '<b>' + esc(a) + '</b>' : '') + '<span>' + esc(b) + '</span></div>'; }); h += '</div>'; }
+			else if ((m = /^§A(\d+)§$/.exec(l))) { var a = links[+m[1]]; h += '<a class="gp-btn" href="' + esc(a[0]) + '">' + esc(a[1]) + '</a>'; }
+			else if (/:$/.test(l)) { h += '<h3>' + esc(l.replace(/\s*:$/, '')) + '</h3>'; }
+			else if (k === last && k > 0) { h += '<p class="gp-note">' + esc(l) + '</p>'; }
+			else { h += '<p>' + esc(l) + '</p>'; }
+		});
+		return h + '</div></div>';
+	}
+	function run() {
+		var L = document.querySelectorAll('.post .content:not([data-rvg])'), i;
+		for (i = 0; i < L.length; i++) {
+			var c = L[i]; c.setAttribute('data-rvg', '1');
+			if ((c.textContent || '').indexOf('LA GAZETTE DU SORCIER') < 0) { continue; }
+			var html = build(c); if (!html) { continue; }
+			var d = document.createElement('div'); d.innerHTML = html; c.style.display = 'none'; c.parentNode.insertBefore(d.firstChild, c);
+		}
+	}
+	setTimeout(run, 70);
+})();

@@ -2363,3 +2363,6 @@ html.rv-gaz .rv-aside { display: none !important; }
 .rv-abc-seal { top: auto; bottom: -34px; right: 22px; }
 .rv-abc-h { padding-right: 22px; min-height: 0; }
 @media (max-width: 640px) { .rv-abc-seal { top: auto; bottom: -24px; right: 12px; } .rv-abc-h { padding-right: 18px; } .rv-abc { padding-bottom: 34px; } }
+/* marge ajoutée retirée */
+.rv-abc { padding-bottom: 0; margin-bottom: 8px; }
+@media (max-width: 640px) { .rv-abc { padding-bottom: 0; } }

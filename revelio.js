@@ -1254,3 +1254,260 @@
   }
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
 })();
+
+/* ===== REVELIO : générateur de journal (page HTML contenant <div id="rv-jr"></div>) ===== */
+(function () {
+	var JR_FORUM = 0;                 /* id du forum où se poste le journal (0 = pas de bouton « ouvrir l'éditeur ») */
+	var KEY = 'rv_jr_draft', FKEY = 'rv_jr_form';
+	var AFF = [['Amour', '#d65a6b'], ['Amitié', '#8cc7a0'], ['Neutre', '#a8a193'], ['Rivalité', '#e0975f'], ['Ennemi', '#b79be0']];
+	var BLOODS = ['Sang-pur', 'Sang-mêlé', 'Né-moldu', 'Cracmol'];
+	var HOUSES = [['Gryffondor', '#d65a6b'], ['Serdaigle', '#6fb0cf'], ['Serpentard', '#5fc4a0'], ['Poufsouffle', '#d9b650']];
+	var BASE = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
+	(function () { var q = document.querySelector('script[src*="revelio.js"]'); if (q) { BASE = q.getAttribute('src').replace(/revelio\.js.*$/, ''); } })();
+	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+	function trim(s) { return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
+	function one(s) { return trim(s).replace(/\s*\n+\s*/g, ' '); }
+	function words(s) { var m = String(s).match(/\S+/g); return m ? m.length : 0; }
+
+	/* --- côté éditeur : pré-remplit le message depuis le générateur --- */
+	function fillEditor() {
+		var raw; try { raw = localStorage.getItem(KEY); } catch (e) { return; }
+		if (!raw) { return; }
+		var d; try { d = JSON.parse(raw); } catch (e) { return; }
+		var ta = document.querySelector('textarea[name=message]'), sj = document.querySelector('input[name=subject]');
+		if (!ta || !d || (Date.now() - d.t) > 3600000) { return; }
+		ta.value = d.body; if (sj && !sj.value) { sj.value = d.subject; }
+		try { ta.dispatchEvent(new Event('input', { bubbles: true })); localStorage.removeItem(KEY); } catch (e) { }
+	}
+	if (/mode=newtopic/.test(location.search) || /\/post/.test(location.pathname)) {
+		if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fillEditor); } else { fillEditor(); }
+	}
+
+	function run() {
+		var box = document.getElementById('rv-jr');
+		if (!box || box.getAttribute('data-ok')) { return; }
+		box.setAttribute('data-ok', '1');
+
+		/* ---------- briques de formulaire ---------- */
+		function attr(k, card) { return card ? 'data-k="' + k + '"' : 'id="jg-' + k + '"'; }
+		function field(k, lab, ph, req, card) { return '<div><label class="pf-lab">' + lab + (req ? ' <em>*</em>' : '') + '</label><input ' + attr(k, card) + ' class="pf-in" type="text" placeholder="' + esc(ph || '') + '"></div>'; }
+		function area(k, lab, ph, req, card, cls) { return '<div><label class="pf-lab">' + lab + (req ? ' <em>*</em>' : '') + '</label><textarea ' + attr(k, card) + ' class="pf-in pf-ta' + (cls ? ' ' + cls : '') + '" placeholder="' + esc(ph || '') + '"></textarea></div>'; }
+		function pills(k, list, on, opt) { return '<div class="pf-pills" data-g="' + k + '"' + (opt ? ' data-opt="1"' : '') + '>' + list.map(function (o, i) { var lb = typeof o === 'string' ? o : o[0], c = typeof o === 'string' ? '' : ' style="--c:' + o[1] + '"'; return '<button type="button" class="pf-pill' + (i === on ? ' on' : '') + '"' + c + ' data-i="' + i + '"><i></i>' + lb + '</button>'; }).join('') + '</div>'; }
+		function sec(n, t, sub, inner) { return '<div class="pf-sec"><h2 class="pf-h"><i><b>' + n + '</b></i>' + t + '</h2><p class="pf-sub">' + sub + '</p>' + inner + '</div>'; }
+		var G = ' pf-gap';
+
+		/* ---------- modèles de cartes répétables ---------- */
+		var TPL = {
+			pres: function () {
+				return '<div class="jg-hd"><b>Lien recherché</b><button type="button" class="jg-x" data-del="1" aria-label="Retirer">Retirer</button></div>' +
+					'<div class="pf-row">' + field('n', 'Prénom', 'Dorian', 1, 1) + field('p', 'Nom', 'Gaunt', 1, 1) + '</div>' +
+					'<div class="pf-gap"><span class="pf-lab">Nature du lien <em>*</em></span>' + pills('nat', AFF, 3) + '</div>' +
+					'<div class="pf-row pf-gap">' + field('rel', 'Relation', 'Ex : Frère aîné', 1, 1) + '<div><span class="pf-lab">Disponibilité</span>' + pills('dispo', ['Disponible', 'Réservé'], 0) + '</div></div>' +
+					'<div class="pf-row3 pf-gap">' + field('ag', 'Âge', '22 ans', 0, 1) + field('mai', 'Maison', 'Serpentard (ancien)', 0, 1) + field('sg', 'Statut du sang', 'Sang-pur', 0, 1) + '</div>' +
+					'<div class="pf-gap">' + field('fc', 'Faceclaim', 'Laisse vide pour « faceclaim libre »', 0, 1) + '</div>' +
+					'<div class="pf-gap">' + area('st', 'Ce qui les lie', 'Leur histoire commune, ce que le futur joueur doit savoir pour incarner ce personnage. Environ 400 mots.', 1, 1, 'tall') + '<p class="pf-wc" data-wc="st">0 mot</p></div>' +
+					'<div class="pf-gap">' + area('ot', 'Autres liens de ce personnage', 'Un par ligne : Nom | relation   (ex : Corvus Black | Ancien meilleur ami)   Écris « À définir | … » pour un lien encore libre.', 0, 1) + '</div>' +
+					'<div class="pf-row pf-gap">' + field('rt', 'Scène d’ouverture : titre', 'La lettre restée sans réponse', 0, 1) + field('rd', 'Date de la scène', 'À situer, hiver 1996', 0, 1) + '</div>' +
+					'<div class="pf-gap">' + area('rx', 'Scène d’ouverture : résumé', 'En une ou deux phrases, comment la scène commence.', 0, 1) + '</div>';
+			},
+			seeks: function () {
+				return '<div class="jg-hd"><b>Autre recherche</b><button type="button" class="jg-x" data-del="1" aria-label="Retirer">Retirer</button></div>' +
+					'<div><span class="pf-lab">Nature du lien</span>' + pills('nat', AFF, 1) + '</div>' +
+					'<div class="pf-gap">' + field('d', 'Ce que tu cherches', 'Un rival de duel, pour se mesurer.', 1, 1) + '</div>';
+			},
+			links: function () {
+				return '<div class="jg-hd"><b>Lien</b><button type="button" class="jg-x" data-del="1" aria-label="Retirer">Retirer</button></div>' +
+					'<div class="pf-row">' + field('n', 'Prénom', 'Leta', 1, 1) + field('p', 'Nom', 'Lestrange', 1, 1) + '</div>' +
+					'<div class="pf-gap"><span class="pf-lab">Nature du lien <em>*</em></span>' + pills('nat', AFF, 0) + '</div>' +
+					'<div class="pf-row pf-gap">' + field('rel', 'Relation', 'Ex : Fiancée, Mentor, Camarade', 1, 1) + '<div><span class="pf-lab">Statut</span>' + pills('ok', ['Lien établi', 'En attente'], 0) + '</div></div>' +
+					'<div class="pf-gap"><span class="pf-lab">Profondeur du lien</span>' + pills('dp', ['0', '1', '2', '3', '4', '5'], 3) + '</div>' +
+					'<div class="pf-row pf-gap">' + field('fc', 'Faceclaim', 'Nom de l’acteur ou de l’actrice', 0, 1) + field('im', 'Lien de l’image', 'https://…', 0, 1) + '</div>' +
+					'<div class="pf-row3 pf-gap">' + field('sg', 'Statut du sang', 'Sang-pur', 0, 1) + field('si', 'Première rencontre', 'Leurs 10 ans', 0, 1) + field('li', 'Lieu', 'Poudlard', 0, 1) + '</div>' +
+					'<div class="pf-gap">' + area('st', 'Leur histoire', 'Comment ils se sont connus, où en est le lien. Si le texte dépasse 110 mots, un bouton « Lire la suite » est ajouté. Si tu préfères une simple citation, écris-la ici (une seule phrase).', 1, 1, 'tall') + '<p class="pf-wc" data-wc="st">0 mot</p></div>' +
+					'<div class="pf-gap">' + area('sc', 'Scènes jouées ensemble', 'Une par ligne : Titre | date | résumé | lien du sujet   (ex : La promesse des dix ans | 14 octobre 1986 | Deux enfants, deux familles… | /t12-la-promesse)', 0, 1) + '</div>';
+			}
+		};
+
+		/* ---------- page ---------- */
+		var html = '<div class="pf-root"><div class="pf-head" style="background-image:linear-gradient(180deg,rgba(11,10,8,.55),rgba(11,10,8,.92)),url(' + BASE + 'img/lieux/bibliotheque.jpg)"><span class="pf-eye">Le journal</span><h1>Mon <em>journal</em></h1><p class="pf-tag">Ton personnage, ses liens et ceux qu’il cherche, réunis dans un seul carnet.</p></div><div class="pf-main"><form class="pf-box" onsubmit="return false">' +
+			sec('I', 'Le détenteur du journal', 'L’identité de ton personnage, telle qu’elle apparaît en tête du journal.',
+				'<div class="pf-row3">' + field('n', 'Prénom', 'Elijah', 1) + field('p', 'Nom', 'Gaunt', 1) + field('a', 'Alias', 'Le Corbeau') + '</div>' +
+				'<div class="pf-row3 pf-gap">' + field('ag', 'Âge', '17 ans', 1) + field('yf', 'Année ou fonction', '6e année, ou Professeur de Potions') + field('bn', 'Naissance', 'le 14 octobre 1996') + '</div>' +
+				'<div class="pf-row3 pf-gap">' + field('or', 'Origine', 'Britannique') + field('sx', 'Orientation', 'Bisexuel') + '<div></div></div>' +
+				'<div class="pf-gap"><span class="pf-lab">Statut du sang <em>*</em></span>' + pills('blood', BLOODS, 0) + '</div>' +
+				'<div class="pf-gap"><span class="pf-lab">Maison <span style="text-transform:none;letter-spacing:0;font-weight:300">(facultatif)</span></span>' + pills('house', HOUSES, -1, 1) + '</div>' +
+				'<div class="pf-row pf-gap">' + field('f', 'Faceclaim', 'Nom de l’acteur ou de l’actrice', 1) + field('u', 'Lien du portrait', 'https://… (format portrait, 3:4)') + '</div>' +
+				'<div class="pf-gap pf-cit"><label class="pf-lab">Citation</label><textarea id="jg-ci" class="pf-in pf-ta" placeholder="Une phrase qui ouvre le journal…"></textarea><p class="pf-hint">Facultatif.</p></div>') +
+			sec('II', 'Résumé', 'Quelques lignes pour présenter le personnage, puis ce qu’il faut savoir sur le joueur.',
+				area('sm', 'Résumé du personnage', 'Arrivé à Poudlard en septembre 1996, Elijah passe ses soirées à la bibliothèque…', 1) +
+				'<div class="pf-gap">' + area('nt', 'Note du joueur', 'Un mot pour ceux qui voudraient te proposer un lien.') + '</div>' +
+				'<div class="pf-row pf-gap">' + field('rt', 'Rythme de réponse', 'Un à trois jours') + field('sj', 'Style de jeu', 'Narratif, deux paragraphes') + '</div>' +
+				'<div class="pf-row pf-gap">' + field('lf', 'Lieux favoris', 'Bibliothèque, Serre 3') + field('ct', 'Contact', 'Hibou ou Beuglante') + '</div>' +
+				'<div class="pf-gap"><span class="pf-lab">Ouvert aux liens ?</span>' + pills('open', ['Ouvert', 'Fermé'], 0) + '</div>') +
+			sec('III', 'Physique et mental', 'Deux colonnes dans le journal : un court paragraphe et quelques traits pour chacune.',
+				'<div class="pf-row">' + '<div>' + area('ph', 'Physique', 'Taille, silhouette, signes distinctifs…') + '<div class="pf-gap">' + field('pt', 'Traits du physique', '1m83, Cheveux noirs, Yeux gris') + '</div></div>' +
+				'<div>' + area('me', 'Mental', 'Qualités, défauts, peurs, manies…') + '<div class="pf-gap">' + field('mt', 'Traits du mental', 'Réservé, Curieux, Têtu') + '</div></div></div><p class="pf-hint">Les traits se séparent par des virgules (4 conseillés par colonne).</p>') +
+			sec('IV', 'Liens établis', 'Les personnages avec qui le tien est déjà lié, ou en passe de l’être. Une carte par lien.',
+				'<div class="jg-list" data-t="links"></div><button type="button" class="pf-btn ghost jg-add" data-add="links">+ Ajouter un lien</button>') +
+			sec('V', 'Liens recherchés', 'Un personnage précis dont tu as déjà l’histoire : un frère, un rival, un ancien amour. Le futur joueur la lira avant de te proposer le lien.',
+				'<div class="jg-list" data-t="pres"></div><button type="button" class="pf-btn ghost jg-add" data-add="pres">+ Ajouter un lien recherché</button>') +
+			sec('VI', 'Autres recherches', 'Ce que tu cherches sans personnage précis : un rival, un ami, un secret partagé.',
+				'<div class="jg-list" data-t="seeks"></div><button type="button" class="pf-btn ghost jg-add" data-add="seeks">+ Ajouter une recherche</button>') +
+			'<div class="pf-acts"><p>Le générateur écrit ton journal : tu récupères le code prêt à coller, ou tu l’envoies directement dans l’éditeur. Ton brouillon est gardé sur cet appareil.</p><div><button type="button" class="pf-btn" id="jg-go">Générer mon journal</button></div></div>' +
+			'<div class="pf-out" id="jg-out" style="display:none"></div>' +
+			'</form><aside class="pf-side">' +
+			'<section class="pf-box pf-card"><h3>Aperçu</h3><div class="pf-pv" id="jg-pv"></div></section>' +
+			'<section class="pf-box pf-card"><h3>Avancement</h3><div class="pf-prog"><b id="jg-pb" style="width:0"></b></div><ul class="pf-ck" id="jg-ck"></ul></section>' +
+			'<section class="pf-box pf-card"><h3>Avant d’envoyer</h3><p class="pf-rules"><b>Un seul journal</b> par personnage. Les liens établis sont ceux qui existent déjà en RP, les liens recherchés ceux que tu proposes aux autres joueurs. <b>Tu peux modifier ton journal à tout moment</b> : relance le générateur et remplace le texte du message.</p></section>' +
+			'</aside></div></div>';
+		box.innerHTML = html;
+
+		/* ---------- accès aux valeurs ---------- */
+		function $(id) { return document.getElementById('jg-' + id); }
+		function v(k) { var e = $(k); return e ? trim(e.value) : ''; }
+		function gi(g) { var b = g.querySelectorAll('.pf-pill'), i; for (i = 0; i < b.length; i++) { if (/\bon\b/.test(b[i].className)) { return i; } } return -1; }
+		function gv(scope, k, list) { var g = scope.querySelector('[data-g="' + k + '"]'), i = g ? gi(g) : -1; if (i < 0) { return ''; } var o = list[i]; return typeof o === 'string' ? o : o[0]; }
+		function cards(t) { return Array.prototype.slice.call(box.querySelectorAll('.jg-list[data-t="' + t + '"] .jg-card')); }
+		function cv(card, k) { var e = card.querySelector('[data-k="' + k + '"]'); return e ? trim(e.value) : ''; }
+		function addCard(t, d) {
+			var list = box.querySelector('.jg-list[data-t="' + t + '"]'), c = document.createElement('div');
+			c.className = 'jg-card'; c.innerHTML = TPL[t]();
+			list.appendChild(c);
+			if (d) {
+				Array.prototype.forEach.call(c.querySelectorAll('[data-k]'), function (e) { var k = e.getAttribute('data-k'); if (d.f && d.f[k] != null) { e.value = d.f[k]; } });
+				if (d.g) { Array.prototype.forEach.call(c.querySelectorAll('[data-g]'), function (g) { var k = g.getAttribute('data-g'), b = g.querySelectorAll('.pf-pill'); if (d.g[k] != null) { Array.prototype.forEach.call(b, function (x, i) { x.className = 'pf-pill' + (i === d.g[k] ? ' on' : ''); }); } }); }
+			}
+			return c;
+		}
+		function ttl(c) { var t = c.getAttribute('data-t') || c.parentNode.getAttribute('data-t'); return t; }
+
+		/* ---------- brouillon ---------- */
+		function snap() {
+			var d = { f: {}, g: {}, L: { links: [], pres: [], seeks: [] } };
+			Array.prototype.forEach.call(box.querySelectorAll('[id^="jg-"]'), function (e) { if ((e.tagName === 'INPUT' || e.tagName === 'TEXTAREA') && e.id !== 'jg-code') { d.f[e.id.slice(3)] = e.value; } });
+			Array.prototype.forEach.call(box.querySelectorAll('.pf-pills[data-g]'), function (g) { if (!g.closest('.jg-card')) { d.g[g.getAttribute('data-g')] = gi(g); } });
+			['links', 'pres', 'seeks'].forEach(function (t) {
+				cards(t).forEach(function (c) { var o = { f: {}, g: {} }; Array.prototype.forEach.call(c.querySelectorAll('[data-k]'), function (e) { o.f[e.getAttribute('data-k')] = e.value; }); Array.prototype.forEach.call(c.querySelectorAll('[data-g]'), function (g) { o.g[g.getAttribute('data-g')] = gi(g); }); d.L[t].push(o); });
+			});
+			return d;
+		}
+		var saveT = null;
+		function save() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(FKEY, JSON.stringify(snap())); } catch (e) { } }, 400); }
+		function restore() {
+			var raw; try { raw = localStorage.getItem(FKEY); } catch (e) { return; }
+			if (!raw) { return; }
+			var d; try { d = JSON.parse(raw); } catch (e) { return; }
+			Object.keys(d.f || {}).forEach(function (k) { var e = $(k); if (e) { e.value = d.f[k]; } });
+			Object.keys(d.g || {}).forEach(function (k) { var g = box.querySelector('.pf-sec [data-g="' + k + '"]'); if (g && !g.closest('.jg-card')) { Array.prototype.forEach.call(g.querySelectorAll('.pf-pill'), function (x, i) { x.className = 'pf-pill' + (i === d.g[k] ? ' on' : ''); }); } });
+			['links', 'pres', 'seeks'].forEach(function (t) { ((d.L || {})[t] || []).forEach(function (o) { addCard(t, o); }); });
+		}
+
+		/* ---------- aperçu + avancement ---------- */
+		function nm() { return trim(v('n') + ' ' + v('p')); }
+		function update() {
+			var ini = ((v('n').charAt(0) || 'P') + (v('p').charAt(0) || 'N')).toUpperCase(), al = v('a'), L = cards('links'), P = cards('pres'), K = cards('seeks');
+			var okN = L.filter(function (c) { return gv(c, 'ok', ['Lien établi', 'En attente']) === 'Lien établi'; }).length;
+			var hs = gv(box, 'house', HOUSES), bl = gv(box, 'blood', BLOODS);
+			$('pv').style.setProperty('--c', '#d9b36a');
+			$('pv').innerHTML = '<div class="av"><i></i><b>' + esc(ini) + '</b></div><strong>' + esc(nm() || 'Prénom Nom') + '</strong>' + (al ? '<small>« ' + esc(al) + ' »</small>' : '') +
+				'<ul><span>Sang</span><li>' + esc(bl) + '</li>' + (hs ? '<span>Maison</span><li>' + esc(hs) + '</li>' : '') + '<span>Liens</span><li>' + okN + ' établi' + (okN > 1 ? 's' : '') + ', ' + (L.length - okN) + ' en attente</li><span>Recherchés</span><li>' + (P.length + K.length) + '</li></ul>';
+			Array.prototype.forEach.call(box.querySelectorAll('[data-wc]'), function (p) { var ta = p.parentNode.querySelector('textarea'), w = words(ta ? ta.value : ''); p.textContent = w + ' mot' + (w > 1 ? 's' : ''); });
+			var ck = [[v('n') && v('p') && v('ag'), 'Identité renseignée'], [v('f'), 'Faceclaim ajouté'], [v('sm'), 'Résumé écrit'], [v('ph') && v('me'), 'Physique et mental décrits'], [L.length > 0, 'Au moins un lien ajouté']];
+			var n = 0; $('ck').innerHTML = ck.map(function (c) { if (c[0]) { n++; } return '<li' + (c[0] ? ' class="ok"' : '') + '>' + c[1] + '</li>'; }).join('');
+			$('pb').style.width = Math.round(n / ck.length * 100) + '%';
+		}
+		function missing() {
+			var m = [];
+			if (!v('n') || !v('p')) { m.push('prénom et nom'); }
+			if (!v('ag')) { m.push('âge'); }
+			if (!v('f')) { m.push('faceclaim'); }
+			if (!v('sm')) { m.push('résumé'); }
+			cards('links').forEach(function (c, i) { if (!cv(c, 'n') || !cv(c, 'p') || !cv(c, 'st')) { m.push('lien ' + (i + 1) + ' (nom et histoire)'); } });
+			cards('pres').forEach(function (c, i) { if (!cv(c, 'n') || !cv(c, 'p') || !cv(c, 'st')) { m.push('lien recherché ' + (i + 1) + ' (nom et histoire)'); } });
+			return m;
+		}
+
+		/* ---------- génération du code ---------- */
+		var COL = '#d9b36a';
+		function H(t) { return '[b][color=' + COL + ']' + t + '[/color][/b]\n'; }
+		function line(k, val) { return trim(val) ? k + ' : ' + trim(val) + '\n' : ''; }
+		function build() {
+			var t = '', tags = [v('ag'), v('yf'), gv(box, 'house', HOUSES), gv(box, 'blood', BLOODS)].filter(Boolean);
+			t += '[center][size=30][b][color=' + COL + ']' + nm().toUpperCase() + '[/color][/b][/size]\n';
+			if (v('a')) { t += '[i]« ' + v('a') + ' »[/i]\n'; }
+			if (v('ci')) { t += '[size=15][i]“' + one(v('ci')) + '”[/i][/size]\n'; }
+			t += '[size=13][color=#a8a193]' + tags.join(' · ') + '[/color][/size]\n';
+			if (v('u')) { t += '\n[img]' + v('u') + '[/img]\n'; }
+			if (v('f')) { t += '[i]' + v('f') + '[/i]'; }
+			t += '[/center]\n\n';
+			t += H('JOURNAL') + line('Prénom', v('n')) + line('Nom', v('p')) + line('Alias', v('a')) + line('Âge', v('ag')) + line('Année ou fonction', v('yf')) + line('Naissance', v('bn')) + line('Origine', v('or')) + line('Orientation', v('sx')) + line('Statut du sang', gv(box, 'blood', BLOODS)) + line('Maison', gv(box, 'house', HOUSES)) + line('Faceclaim', v('f')) + line('Ouvert aux liens', gv(box, 'open', ['Ouvert', 'Fermé']));
+			t += '\n' + H('RÉSUMÉ DU JOURNAL') + v('sm') + '\n';
+			if (v('nt')) { t += '\n' + H('NOTE DU JOUEUR') + v('nt') + '\n'; }
+			var jf = line('Rythme de réponse', v('rt')) + line('Style de jeu', v('sj')) + line('Lieux favoris', v('lf')) + line('Contact', v('ct'));
+			if (jf) { t += '\n' + H('DERRIÈRE LE PERSONNAGE') + jf; }
+			if (v('ph') || v('pt')) { t += '\n' + H('PHYSIQUE') + (v('ph') ? v('ph') + '\n' : '') + line('Traits', v('pt')); }
+			if (v('me') || v('mt')) { t += '\n' + H('MENTAL') + (v('me') ? v('me') + '\n' : '') + line('Traits', v('mt')); }
+			var L = cards('links');
+			if (L.length) {
+				t += '\n[b][color=' + COL + ']LIENS[/color][/b]\n';
+				L.forEach(function (c) {
+					var name = trim(cv(c, 'n') + ' ' + cv(c, 'p'));
+					t += '\n' + H('LIEN : ' + name) + line('Nature', gv(c, 'nat', AFF)) + line('Relation', cv(c, 'rel')) + line('Statut', gv(c, 'ok', ['Lien établi', 'En attente'])) + line('Profondeur', gv(c, 'dp', ['0', '1', '2', '3', '4', '5']) ? gv(c, 'dp', ['0', '1', '2', '3', '4', '5']) + '/5' : '') + line('Faceclaim', cv(c, 'fc')) + line('Image', cv(c, 'im')) + line('Statut du sang', cv(c, 'sg')) + line('Première rencontre', cv(c, 'si')) + line('Lieu', cv(c, 'li'));
+					t += H('HISTOIRE') + cv(c, 'st') + '\n';
+					cv(c, 'sc').split('\n').forEach(function (s) { s = trim(s); if (s) { t += 'Scène : ' + s + '\n'; } });
+				});
+			}
+			var P = cards('pres');
+			if (P.length) {
+				t += '\n[b][color=' + COL + ']RECHERCHÉS[/color][/b]\n';
+				P.forEach(function (c) {
+					var name = trim(cv(c, 'n') + ' ' + cv(c, 'p'));
+					t += '\n' + H('RECHERCHÉ : ' + name) + line('Nature', gv(c, 'nat', AFF)) + line('Relation', cv(c, 'rel')) + line('Disponibilité', gv(c, 'dispo', ['Disponible', 'Réservé'])) + line('Âge', cv(c, 'ag')) + line('Maison', cv(c, 'mai')) + line('Statut du sang', cv(c, 'sg')) + line('Faceclaim', cv(c, 'fc') || 'libre');
+					t += H('HISTOIRE') + cv(c, 'st') + '\n';
+					cv(c, 'ot').split('\n').forEach(function (s) { s = trim(s); if (s) { t += 'Autre lien : ' + s + '\n'; } });
+					if (cv(c, 'rt')) { t += 'Scène : ' + cv(c, 'rt') + ' | ' + cv(c, 'rd') + ' | ' + one(cv(c, 'rx')) + '\n'; }
+				});
+			}
+			var K = cards('seeks').filter(function (c) { return cv(c, 'd'); });
+			if (K.length) {
+				t += '\n' + H('AUTRES RECHERCHES');
+				K.forEach(function (c) { t += 'Recherche : ' + gv(c, 'nat', AFF) + ' | ' + one(cv(c, 'd')) + '\n'; });
+			}
+			return t.replace(/\n+$/, '') + '\n';
+		}
+
+		/* ---------- évènements ---------- */
+		box.addEventListener('click', function (e) {
+			var b = e.target.closest ? e.target.closest('button') : null; if (!b) { return; }
+			if (b.getAttribute('data-add')) { var c = addCard(b.getAttribute('data-add')); update(); save(); try { c.querySelector('input').focus(); } catch (x) { } return; }
+			if (b.getAttribute('data-del')) { var cd = b.closest('.jg-card'); if (cd) { cd.parentNode.removeChild(cd); update(); save(); } return; }
+			if (/\bpf-pill\b/.test(b.className) && b.parentNode.getAttribute('data-g')) {
+				var was = /\bon\b/.test(b.className), opt = b.parentNode.getAttribute('data-opt');
+				Array.prototype.forEach.call(b.parentNode.children, function (x) { x.className = 'pf-pill'; });
+				if (!(was && opt)) { b.className = 'pf-pill on'; }
+				update(); save(); return;
+			}
+			if (b.id === 'jg-go') { gen(); }
+		});
+		box.addEventListener('input', function () { update(); save(); });
+		function gen() {
+			var out = $('out'), m = missing(), code = build(), subject = 'Journal de ' + (nm() || 'mon personnage');
+			out.style.display = 'block';
+			out.innerHTML = m.length ? '<div class="pf-err"><b>Il manque encore :</b> ' + m.join(', ') + '.<br>Tu peux quand même copier le code ci-dessous.</div>' : '';
+			if (code.length > 60000) { out.innerHTML += '<div class="pf-err"><b>Le code est très long (' + code.length + ' caractères).</b> Le forum risque de le refuser : retire un lien ou raccourcis une histoire.</div>'; }
+			out.innerHTML += '<span class="pf-lab" style="margin-top:' + (out.innerHTML ? 16 : 0) + 'px">Ton code, prêt à coller</span><textarea id="jg-code" readonly></textarea>' +
+				'<div class="pf-bar2"><button type="button" class="pf-btn" id="jg-copy">Copier le code</button>' + (JR_FORUM ? '<a class="pf-btn ghost" id="jg-open" href="/post?mode=newtopic&f=' + JR_FORUM + '">Ouvrir l’éditeur avec mon journal</a>' : '') + '<span class="pf-ok" id="jg-msg"></span></div>' +
+				'<p class="pf-hint">Titre conseillé : <b>' + esc(subject) + '</b></p>';
+			$('code').value = code;
+			$('copy').onclick = function () {
+				var ta = $('code'); ta.select();
+				var done = function () { $('msg').textContent = 'Code copié.'; };
+				if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(code).then(done, function () { try { document.execCommand('copy'); done(); } catch (e) { } }); } else { try { document.execCommand('copy'); done(); } catch (e) { } }
+			};
+			if ($('open')) { $('open').onclick = function () { try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), body: code, subject: subject })); } catch (e) { } }; }
+			out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		}
+		restore(); update();
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

@@ -2046,6 +2046,7 @@
 (function () {
 	'use strict';
 	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+	function GB() { var sc = document.querySelector('script[src*="revelio.js"]'); return sc ? sc.getAttribute('src').replace(/revelio\.js.*$/, '') : 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/'; }
 	function build(c) {
 		var cl = c.cloneNode(true), lists = [], links = [], i;
 		Array.prototype.forEach.call(cl.querySelectorAll('ul,ol'), function (u) { var items = []; Array.prototype.forEach.call(u.querySelectorAll('li'), function (li) { items.push(li.textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')); }); lists.push(items); u.parentNode.replaceChild(document.createTextNode('\n§L' + (lists.length - 1) + '§\n'), u); });
@@ -2053,7 +2054,7 @@
 		var tmp = document.createElement('div'); tmp.innerHTML = cl.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li|h\d)>/gi, '\n');
 		var lines = (tmp.textContent || '').split('\n').map(function (l) { return l.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, ''); }).filter(Boolean);
 		if (!lines.length || lines[0].toUpperCase() !== 'LA GAZETTE DU SORCIER') { return null; }
-		var h = '<div class="gp"><header class="gp-mast"><div class="gp-meta"><span>Hors RP</span><span>Revelio</span></div><h2>' + esc(lines[0]) + '</h2>' + (lines[1] ? '<p class="gp-tag">' + esc(lines[1]) + '</p>' : '') + '</header><div class="gp-body">';
+		var h = '<div class="gp"><header class="gp-mast"><div class="gp-meta"><span>Hors RP</span><span>Revelio</span></div><h2>' + esc(lines[0]) + '</h2>' + (lines[1] ? '<p class="gp-tag">' + esc(lines[1]) + '</p>' : '') + '<div class="gp-crests">' + ['Gryffondor', 'Serpentard', 'Serdaigle', 'Poufsouffle'].map(function (n) { return '<img src="' + GB() + 'img/ecussons/' + n + '.png" alt="">'; }).join('') + '</div></header><div class="gp-body">';
 		var rest = lines.slice(2), last = rest.length - 1;
 		rest.forEach(function (l, k) {
 			var m;

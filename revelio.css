@@ -2064,3 +2064,6 @@ body.rv-hat-on { overflow: hidden; }
 	.sg-num { width: 36px; font-size: 24px; }
 	.sg-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.gd-go { display: inline-block; margin-top: 12px; font: 700 10px 'Montserrat', 'Poppins', sans-serif; letter-spacing: 2px; text-transform: uppercase; color: var(--s); text-decoration: none; }
+.gd-go:hover { text-decoration: underline; }

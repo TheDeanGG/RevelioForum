@@ -1735,26 +1735,35 @@
 	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 	function norm(s) { s = String(s || '').toLowerCase().replace(/^\s+|\s+$/g, ''); return s.normalize ? s.normalize('NFD').replace(/[̀-ͯ]/g, '') : s; }
 	/* Choixpeau : images de l'artiste (12 expressions), la bouche alterne quand il parle */
-	var FR = BASE + 'img/choixpeau/f', M = { curious: [1, 11], warm: [9, 10], stern: [4, 6], think: [2, 4, 5], shock: [7, 12] }, IDLE = { curious: 11, warm: 9, stern: 4, think: 2, shock: 12 };
-	function fsrc(n) { return FR + (n < 10 ? '0' : '') + n + '.webp'; }
-	(function () { for (var i = 1; i <= 12; i++) { var im = new Image(); im.src = fsrc(i); } })();
-	function faceHtml(n) { return '<div class="ht-fr"><img alt="" draggable="false" src="' + fsrc(n || 11) + '"></div>'; }
+	var FR = BASE + 'img/choixpeau/', M = { stern: ['n01', 'n02', 'n03', 'n04'], curious: ['n01', 'n02', 'n03'], think: ['n01', 'n02', 'n03', 'n04'], warm: ['n07', 'n08', 'n09', 'n05', 'n06'], shock: ['n30', 'n28', 'n29', 'n28'] },
+		IDLE = { stern: 'n21', curious: 'n21', think: 'n21', warm: 'n08', shock: 'n30' }, BLINK = ['n21', 'n22', 'n23', 'n22', 'n21'];
+	function fsrc(n) { return FR + n + '.webp'; }
+	(function () { ['n01', 'n02', 'n03', 'n04', 'n05', 'n06', 'n07', 'n08', 'n09', 'n21', 'n22', 'n23', 'n24', 'n28', 'n29', 'n30'].forEach(function (n) { var im = new Image(); im.src = fsrc(n); }); })();
+	function faceHtml(n) { return '<div class="ht-fr"><img alt="" draggable="false" data-n="' + (n || 'n21') + '" src="' + fsrc(n || 'n21') + '"></div>'; }
 	function fimg(root) { return root && root.querySelector('.ht-fr img'); }
+	function setI(i, n) { i.setAttribute('data-n', n); i.src = fsrc(n); }
 	function stopTalk(root) { if (root && root.__ft) { clearInterval(root.__ft); root.__ft = 0; } }
-	function idleF(root, n) { stopTalk(root); var i = fimg(root); if (i) { i.src = fsrc(n || 11); } }
-	function talkF(root, fr) { stopTalk(root); var i = fimg(root), last = 0; if (!i || !fr) { return; } root.__ft = setInterval(function () { var n; do { n = fr[Math.floor(Math.random() * fr.length)]; } while (n === last && fr.length > 1); last = n; i.src = fsrc(n); }, 190); }
-	var HAT = faceHtml(11);
+	function idleF(root, n) { stopTalk(root); var i = fimg(root); if (i) { setI(i, n || 'n21'); } }
+	function talkF(root, fr) { stopTalk(root); var i = fimg(root), last = ''; if (!i || !fr) { return; } root.__ft = setInterval(function () { var n; do { n = fr[Math.floor(Math.random() * fr.length)]; } while (n === last && fr.length > 1); last = n; setI(i, n); }, 170); }
+	/* clignement : seulement quand le chapeau écoute avec les yeux ouverts */
+	setInterval(function () {
+		[].forEach.call(document.querySelectorAll('.ht-fr img[data-n="n21"]'), function (i) {
+			var r = i.closest('.ht-fr').parentNode; if (r && r.__ft) { return; }
+			BLINK.forEach(function (n, k) { setTimeout(function () { if (r && r.__ft) { return; } i.src = fsrc(n); i.setAttribute('data-n', k === BLINK.length - 1 ? 'n21' : n); }, k * 75); });
+		});
+	}, 4600);
+	var HAT = faceHtml('n21');
 	function play(opts, done) {
 		var name = opts.name || 'Élève', key = KEYS.indexOf(opts.house) > -1 ? opts.house : KEYS[Math.floor(Math.random() * 4)], h = H[key];
 		var other = H[KEYS[(KEYS.indexOf(key) + 1 + Math.floor(Math.random() * 3)) % 4]];
 		var ov = document.createElement('div'); ov.className = 'rv-hat'; ov.style.setProperty('--hc', h.c);
-		ov.innerHTML = '<div class="ht-dim"></div><div class="ht-stars"></div><div class="ht-box"><div class="ht-hat">' + faceHtml(11) + '</div><div class="ht-line" aria-live="polite"></div>' +
+		ov.innerHTML = '<div class="ht-dim"></div><div class="ht-stars"></div><div class="ht-box"><div class="ht-hat">' + faceHtml('n21') + '</div><div class="ht-line" aria-live="polite"></div>' +
 			'<div class="ht-res"><img class="ht-crest" alt="" src="' + BASE + 'img/ecussons/' + h.n + '.png"><div class="ht-cry">' + h.cry + '</div><div class="ht-sub">Bienvenue chez ' + h.n + ', <b>' + esc(name) + '</b>.<br><em>' + h.tag + '</em></div><button type="button" class="ht-ok">Fermer</button></div></div>' +
 			'<button type="button" class="ht-skip">Passer</button>';
 		document.body.appendChild(ov); document.body.className += ' rv-hat-on'; if (window.RVMusic) { var mb = window.RVMusic.button(); mb.className += ' ht-music'; ov.appendChild(mb); }
 		var tm = [], line = ov.querySelector('.ht-line'), box = ov.querySelector('.ht-box');
 		function at(ms, f) { tm.push(setTimeout(f, ms)); }
-		function say(t, mood) { line.className = 'ht-line'; void line.offsetWidth; line.textContent = t; line.className = 'ht-line on'; if (mood) { talkF(box, M[mood]); } else { idleF(box, 11); } }
+		function say(t, mood) { line.className = 'ht-line'; void line.offsetWidth; line.textContent = t; line.className = 'ht-line on'; if (mood) { talkF(box, M[mood]); } else { idleF(box, 'n21'); } }
 		function stop() { tm.forEach(clearTimeout); tm = []; }
 		function result() { stop(); stopTalk(box); ov.classList.add('res'); line.textContent = ''; }
 		function close() { stop(); ov.classList.add('out'); document.body.className = document.body.className.replace(/\s*rv-hat-on/, ''); setTimeout(function () { if (ov.parentNode) { ov.parentNode.removeChild(ov); } }, 500); document.removeEventListener('keydown', key2); if (done) { done(key); } }
@@ -1804,7 +1813,7 @@
 			try { seen = !!localStorage.getItem(seenKey); } catch (e) { }
 			var card = document.createElement('div'); card.className = 'rv-hatcard'; card.style.setProperty('--hc', H[hk].c);
 			function draw(done) {
-				card.innerHTML = '<div class="hc-ic">' + faceHtml(9) + '</div><div class="hc-tx"><span>Le Choixpeau a parlé</span><b>' + esc(name) + '</b>' + (done ? '<em>Réparti à <i>' + H[hk].n + '</i></em>' : '<em>Sa Répartition l’attend…</em>') + '</div><button type="button" class="hc-bt">' + (done ? 'Revoir la cérémonie' : 'Écouter le Choixpeau') + '</button>';
+				card.innerHTML = '<div class="hc-ic">' + faceHtml('n08') + '</div><div class="hc-tx"><span>Le Choixpeau a parlé</span><b>' + esc(name) + '</b>' + (done ? '<em>Réparti à <i>' + H[hk].n + '</i></em>' : '<em>Sa Répartition l’attend…</em>') + '</div><button type="button" class="hc-bt">' + (done ? 'Revoir la cérémonie' : 'Écouter le Choixpeau') + '</button>';
 				card.querySelector('.hc-bt').onclick = function () { play({ name: name, house: hk }, function () { try { localStorage.setItem(seenKey, '1'); } catch (e) { } draw(true); }); };
 			}
 			draw(seen); c.style.display = 'none'; c.parentNode.insertBefore(card, c);
@@ -1842,7 +1851,7 @@
 		var box = document.createElement('div'); box.className = 'rv-quiz'; stage.appendChild(box); root.appendChild(stage);
 		function swap(html, cls) { box.className = 'rv-quiz out'; setTimeout(function () { box.className = 'rv-quiz in ' + (cls || ''); box.innerHTML = html; bind(); }, 320); }
 		var REA = ['Hmm… intéressant.', 'Ah, je vois…', 'Voilà qui en dit long.', 'Oh, tiens, tiens…', 'Curieux… très curieux.', 'Je note, je note…'], INT = ['Voyons voir… une première question.'];
-		function hatBlk(txt, big) { var R = window.RVHat; return '<div class="qz-hatw' + (big ? ' big' : '') + '"><div class="qz-hat">' + (R ? R.face(11) : '') + '</div><div class="qz-sub">' + txt + '</div></div>'; }
+		function hatBlk(txt, big) { var R = window.RVHat; return '<div class="qz-hatw' + (big ? ' big' : '') + '"><div class="qz-hat">' + (R ? R.face('n21') : '') + '</div><div class="qz-sub">' + txt + '</div></div>'; }
 		function speak(mood, ms) { var R = window.RVHat, e = box.querySelector('.qz-hat'); if (!R || !e) { return; } R.talk(e, R.M[mood]); if (ms) { setTimeout(function () { if (e.isConnected !== false) { R.idle(e, R.IDLE[mood]); } }, ms); } }
 		function dots() { var s = ''; for (var k = 0; k < Q.length; k++) { s += '<i class="' + (k < st.i ? 'd' : k === st.i ? 'n' : '') + '"></i>'; } return '<div class="qz-dots">' + s + '</div>'; }
 		function intro() {

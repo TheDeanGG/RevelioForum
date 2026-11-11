@@ -2238,3 +2238,6 @@ html.rv-gaz .rv-aside { display: none !important; }
 .gz-mast h1 { font-family: 'Cinzel', serif; font-weight: 600; font-size: clamp(30px, 5.6vw, 72px); line-height: 1.08; letter-spacing: 6px; text-transform: uppercase; text-shadow: 0 0 36px rgba(217, 179, 106, .3); }
 .gz-meta span:nth-child(2) { color: #d9b36a; }
 @media (max-width: 860px) { .gz-mast h1 { letter-spacing: 3px; } }
+/* Gazette : jauges segmentées */
+.gz-houses .gz-bar { position: relative; height: 16px; border: 0; background: rgba(255, 255, 255, .07); overflow: visible; -webkit-mask-image: repeating-linear-gradient(90deg, #000 0, #000 calc(5% - 4px), transparent calc(5% - 4px), transparent 5%); mask-image: repeating-linear-gradient(90deg, #000 0, #000 calc(5% - 4px), transparent calc(5% - 4px), transparent 5%); }
+.gz-houses .gz-bar i { min-width: 0; background: linear-gradient(180deg, rgba(255, 255, 255, .45), var(--l) 45%, var(--l)); }

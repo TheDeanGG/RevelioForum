@@ -1734,13 +1734,39 @@
 	var reduce = false; try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { }
 	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 	function norm(s) { s = String(s || '').toLowerCase().replace(/^\s+|\s+$/g, ''); return s.normalize ? s.normalize('NFD').replace(/[̀-ͯ]/g, '') : s; }
-	var HAT = '<svg class="ht-svg" viewBox="0 0 300 300" aria-hidden="true"><defs><linearGradient id="htg" x1="0" x2="1"><stop offset="0" stop-color="#2a1d12"/><stop offset=".45" stop-color="#5a4029"/><stop offset="1" stop-color="#241810"/></linearGradient></defs>' +
-		'<ellipse cx="150" cy="248" rx="132" ry="30" fill="#2b1e13"/><ellipse cx="150" cy="244" rx="132" ry="28" fill="url(#htg)"/>' +
-		'<path d="M62 244 C72 198 100 152 122 112 C138 80 170 62 226 24 C236 52 196 84 190 112 C198 152 228 200 238 244 Z" fill="url(#htg)"/>' +
-		'<path d="M96 196 C120 186 180 186 206 198" stroke="#1a110a" stroke-width="3" fill="none" opacity=".55"/><path d="M110 150 C135 142 170 142 188 152" stroke="#1a110a" stroke-width="3" fill="none" opacity=".45"/>' +
-		'<path d="M128 108 C140 100 160 100 172 108" stroke="#1a110a" stroke-width="2.5" fill="none" opacity=".4"/>' +
-		'<g class="ht-eyes"><path d="M112 206 q13 -9 26 0" stroke="#120b06" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M164 206 q13 -9 26 0" stroke="#120b06" stroke-width="5" fill="none" stroke-linecap="round"/></g>' +
-		'<g class="ht-mouth"><path d="M118 232 Q151 244 184 232 Q151 222 118 232Z" fill="#0b0604"/></g></svg>';
+	var HATP = 'M72 254 C80 204 108 164 122 122 C132 88 148 64 190 46 C214 36 238 42 254 64 C238 72 214 64 196 78 C177 93 178 112 185 130 C197 160 232 206 250 254 Z';
+	var HAT = '<svg class="ht-svg" viewBox="0 0 320 300" aria-hidden="true"><defs>' +
+		'<linearGradient id="htg" x1="0" x2="1"><stop offset="0" stop-color="#2b1d11"/><stop offset=".38" stop-color="#7a5836"/><stop offset=".62" stop-color="#5c4128"/><stop offset="1" stop-color="#22160d"/></linearGradient>' +
+		'<linearGradient id="htb" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6a4b2e"/><stop offset=".55" stop-color="#3e2a18"/><stop offset="1" stop-color="#1f140b"/></linearGradient>' +
+		'<radialGradient id="htm" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#3a0d0a"/><stop offset="1" stop-color="#070302"/></radialGradient>' +
+		'<filter id="htn" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .06  0 0 0 0 .03  0 0 0 0 .01  0 0 0 1.1 -.35"/><feComposite in2="SourceAlpha" operator="in"/></filter>' +
+		'<clipPath id="htc"><path d="' + HATP + '"/></clipPath></defs>' +
+		'<ellipse cx="160" cy="272" rx="118" ry="12" fill="#000" opacity=".35"/>' +
+		/* bord */
+		'<path d="M18 252 C34 232 78 238 160 238 C242 238 288 232 304 252 C306 268 270 282 160 282 C50 282 14 268 18 252Z" fill="url(#htb)"/>' +
+		'<path d="M18 252 C34 232 78 238 160 238 C242 238 288 232 304 252" fill="none" stroke="#8b6a45" stroke-width="2" opacity=".7"/>' +
+		'<path d="M30 262 C60 276 120 279 160 279 C200 279 262 276 292 262" fill="none" stroke="#120a05" stroke-width="3" opacity=".5"/>' +
+		'<path d="M44 256 l8 0 M64 262 l8 0 M92 267 l8 0 M122 270 l8 0 M152 271 l8 0 M184 270 l8 0 M214 267 l8 0 M244 262 l8 0 M268 256 l8 0" stroke="#c9a874" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>' +
+		/* corps */
+		'<path d="' + HATP + '" fill="url(#htg)"/>' +
+		'<path d="' + HATP + '" filter="url(#htn)" opacity=".75"/>' +
+		'<g clip-path="url(#htc)" fill="none" stroke-linecap="round">' +
+		'<path d="M70 212 C110 196 200 196 252 214" stroke="#150c06" stroke-width="5" opacity=".5"/><path d="M70 207 C110 192 200 192 252 209" stroke="#a37d52" stroke-width="2" opacity=".5"/>' +
+		'<path d="M96 160 C130 148 176 150 214 164" stroke="#150c06" stroke-width="4" opacity=".45"/><path d="M96 155 C130 143 176 145 214 159" stroke="#a37d52" stroke-width="1.8" opacity=".45"/>' +
+		'<path d="M118 118 C140 108 166 110 184 120" stroke="#150c06" stroke-width="3.5" opacity=".42"/><path d="M130 88 C148 80 168 82 182 90" stroke="#150c06" stroke-width="3" opacity=".38"/>' +
+		'<path d="M172 60 C196 54 224 62 246 72" stroke="#150c06" stroke-width="3" opacity=".38"/>' +
+		'<path d="M92 230 C98 190 120 160 136 120" stroke="#150c06" stroke-width="4" opacity=".28"/>' +
+		'<path d="M232 236 C226 200 200 166 190 128" stroke="#120a05" stroke-width="5" opacity=".28"/>' +
+		'<path d="M148 230 C150 205 152 160 150 116" stroke="#a37d52" stroke-width="2" opacity=".18"/></g>' +
+		/* pièces cousues */
+		'<g transform="rotate(14 205 176)"><rect x="190" y="164" width="30" height="24" rx="2" fill="#52381f" stroke="#8d6d46" stroke-width="1" stroke-dasharray="3 2.5"/></g>' +
+		'<g transform="rotate(-10 116 140)"><rect x="104" y="130" width="24" height="20" rx="2" fill="#3a2714" stroke="#8d6d46" stroke-width="1" stroke-dasharray="3 2.5"/></g>' +
+				/* visage */
+		'<g class="ht-face">' +
+		'<g class="ht-brows" fill="none" stroke-linecap="round"><path d="M106 192 C118 186 134 188 146 198" stroke="#150c06" stroke-width="5.5"/><path d="M174 198 C186 188 202 186 214 192" stroke="#150c06" stroke-width="5.5"/></g>' +
+		'<g class="ht-eyes"><path d="M110 206 Q128 194 146 205 Q128 213 110 206Z" fill="#0b0503"/><path d="M174 205 Q192 194 210 206 Q192 213 174 205Z" fill="#0b0503"/><path d="M110 206 Q128 194 146 205" fill="none" stroke="#a37d52" stroke-width="1.6" opacity=".55"/><path d="M174 205 Q192 194 210 206" fill="none" stroke="#a37d52" stroke-width="1.6" opacity=".55"/><circle cx="131" cy="204" r="1.8" fill="#e9d3a4" opacity=".7"/><circle cx="195" cy="204" r="1.8" fill="#e9d3a4" opacity=".7"/></g>' +
+		'<path d="M158 208 C153 218 153 224 160 226 C167 224 167 218 162 208" fill="none" stroke="#150c06" stroke-width="2.5" opacity=".55" stroke-linecap="round"/>' +
+		'<g class="ht-mouth"><path d="M102 240 C122 230 140 236 160 234 C182 232 198 228 218 238 C200 252 126 254 102 240Z" fill="url(#htm)" stroke="#120a05" stroke-width="2.5" stroke-linejoin="round"/><path d="M124 243 C144 248 178 248 198 242 C180 238 142 238 124 243Z" fill="#6d1d17" opacity=".65"/></g></g></svg>';
 	function play(opts, done) {
 		var name = opts.name || 'Élève', key = KEYS.indexOf(opts.house) > -1 ? opts.house : KEYS[Math.floor(Math.random() * 4)], h = H[key];
 		var other = H[KEYS[(KEYS.indexOf(key) + 1 + Math.floor(Math.random() * 3)) % 4]];
@@ -1748,7 +1774,7 @@
 		ov.innerHTML = '<div class="ht-dim"></div><div class="ht-stars"></div><div class="ht-box"><div class="ht-hat">' + HAT + '</div><div class="ht-line" aria-live="polite"></div>' +
 			'<div class="ht-res"><img class="ht-crest" alt="" src="' + BASE + 'img/ecussons/' + h.n + '.png"><div class="ht-cry">' + h.cry + '</div><div class="ht-sub">Bienvenue chez ' + h.n + ', <b>' + esc(name) + '</b>.<br><em>' + h.tag + '</em></div><button type="button" class="ht-ok">Fermer</button></div></div>' +
 			'<button type="button" class="ht-skip">Passer</button>';
-		document.body.appendChild(ov); document.body.className += ' rv-hat-on';
+		document.body.appendChild(ov); document.body.className += ' rv-hat-on'; if (window.RVMusic) { var mb = window.RVMusic.button(); mb.className += ' ht-music'; ov.appendChild(mb); }
 		var tm = [], line = ov.querySelector('.ht-line'), box = ov.querySelector('.ht-box');
 		function at(ms, f) { tm.push(setTimeout(f, ms)); }
 		function say(t, talk) { line.className = 'ht-line'; void line.offsetWidth; line.textContent = t; line.className = 'ht-line on' + (talk ? ' talk' : ''); box.classList.toggle('talk', !!talk); }
@@ -1816,7 +1842,8 @@
 /* ===== REVELIO : quiz de répartition (page contenant <div id="rv-quiz"></div>) ===== */
 (function () {
 	if (window.__rvQuiz) { return; } window.__rvQuiz = 1;
-	var G = 'gryffondor', R = 'serdaigle', S = 'serpentard', P = 'poufsouffle';
+	var G = 'gryffondor', R = 'serdaigle', S = 'serpentard', P = 'poufsouffle', QB = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
+	(function () { var q = document.querySelector('script[src*="revelio.js"]'); if (q) { QB = q.getAttribute('src').replace(/revelio\.js.*$/, ''); } })();
 	var Q = [
 		{ t: 'Aube ou crépuscule ?', bin: 1, o: [['Aube', 'Tout commence', [G, P], 'dawn'], ['Crépuscule', 'Tout se révèle', [R, S], 'dusk']] },
 		{ t: 'Forêt ou rivière ?', bin: 1, o: [['Forêt', 'Sentiers perdus et mystères', [G, S], 'forest'], ['Rivière', 'Courant calme et reflets', [R, P], 'river']] },
@@ -1832,7 +1859,10 @@
 	function mount() {
 		var root = document.getElementById('rv-quiz'); if (!root || root.getAttribute('data-rv')) { return; } root.setAttribute('data-rv', '1');
 		var ud = window._userdata || {}, st = { i: -1, sc: { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 }, name: (ud.user_id > 0 && ud.username) ? ud.username : '' };
-		var box = document.createElement('div'); box.className = 'rv-quiz'; root.appendChild(box);
+		var stage = document.createElement('div'); stage.className = 'rv-qzstage'; stage.style.setProperty('--bg', 'url(' + QB + 'img/lieux/bibliotheque.jpg)');
+		var motes = '', mi; for (mi = 0; mi < 18; mi++) { motes += '<i style="left:' + Math.round(Math.random() * 100) + '%;width:' + (2 + Math.round(Math.random() * 3)) + 'px;height:' + (2 + Math.round(Math.random() * 3)) + 'px;animation-delay:-' + (Math.random() * 14).toFixed(1) + 's;animation-duration:' + (9 + Math.random() * 9).toFixed(1) + 's"></i>'; }
+		stage.innerHTML = '<div class="qz-motes">' + motes + '</div>'; if (window.RVMusic) { var mbt = window.RVMusic.button(); mbt.className += ' qz-music'; stage.appendChild(mbt); }
+		var box = document.createElement('div'); box.className = 'rv-quiz'; stage.appendChild(box); root.appendChild(stage);
 		function swap(html, cls) { box.className = 'rv-quiz out'; setTimeout(function () { box.className = 'rv-quiz in ' + (cls || ''); box.innerHTML = html; bind(); }, 320); }
 		var REA = ['Hmm… intéressant.', 'Ah, je vois…', 'Voilà qui en dit long.', 'Oh, tiens, tiens…', 'Curieux… très curieux.', 'Je note, je note…'], INT = ['Voyons voir… une première question.'];
 		function hatBlk(txt, big) { var hh = window.RVHat ? window.RVHat.hat : ''; return '<div class="qz-hatw' + (big ? ' big' : '') + '"><div class="qz-hat talk">' + hh + '</div><div class="qz-sub">' + txt + '</div></div>'; }
@@ -1840,8 +1870,8 @@
 		function dots() { var s = ''; for (var k = 0; k < Q.length; k++) { s += '<i class="' + (k < st.i ? 'd' : k === st.i ? 'n' : '') + '"></i>'; } return '<div class="qz-dots">' + s + '</div>'; }
 		function intro() {
 			st.i = -1; st.sc = { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 };
-			swap('<div class="qz-eye">Le Choixpeau magique</div><h2>Quelle est ta <em>maison</em> ?</h2><p class="qz-p">Sept questions, pas de bonne réponse. Réponds avec ton instinct : le Choixpeau écoute ce que tu es vraiment.</p>' +
-				'<label class="qz-lab">Ton nom de sorcier<input id="qz-n" type="text" maxlength="60" placeholder="Prénom Nom" value="' + esc(st.name) + '"></label><button type="button" class="qz-go" data-a="start">Commencer</button>', 'qz-intro');
+			swap(hatBlk('Approche, jeune sorcier… Je t’attendais.', 1) + '<div class="qz-eye">Le Choixpeau magique</div><h2>Quelle est ta <em>maison</em> ?</h2><p class="qz-p">Sept questions, pas de bonne réponse. Réponds avec ton instinct : le Choixpeau écoute ce que tu es vraiment.</p>' +
+				'<div class="qz-crests">' + ['Gryffondor', 'Serdaigle', 'Serpentard', 'Poufsouffle'].map(function (n) { return '<img alt="' + n + '" src="' + QB + 'img/ecussons/' + n + '.png">'; }).join('') + '</div><label class="qz-lab">Ton nom de sorcier<input id="qz-n" type="text" maxlength="60" placeholder="Prénom Nom" value="' + esc(st.name) + '"></label><button type="button" class="qz-go" data-a="start">Commencer</button>', 'qz-intro');
 		}
 		function ask() {
 			var q = Q[st.i], opts = q.bin ? q.o : shuf(q.o);
@@ -1883,4 +1913,36 @@
 		box.className = 'rv-quiz'; intro();
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(mount, 100); }); } else { setTimeout(mount, 100); }
+})();
+
+
+/* ===== REVELIO : musique d'ambiance (lecteur YouTube, activable / désactivable) ===== */
+(function () {
+	if (window.RVMusic) { return; }
+	var VID = '2DobDCA26HA', P = null, ready = false, want = false, btns = [], loading = false;
+	function sync() { var on = want && P && ready; btns.forEach(function (b) { b.className = b.className.replace(/\s*\bon\b/, '') + (want ? ' on' : ''); b.setAttribute('aria-pressed', want ? 'true' : 'false'); b.title = want ? 'Couper la musique' : 'Activer la musique'; }); }
+	function load() {
+		if (loading) { return; } loading = true;
+		var d = document.createElement('div'); d.style.cssText = 'position:fixed;left:-20px;bottom:0;width:2px;height:2px;overflow:hidden;opacity:.01;pointer-events:none'; d.innerHTML = '<div id="rv-yt"></div>'; document.body.appendChild(d);
+		var prev = window.onYouTubeIframeAPIReady;
+		window.onYouTubeIframeAPIReady = function () {
+			if (prev) { try { prev(); } catch (e) { } }
+			P = new YT.Player('rv-yt', { width: '2', height: '2', videoId: VID, playerVars: { controls: 0, loop: 1, playlist: VID, playsinline: 1, rel: 0, modestbranding: 1, disablekb: 1 }, events: {
+				onReady: function () { ready = true; try { P.setVolume(35); } catch (e) { } if (want) { P.playVideo(); } sync(); },
+				onStateChange: function (e) { if (e.data === 0 && want) { P.playVideo(); } },
+				onError: function () { want = false; sync(); }
+			} });
+		};
+		if (window.YT && window.YT.Player) { window.onYouTubeIframeAPIReady(); } else { var s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s); }
+	}
+	function toggle() {
+		want = !want; try { sessionStorage.setItem('rv_mus', want ? '1' : '0'); } catch (e) { }
+		if (want) { if (!P) { load(); } else if (ready) { P.playVideo(); } } else if (P && ready) { P.pauseVideo(); }
+		sync();
+	}
+	function button() {
+		var b = document.createElement('button'); b.type = 'button'; b.className = 'rv-mus'; b.innerHTML = '<span class="mu-eq"><i></i><i></i><i></i><i></i></span><span class="mu-t">Musique</span>';
+		b.onclick = toggle; btns.push(b); sync(); return b;
+	}
+	window.RVMusic = { button: button, toggle: toggle };
 })();

@@ -1813,50 +1813,68 @@
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 80); }); } else { setTimeout(run, 80); }
 })();
 
-/* ===== REVELIO : quiz du Choixpeau (page contenant <div id="rv-quiz"></div>) ===== */
+/* ===== REVELIO : quiz de répartition (page contenant <div id="rv-quiz"></div>) ===== */
 (function () {
 	if (window.__rvQuiz) { return; } window.__rvQuiz = 1;
+	var G = 'gryffondor', R = 'serdaigle', S = 'serpentard', P = 'poufsouffle';
 	var Q = [
-		['Un secret terrible t’est confié par un ami. Que fais-tu ?', [['g', 'Je l’aide à l’affronter, quitte à prendre des risques.'], ['s', 'Je cherche comment le retourner à notre avantage.'], ['p', 'Je reste à ses côtés et je garde le silence.'], ['r', 'Je cherche à comprendre d’où vient ce secret.']]],
-		['Quelle matière aimerais-tu le plus maîtriser ?', [['g', 'Défense contre les forces du Mal.'], ['s', 'Potions.'], ['p', 'Botanique et soins aux créatures.'], ['r', 'Sortilèges et Runes anciennes.']]],
-		['Face à une porte interdite au troisième étage, tu…', [['g', 'Ouvres la porte, sans hésiter.'], ['s', 'Prépares un plan et t’assures de ne pas être vu.'], ['p', 'Préviens un professeur, c’est plus sûr pour tout le monde.'], ['r', 'Cherches dans la bibliothèque ce qui se cache derrière.']]],
-		['Ce que tu redoutes le plus :', [['g', 'Être lâche au moment décisif.'], ['s', 'Rester insignifiant, sans pouvoir.'], ['p', 'Être seul, sans personne sur qui compter.'], ['r', 'Ne jamais comprendre ou passer pour un ignorant.']]],
-		['Un compagnon à tes côtés :', [['g', 'Un lion ou un phénix, fier et fidèle.'], ['s', 'Un serpent, discret et dangereux.'], ['p', 'Un blaireau, tenace et affectueux.'], ['r', 'Un aigle ou un hibou, vif et sage.']]],
-		['Tu gagnes la Coupe des Quatre Maisons. Pourquoi ?', [['g', 'J’ai pris tous les risques qu’il fallait.'], ['s', 'J’ai su manœuvrer mieux que les autres.'], ['p', 'Chacun a donné le meilleur de lui-même.'], ['r', 'J’avais tout appris et tout anticipé.']]],
-		['Un élève est injustement puni. Tu…', [['g', 'Prends sa défense devant tout le monde.'], ['s', 'Négocie discrètement avec la bonne personne.'], ['p', 'Lui apporte ton soutien, quoi qu’il arrive.'], ['r', 'Réunis des preuves et établis les faits.']]],
-		['Le pouvoir, pour toi, c’est :', [['g', 'Protéger ceux qu’on aime, même au prix du danger.'], ['s', 'Atteindre ses objectifs, par tous les moyens.'], ['p', 'Un travail patient qui profite à tous.'], ['r', 'La connaissance, rien d’autre.']]],
-		['Ton lieu préféré à Poudlard :', [['g', 'Le terrain de Quidditch.'], ['s', 'Les cachots, au calme.'], ['p', 'Les cuisines et les serres.'], ['r', 'La bibliothèque.']]]
-	], MAP = { g: 'gryffondor', s: 'serpentard', p: 'poufsouffle', r: 'serdaigle' };
-	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+		{ t: 'Aube ou crépuscule ?', bin: 1, o: [['Aube', 'Tout commence', [G, P], 'dawn'], ['Crépuscule', 'Tout se révèle', [R, S], 'dusk']] },
+		{ t: 'Forêt ou rivière ?', bin: 1, o: [['Forêt', 'Sentiers perdus et mystères', [G, S], 'forest'], ['Rivière', 'Courant calme et reflets', [R, P], 'river']] },
+		{ t: 'Lune ou étoiles ?', bin: 1, o: [['Lune', 'Discrète, elle règle les marées', [S, P], 'moon'], ['Étoiles', 'Innombrables, elles guident', [R, G], 'stars']] },
+		{ t: 'Un couloir du château se sépare en quatre portes. Laquelle pousses-tu ?', o: [['Celle d’où montent des cris et des bruits de bataille.', [G]], ['Celle qui porte une inscription que personne n’a su traduire.', [R]], ['Celle qui est entrouverte, comme si on t’attendait.', [S]], ['Celle d’où s’échappe une odeur de pain chaud et de rires.', [P]]] },
+		{ t: 'Lequel de ces reproches te blesserait le plus ?', o: [['« Tu as eu peur. »', [G]], ['« Tu n’as rien compris. »', [R]], ['« Tu n’es personne. »', [S]], ['« Tu as laissé tomber les tiens. »', [P]]] },
+		{ t: 'Un ami te cache un secret dangereux. Que fais-tu ?', o: [['Je l’affronte sur-le-champ : on réglera ça ensemble.', [G]], ['Je cherche d’abord à comprendre ce qui se joue vraiment.', [R]], ['Je me tais, et je prépare discrètement un plan pour le protéger.', [S]], ['Je reste à ses côtés, quoi qu’il arrive.', [P]]] },
+		{ t: 'Un objet ensorcelé t’est offert. Lequel choisis-tu ?', o: [['Une épée qui ne s’émousse jamais.', [G]], ['Un livre qui répond à toutes les questions.', [R]], ['Un miroir qui révèle les intentions de chacun.', [S]], ['Un jardin où tout pousse, même en hiver.', [P]]] }
+	];
+	var HC = { gryffondor: '#d65a6b', serdaigle: '#6fb0cf', serpentard: '#5fc4a0', poufsouffle: '#d9b650' };
 	function shuf(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-	function run() {
-		var root = document.getElementById('rv-quiz'); if (!root || root.getAttribute('data-rv') || !window.RVHat) { return; } root.setAttribute('data-rv', '1');
-		var H = window.RVHat.houses, S = { i: 0, sc: { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 }, name: '', ord: shuf(Q.map(function (q, i) { return i; })) };
-		function head(t) { return '<div class="hp-hd"><span>Le Choixpeau magique</span><h2>' + t + '</h2></div>'; }
+	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+	function mount() {
+		var root = document.getElementById('rv-quiz'); if (!root || root.getAttribute('data-rv')) { return; } root.setAttribute('data-rv', '1');
+		var ud = window._userdata || {}, st = { i: -1, sc: { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 }, name: (ud.user_id > 0 && ud.username) ? ud.username : '' };
+		var box = document.createElement('div'); box.className = 'rv-quiz'; root.appendChild(box);
+		function swap(html, cls) { box.className = 'rv-quiz out'; setTimeout(function () { box.className = 'rv-quiz in ' + (cls || ''); box.innerHTML = html; bind(); }, 320); }
+		function dots() { var s = ''; for (var k = 0; k < Q.length; k++) { s += '<i class="' + (k < st.i ? 'd' : k === st.i ? 'n' : '') + '"></i>'; } return '<div class="qz-dots">' + s + '</div>'; }
 		function intro() {
-			root.innerHTML = '<div class="rv-hatpg">' + head('Quelle est ta <em>maison</em> ?') + '<div class="hp-form"><p class="hq-p">' + Q.length + ' questions. Réponds en pensant à ton personnage, pas à toi : le Choixpeau lit dans son cœur.</p><label>Nom de ton personnage<input id="hq-n" type="text" maxlength="60" placeholder="Prénom Nom" value="' + esc(S.name) + '"></label><button type="button" id="hq-go">Commencer</button></div></div>';
-			document.getElementById('hq-go').onclick = function () { var n = document.getElementById('hq-n').value.replace(/^\s+|\s+$/g, ''); if (!n) { document.getElementById('hq-n').focus(); return; } S.name = n; S.i = 0; S.sc = { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 }; ask(); };
+			st.i = -1; st.sc = { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 };
+			swap('<div class="qz-eye">Le Choixpeau magique</div><h2>Quelle est ta <em>maison</em> ?</h2><p class="qz-p">Sept questions, pas de bonne réponse. Réponds avec ton instinct : le Choixpeau écoute ce que tu es vraiment.</p>' +
+				'<label class="qz-lab">Ton nom de sorcier<input id="qz-n" type="text" maxlength="60" placeholder="Prénom Nom" value="' + esc(st.name) + '"></label><button type="button" class="qz-go" data-a="start">Commencer</button>', 'qz-intro');
 		}
 		function ask() {
-			var q = Q[S.ord[S.i]], opts = shuf(q[1]);
-			root.innerHTML = '<div class="rv-hatpg">' + head('Question <em>' + (S.i + 1) + '</em> / ' + Q.length) + '<div class="hq-bar"><i style="width:' + (S.i / Q.length * 100) + '%"></i></div><div class="hp-form"><p class="hq-q">' + esc(q[0]) + '</p>' + opts.map(function (o) { return '<button type="button" class="hq-o" data-k="' + o[0] + '">' + esc(o[1]) + '</button>'; }).join('') + '</div></div>';
-			[].forEach.call(root.querySelectorAll('.hq-o'), function (b) { b.onclick = function () { b.className += ' on'; S.sc[MAP[b.getAttribute('data-k')]]++; S.i++; setTimeout(S.i < Q.length ? ask : end, 260); }; });
+			var q = Q[st.i], opts = q.bin ? q.o : shuf(q.o);
+			var h = dots() + '<div class="qz-n">Question ' + (st.i + 1) + ' sur ' + Q.length + '</div><h3>' + esc(q.t) + '</h3>';
+			if (q.bin) { h += '<div class="qz-bin">' + opts.map(function (o, k) { return '<button type="button" class="qz-b ' + o[3] + '" data-k="' + k + '"><b>' + o[0] + '</b><span>' + o[1] + '</span></button>'; }).join('') + '</div>'; }
+			else { h += '<div class="qz-opts">' + opts.map(function (o, k) { return '<button type="button" class="qz-o" data-k="' + k + '"><span class="qz-bul"></span>' + o[0] + '</button>'; }).join('') + '</div>'; }
+			q._cur = opts; swap(h, q.bin ? 'qz-q qz-isbin' : 'qz-q');
 		}
-		function end() {
-			var best = 0, k; for (k in S.sc) { if (S.sc[k] > best) { best = S.sc[k]; } }
-			var top = Object.keys(S.sc).filter(function (x) { return S.sc[x] === best; }), win = top[Math.floor(Math.random() * top.length)];
-			root.innerHTML = '<div class="rv-hatpg">' + head('Le Choixpeau <em>réfléchit</em>…') + '</div>';
-			window.RVHat.play({ name: S.name, house: win }, function () { result(win); });
+		function pick(k) {
+			var q = Q[st.i], o = q._cur[k], hs = q.bin ? o[2] : o[1], w = q.bin ? 1 : 2; hs.forEach(function (x) { st.sc[x] += w; });
+			st.i++; if (st.i < Q.length) { ask(); } else { verdict(); }
 		}
-		function result(w) {
-			var h = H[w], tot = Q.length, bb = '[b]RÉPARTITION DU CHOIXPEAU[/b]\nÉlève : ' + S.name + '\nMaison : ' + h.n;
-			root.innerHTML = '<div class="rv-hatpg">' + head('Réparti à <em style="color:' + h.c + '">' + h.n + '</em>') + '<div class="hp-form"><p class="hq-p"><b>' + esc(S.name) + '</b>, ' + h.tag.charAt(0).toLowerCase() + h.tag.slice(1) + '</p>' +
-				Object.keys(S.sc).map(function (x) { return '<div class="hq-r"><span>' + H[x].n + '</span><div><i style="width:' + (S.sc[x] / tot * 100) + '%;background:' + H[x].c + '"></i></div><b>' + S.sc[x] + '</b></div>'; }).join('') +
-				'<button type="button" id="hq-again">Refaire le quiz</button></div><div class="hp-out"><span>Résultat · à coller dans ta fiche de présentation</span><textarea id="hq-bb" readonly rows="4">' + esc(bb) + '</textarea><button type="button" id="hq-cp">Copier</button></div></div>';
-			document.getElementById('hq-again').onclick = intro;
-			document.getElementById('hq-cp').onclick = function () { var b = document.getElementById('hq-bb'); b.select(); try { document.execCommand('copy'); this.textContent = 'Copié !'; } catch (e) { } };
+		function verdict() {
+			var mx = Math.max.apply(null, Object.keys(st.sc).map(function (k) { return st.sc[k]; })), top = Object.keys(st.sc).filter(function (k) { return st.sc[k] === mx; }), h = top[Math.floor(Math.random() * top.length)];
+			swap('<div class="qz-wait"><div class="qz-eye">Le Choixpeau délibère</div><div class="qz-dotsw"><i></i><i></i><i></i></div></div>', 'qz-w');
+			setTimeout(function () { if (window.RVHat) { window.RVHat.play({ name: st.name || 'jeune sorcier', house: h }, function () { result(h); }); } else { result(h); } }, 1900);
 		}
-		intro();
+		function result(h) {
+			var I = window.RVHat ? window.RVHat.houses[h] : { n: h, tag: '' }, total = Object.keys(st.sc).reduce(function (a, k) { return a + st.sc[k]; }, 0) || 1;
+			var bars = Object.keys(st.sc).map(function (k) { var n = window.RVHat ? window.RVHat.houses[k].n : k; return '<div class="qz-bar"><span>' + n + '</span><div><i style="width:' + Math.round(st.sc[k] / total * 100) + '%;background:' + HC[k] + '"></i></div><em>' + Math.round(st.sc[k] / total * 100) + ' %</em></div>'; }).join('');
+			swap('<div class="qz-eye" style="color:' + HC[h] + '">Résultat du quiz</div><h2 style="--hc:' + HC[h] + '">' + esc(st.name || 'Toi') + ', tu irais à <em style="color:' + HC[h] + '">' + I.n + '</em></h2><p class="qz-p">' + I.tag + '<br>Ce quiz t’oriente : la Répartition officielle de ton personnage reste décidée par le staff, selon ta présentation.</p>' + '<div class="qz-bars">' + bars + '</div>' +
+				'<div class="qz-row"><button type="button" class="qz-go" data-a="again">Refaire le quiz</button><button type="button" class="qz-go alt" data-a="copy">Copier mon résultat</button></div><textarea id="qz-bb" class="qz-bb" readonly rows="2">Quiz du Choixpeau : ' + I.n + '</textarea>', 'qz-res');
+		}
+		function bind() {
+			var L = box.querySelectorAll('button'), i;
+			for (i = 0; i < L.length; i++) {
+				L[i].onclick = function () {
+					var a = this.getAttribute('data-a'), k = this.getAttribute('data-k');
+					if (a === 'start') { var n = box.querySelector('#qz-n'); st.name = n ? n.value.replace(/^\s+|\s+$/g, '') : ''; st.i = 0; ask(); }
+					else if (a === 'again') { intro(); }
+					else if (a === 'copy') { var b = box.querySelector('#qz-bb'); b.select(); try { document.execCommand('copy'); this.textContent = 'Copié !'; } catch (e) { } }
+					else if (k !== null) { pick(+k); }
+				};
+			}
+		}
+		box.className = 'rv-quiz'; intro();
 	}
-	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 120); }); } else { setTimeout(run, 120); }
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(mount, 100); }); } else { setTimeout(mount, 100); }
 })();

@@ -2059,7 +2059,7 @@
 		Array.prototype.forEach.call(cl.querySelectorAll('a[href]'), function (a) { links.push([a.getAttribute('href'), a.textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')]); a.parentNode.replaceChild(document.createTextNode('\n§A' + (links.length - 1) + '§\n'), a); });
 		var tmp = document.createElement('div'); tmp.innerHTML = cl.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li|h\d)>/gi, '\n');
 		var lines = (tmp.textContent || '').split('\n').map(function (l) { return l.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, ''); }).filter(Boolean);
-		if (!lines.length || lines[0].toUpperCase() !== 'LA GAZETTE DU SORCIER') { return null; }
+		if (!lines.length || (lines[0].toUpperCase() !== 'LA GAZETTE DU SORCIER' && lines[0].toUpperCase() !== 'LE GUIDEBOOK')) { return null; }
 		var h = '<div class="gp"><header class="gp-mast"><div class="gp-meta"><span>Hors RP</span><span>Revelio</span></div><h2>' + esc(lines[0]) + '</h2>' + (lines[1] ? '<p class="gp-tag">' + esc(lines[1]) + '</p>' : '') + '<div class="gp-crests">' + ['Gryffondor', 'Serpentard', 'Serdaigle', 'Poufsouffle'].map(function (n) { return '<img src="' + GB() + 'img/ecussons/' + n + '.png" alt="">'; }).join('') + '</div></header><div class="gp-body">';
 		var rest = lines.slice(2), last = rest.length - 1;
 		rest.forEach(function (l, k) {
@@ -2076,11 +2076,11 @@
 		var L = document.querySelectorAll('.post .content:not([data-rvg])'), i;
 		for (i = 0; i < L.length; i++) {
 			var c = L[i]; c.setAttribute('data-rvg', '1');
-			if ((c.textContent || '').indexOf('LA GAZETTE DU SORCIER') < 0) { continue; }
+			if ((c.textContent || '').indexOf('LA GAZETTE DU SORCIER') < 0 && (c.textContent || '').indexOf('LE GUIDEBOOK') < 0) { continue; }
 			var html = build(c); if (!html) { continue; }
 			var d = document.createElement('div'); d.innerHTML = html; c.style.display = 'none'; c.parentNode.insertBefore(d.firstChild, c);
 			var po = c.closest('.post'); if (po) { po.className += ' rv-gazp'; } document.documentElement.className += ' rv-gaz';
-			var dl = /(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+(\d{4})/i.exec(document.title), sp = document.querySelector('.gp-meta span:first-child'); if (sp && dl) { sp.textContent = 'Édition de ' + dl[1].toLowerCase() + ' ' + dl[2]; }
+			var dl = /GAZETTE/i.test(c.textContent) && /(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+(\d{4})/i.exec(document.title), sp = document.querySelector('.gp-meta span:first-child'); if (sp && dl) { sp.textContent = 'Édition de ' + dl[1].toLowerCase() + ' ' + dl[2]; }
 		}
 	}
 	setTimeout(run, 70);

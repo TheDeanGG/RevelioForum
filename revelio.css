@@ -2140,3 +2140,21 @@ body.rv-hat-on { overflow: hidden; }
 .gp-body p.gp-note { margin: 28px 0 0; padding-top: 20px; border-top: 1px solid rgba(217, 179, 106, .22); text-align: center; font: italic 400 18px 'EB Garamond', serif; color: #a8a193; }
 @media (max-width: 640px) { .gp-cards { grid-template-columns: minmax(0, 1fr); } }
 .gp-cards { margin-bottom: 24px; }
+/* Gazette : version papier (noir sur blanc) */
+.gp { background: #faf8f3; color: #1b1813; padding: 22px 28px 30px; max-width: 880px; box-shadow: 0 10px 36px rgba(0, 0, 0, .5); }
+.gp-mast { border-top-color: #1b1813; border-bottom-color: #1b1813; border-top-width: 2px; border-bottom-width: 2px; }
+.gp-meta { color: #6b645a; }
+.gp-mast h2 { color: #14110c; }
+.gp-tag { color: #7a5c1c; }
+.gp-body p { color: #2b2720; font-weight: 400; }
+.gp-body h3 { color: #7a5c1c; }
+.gp-card { background: #fff; border-color: rgba(27, 24, 19, .14); }
+.gp-card b { color: #14110c; }
+.gp-card span { color: #3a352c; font-weight: 400; }
+.gp-card:nth-child(1) { border-top-color: #b8902f; }
+.gp-card:nth-child(2) { border-top-color: #3e86aa; }
+.gp-card:nth-child(3) { border-top-color: #2f9b78; }
+.gp-card:nth-child(4) { border-top-color: #5a60c0; }
+.gp-btn { background: #14110c; color: #faf8f3 !important; }
+.gp-btn:hover { background: #3a2f12; }
+.gp-body p.gp-note { color: #5c564b; border-top-color: rgba(27, 24, 19, .25); }

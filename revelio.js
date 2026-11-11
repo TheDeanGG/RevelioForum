@@ -1719,3 +1719,96 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 50); }); } else { setTimeout(run, 50); }
 })();
+
+/* ===== REVELIO : cérémonie du Choixpeau (page contenant <div id="rv-hat"></div> + messages « RÉPARTITION DU CHOIXPEAU ») ===== */
+(function () {
+	if (window.__rvHat) { return; } window.__rvHat = 1;
+	var BASE = 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
+	(function () { var q = document.querySelector('script[src*="revelio.js"]'); if (q) { BASE = q.getAttribute('src').replace(/revelio\.js.*$/, ''); } })();
+	var H = {
+		gryffondor: { n: 'Gryffondor', c: '#d65a6b', tag: 'Courage, audace et loyauté.', tr: ['du courage', 'de l’audace', 'un cœur qui ne recule pas'], cry: 'GRYFFONDOR !' },
+		serdaigle: { n: 'Serdaigle', c: '#6fb0cf', tag: 'Savoir, esprit et curiosité.', tr: ['une soif de savoir', 'un esprit vif', 'une curiosité insatiable'], cry: 'SERDAIGLE !' },
+		serpentard: { n: 'Serpentard', c: '#5fc4a0', tag: 'Ambition, ruse et détermination.', tr: ['de l’ambition', 'de la ruse', 'une détermination farouche'], cry: 'SERPENTARD !' },
+		poufsouffle: { n: 'Poufsouffle', c: '#d9b650', tag: 'Travail, patience et justice.', tr: ['de la loyauté', 'une patience rare', 'un grand sens de la justice'], cry: 'POUFSOUFFLE !' }
+	}, KEYS = ['gryffondor', 'serdaigle', 'serpentard', 'poufsouffle'];
+	var reduce = false; try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { }
+	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+	function norm(s) { s = String(s || '').toLowerCase().replace(/^\s+|\s+$/g, ''); return s.normalize ? s.normalize('NFD').replace(/[̀-ͯ]/g, '') : s; }
+	var HAT = '<svg class="ht-svg" viewBox="0 0 300 300" aria-hidden="true"><defs><linearGradient id="htg" x1="0" x2="1"><stop offset="0" stop-color="#2a1d12"/><stop offset=".45" stop-color="#5a4029"/><stop offset="1" stop-color="#241810"/></linearGradient></defs>' +
+		'<ellipse cx="150" cy="248" rx="132" ry="30" fill="#2b1e13"/><ellipse cx="150" cy="244" rx="132" ry="28" fill="url(#htg)"/>' +
+		'<path d="M62 244 C72 198 100 152 122 112 C138 80 170 62 226 24 C236 52 196 84 190 112 C198 152 228 200 238 244 Z" fill="url(#htg)"/>' +
+		'<path d="M96 196 C120 186 180 186 206 198" stroke="#1a110a" stroke-width="3" fill="none" opacity=".55"/><path d="M110 150 C135 142 170 142 188 152" stroke="#1a110a" stroke-width="3" fill="none" opacity=".45"/>' +
+		'<path d="M128 108 C140 100 160 100 172 108" stroke="#1a110a" stroke-width="2.5" fill="none" opacity=".4"/>' +
+		'<g class="ht-eyes"><path d="M112 206 q13 -9 26 0" stroke="#120b06" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M164 206 q13 -9 26 0" stroke="#120b06" stroke-width="5" fill="none" stroke-linecap="round"/></g>' +
+		'<g class="ht-mouth"><path d="M118 232 Q151 244 184 232 Q151 222 118 232Z" fill="#0b0604"/></g></svg>';
+	function play(opts, done) {
+		var name = opts.name || 'Élève', key = KEYS.indexOf(opts.house) > -1 ? opts.house : KEYS[Math.floor(Math.random() * 4)], h = H[key];
+		var other = H[KEYS[(KEYS.indexOf(key) + 1 + Math.floor(Math.random() * 3)) % 4]];
+		var ov = document.createElement('div'); ov.className = 'rv-hat'; ov.style.setProperty('--hc', h.c);
+		ov.innerHTML = '<div class="ht-dim"></div><div class="ht-stars"></div><div class="ht-box"><div class="ht-hat">' + HAT + '</div><div class="ht-line" aria-live="polite"></div>' +
+			'<div class="ht-res"><img class="ht-crest" alt="" src="' + BASE + 'img/ecussons/' + h.n + '.png"><div class="ht-cry">' + h.cry + '</div><div class="ht-sub">Bienvenue chez ' + h.n + ', <b>' + esc(name) + '</b>.<br><em>' + h.tag + '</em></div><button type="button" class="ht-ok">Fermer</button></div></div>' +
+			'<button type="button" class="ht-skip">Passer</button>';
+		document.body.appendChild(ov); document.body.className += ' rv-hat-on';
+		var tm = [], line = ov.querySelector('.ht-line'), box = ov.querySelector('.ht-box');
+		function at(ms, f) { tm.push(setTimeout(f, ms)); }
+		function say(t, talk) { line.className = 'ht-line'; void line.offsetWidth; line.textContent = t; line.className = 'ht-line on' + (talk ? ' talk' : ''); box.classList.toggle('talk', !!talk); }
+		function stop() { tm.forEach(clearTimeout); tm = []; }
+		function result() { stop(); box.classList.remove('talk'); ov.classList.add('res'); line.textContent = ''; }
+		function close() { stop(); ov.classList.add('out'); document.body.className = document.body.className.replace(/\s*rv-hat-on/, ''); setTimeout(function () { if (ov.parentNode) { ov.parentNode.removeChild(ov); } }, 500); document.removeEventListener('keydown', key2); if (done) { done(key); } }
+		function key2(e) { if (e.key === 'Escape') { close(); } }
+		document.addEventListener('keydown', key2);
+		ov.querySelector('.ht-skip').onclick = function () { if (ov.classList.contains('res')) { close(); } else { result(); } };
+		ov.querySelector('.ht-ok').onclick = close;
+		if (reduce) { result(); return; }
+		requestAnimationFrame(function () { ov.classList.add('in'); });
+		var t = 1800;
+		[['Hmm… voyons voir…', 2200], ['Oh, oui. Je lis en toi, ' + name + '…', 3000], ['Il y a ' + h.tr[0] + ', c’est certain…', 3000], ['Mais aussi ' + h.tr[1] + '… intéressant.', 3000],
+		['Je vois ' + other.tr[0] + '… non, ce n’est pas ici que tu brilleras.', 3400], ['Difficile… très difficile…', 2600], ['Ah ! ' + h.tr[2].charAt(0).toUpperCase() + h.tr[2].slice(1) + '. Voilà ce que je cherchais.', 3200]].forEach(function (s) {
+			(function (txt, d, t0) { at(t0, function () { say(txt, true); at(d - 300, function () { box.classList.remove('talk'); }); }); })(s[0], s[1], t); t += s[1];
+		});
+		at(t, function () { say('Alors… que ce soit…', true); }); t += 1800;
+		at(t, function () { ov.classList.add('shout'); say(h.cry, true); }); t += 1700;
+		at(t, result);
+	}
+	window.RVHat = { play: play, houses: H };
+
+	/* --- page : <div id="rv-hat"></div> (cérémonie libre + BBCode staff) --- */
+	function page() {
+		var root = document.getElementById('rv-hat'); if (!root || root.getAttribute('data-rv')) { return; } root.setAttribute('data-rv', '1');
+		root.innerHTML = '<div class="rv-hatpg"><div class="hp-hd"><span>Le Choixpeau magique</span><h2>La <em>Répartition</em></h2><p>Entre un nom, laisse le Choixpeau décider — ou impose la maison si tu es du staff.</p></div>' +
+			'<div class="hp-form"><label>Nom du sorcier<input id="hp-n" type="text" maxlength="60" placeholder="Prénom Nom"></label>' +
+			'<label>Maison<select id="hp-h"><option value="">Au hasard (le Choixpeau décide)</option>' + KEYS.map(function (k) { return '<option value="' + k + '">' + H[k].n + '</option>'; }).join('') + '</select></label>' +
+			'<button type="button" id="hp-go">Poser le Choixpeau</button></div><div class="hp-out" id="hp-out" hidden><span>Résultat · BBCode à coller dans la fiche de présentation</span><textarea id="hp-bb" readonly rows="4"></textarea><button type="button" id="hp-cp">Copier</button></div></div>';
+		var $ = function (i) { return document.getElementById(i); };
+		$('hp-go').onclick = function () {
+			var n = $('hp-n').value.replace(/^\s+|\s+$/g, ''); if (!n) { $('hp-n').focus(); return; }
+			play({ name: n, house: $('hp-h').value }, function (k) {
+				$('hp-bb').value = '[b]RÉPARTITION DU CHOIXPEAU[/b]\nÉlève : ' + n + '\nMaison : ' + H[k].n; $('hp-out').hidden = false;
+			});
+		};
+		$('hp-cp').onclick = function () { var b = $('hp-bb'); b.select(); try { document.execCommand('copy'); $('hp-cp').textContent = 'Copié !'; setTimeout(function () { $('hp-cp').textContent = 'Copier'; }, 1500); } catch (e) { } };
+	}
+
+	/* --- messages : « RÉPARTITION DU CHOIXPEAU » / Élève : … / Maison : … --- */
+	function posts() {
+		var L = document.querySelectorAll('.post .content:not([data-rvh]), .post .postbody .content:not([data-rvh])'), i;
+		for (i = 0; i < L.length; i++) {
+			var c = L[i]; c.setAttribute('data-rvh', '1'); var tx = c.innerText || c.textContent || '';
+			if (tx.indexOf('RÉPARTITION DU CHOIXPEAU') < 0) { continue; }
+			var m = /Élève\s*:\s*([^\n\r]+)/.exec(tx), mh = /Maison\s*:\s*([^\n\r]+)/.exec(tx); if (!m || !mh) { continue; }
+			var name = m[1].replace(/\s+$/, ''), hk = norm(mh[1]); if (!H[hk]) { continue; }
+			var post = c.closest('.post') || c, pid = post.id || String(i), seenKey = 'rv_hat_' + pid, seen = false;
+			try { seen = !!localStorage.getItem(seenKey); } catch (e) { }
+			var card = document.createElement('div'); card.className = 'rv-hatcard'; card.style.setProperty('--hc', H[hk].c);
+			function draw(done) {
+				card.innerHTML = '<div class="hc-ic">' + HAT + '</div><div class="hc-tx"><span>Le Choixpeau a parlé</span><b>' + esc(name) + '</b>' + (done ? '<em>Réparti à <i>' + H[hk].n + '</i></em>' : '<em>Sa Répartition l’attend…</em>') + '</div><button type="button" class="hc-bt">' + (done ? 'Revoir la cérémonie' : 'Écouter le Choixpeau') + '</button>';
+				card.querySelector('.hc-bt').onclick = function () { play({ name: name, house: hk }, function () { try { localStorage.setItem(seenKey, '1'); } catch (e) { } draw(true); }); };
+			}
+			draw(seen); c.style.display = 'none'; c.parentNode.insertBefore(card, c);
+			var ud = window._userdata || {};
+			if (!seen && ud.user_id > 0 && norm(ud.username) === norm(name)) { setTimeout(function () { card.querySelector('.hc-bt').click(); }, 600); }
+		}
+	}
+	function run() { page(); posts(); }
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 80); }); } else { setTimeout(run, 80); }
+})();

@@ -1814,3 +1814,57 @@ body.rv-fp .rv-vt{grid-template-columns:minmax(0,1fr) !important}
 #main-content .rv-jact .ja-btn:hover{color:#f4efe0;border-color:#d9b36a}
 #rv-jr .jg-draft{color:#8cc7a0}
 #rv-jr .jg-clr{margin-left:8px;padding:0;cursor:pointer;background:none !important;border:0 !important;border-bottom:1px solid rgba(217,179,106,.5) !important;color:#d9b36a !important;font:600 11.5px 'Poppins',sans-serif}
+
+/* ===== REVELIO : cérémonie du Choixpeau ===== */
+body.rv-hat-on { overflow: hidden; }
+.rv-hat { position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .6s ease; font-family: inherit; color: #efe6d2; }
+.rv-hat.in { opacity: 1; } .rv-hat.out { opacity: 0; }
+.rv-hat .ht-dim { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 40%, rgba(52,36,20,.95), rgba(8,6,4,.99) 75%); transition: background 1s; }
+.rv-hat.shout .ht-dim, .rv-hat.res .ht-dim { background: radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--hc) 38%, #0b0a08), rgba(8,6,4,.99) 75%); }
+.rv-hat .ht-stars { position: absolute; inset: 0; background-image: radial-gradient(1.5px 1.5px at 12% 20%, #f3e2b3 50%, transparent 51%), radial-gradient(1px 1px at 82% 14%, #f3e2b3 50%, transparent 51%), radial-gradient(1.5px 1.5px at 70% 70%, #f3e2b3 50%, transparent 51%), radial-gradient(1px 1px at 28% 78%, #f3e2b3 50%, transparent 51%), radial-gradient(1px 1px at 52% 10%, #f3e2b3 50%, transparent 51%), radial-gradient(1.5px 1.5px at 92% 52%, #f3e2b3 50%, transparent 51%); opacity: .55; animation: htTw 3s ease-in-out infinite alternate; }
+@keyframes htTw { from { opacity: .25; } to { opacity: .7; } }
+.rv-hat .ht-box { position: static; width: min(560px, 92vw); text-align: center; display: flex; flex-direction: column; align-items: center; }
+.rv-hat .ht-hat { width: min(280px, 62vw); transform: translateY(-120vh) rotate(-8deg); }
+.rv-hat.in .ht-hat { animation: htDrop 1.5s cubic-bezier(.2,.9,.3,1.15) .2s forwards, htFloat 4s ease-in-out 1.8s infinite; }
+@keyframes htDrop { to { transform: translateY(0) rotate(0); } }
+@keyframes htFloat { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-9px) rotate(1.5deg); } }
+.rv-hat.res .ht-hat { animation: htUp .8s ease forwards; } @keyframes htUp { to { transform: translateY(-14px) scale(.55); margin-bottom: -90px; opacity: .0; } }
+.rv-hat .ht-svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 18px 24px rgba(0,0,0,.6)); }
+.rv-hat .ht-mouth { transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(.25); }
+.rv-hat .ht-box.talk .ht-mouth { animation: htTalk .36s ease-in-out infinite; }
+@keyframes htTalk { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1.7); } }
+.rv-hat .ht-line { min-height: 3.2em; margin-top: 18px; padding: 0 12px; font: italic 300 clamp(18px, 3.4vw, 26px)/1.4 Georgia, 'Times New Roman', serif; opacity: 0; letter-spacing: .01em; }
+.rv-hat .ht-line.on { animation: htIn .6s ease forwards; } @keyframes htIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.rv-hat.shout .ht-line { font: normal 700 clamp(30px, 8vw, 60px)/1.1 Georgia, serif; color: var(--hc); letter-spacing: .08em; text-shadow: 0 0 30px var(--hc); animation: htShout .5s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes htShout { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+.rv-hat .ht-res { display: none; flex-direction: column; align-items: center; gap: 12px; position: absolute; inset: 0; justify-content: center; padding: 0 16px; box-sizing: border-box; }
+.rv-hat.res .ht-res { display: flex; animation: htIn .9s ease both; }
+.rv-hat .ht-crest { width: min(190px, 44vw); height: auto; filter: drop-shadow(0 0 28px var(--hc)); animation: htFloat 4s ease-in-out infinite; }
+.rv-hat .ht-cry { font: 700 clamp(30px, 7vw, 54px)/1.1 Georgia, serif; color: var(--hc); letter-spacing: .08em; text-shadow: 0 0 26px var(--hc); }
+.rv-hat .ht-sub { font: 300 17px/1.6 Georgia, serif; color: #d9cdb2; } .rv-hat .ht-sub em { color: #a99d86; font-size: 15px; } .rv-hat .ht-sub b { color: #fff; font-weight: 600; }
+.rv-hat button { font: 600 12px/1 inherit; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; border-radius: 99px; }
+.rv-hat .ht-ok { margin-top: 10px; padding: 13px 30px; background: var(--hc); color: #14110d; border: 0; }
+.rv-hat .ht-skip { position: absolute; right: 18px; top: 16px; padding: 9px 16px; background: rgba(255,255,255,.06); color: #cfc3a8; border: 1px solid rgba(255,255,255,.18); }
+.rv-hat .ht-skip:hover, .rv-hat .ht-ok:hover { filter: brightness(1.15); }
+.rv-hat.res .ht-line { display: none; }
+@media (prefers-reduced-motion: reduce) { .rv-hat *, .rv-hat { animation: none !important; transition: none !important; } }
+
+.rv-hatcard { display: flex; align-items: center; gap: 18px; margin: 6px 0; padding: 16px 20px; border: 1px solid color-mix(in srgb, var(--hc) 45%, #2a251d); border-left: 4px solid var(--hc); border-radius: 12px; background: linear-gradient(90deg, color-mix(in srgb, var(--hc) 14%, #14110d), #14110d); }
+.rv-hatcard .hc-ic { width: 54px; flex: none; } .rv-hatcard .hc-ic svg { width: 100%; height: auto; display: block; }
+.rv-hatcard .hc-tx { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rv-hatcard .hc-tx span { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--hc); }
+.rv-hatcard .hc-tx b { font: 600 20px/1.2 Georgia, serif; color: #f1e8d4; } .rv-hatcard .hc-tx em { font-style: italic; color: #b3a78f; font-size: 14px; } .rv-hatcard .hc-tx i { color: var(--hc); font-style: normal; font-weight: 600; }
+.rv-hatcard .hc-bt { flex: none; padding: 11px 20px; border-radius: 99px; border: 1px solid var(--hc); background: transparent; color: var(--hc); font: 600 11.5px/1 inherit; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+.rv-hatcard .hc-bt:hover { background: var(--hc); color: #14110d; }
+.rv-hatcard .ht-mouth, .rv-hatcard .ht-eyes { display: none; }
+@media (max-width: 560px) { .rv-hatcard { flex-wrap: wrap; } .rv-hatcard .hc-bt { width: 100%; } }
+
+.rv-hatpg { max-width: 640px; margin: 0 auto; padding: 8px 0 24px; color: #efe6d2; }
+.rv-hatpg .hp-hd { text-align: center; margin-bottom: 22px; } .rv-hatpg .hp-hd span { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #d9b36a; }
+.rv-hatpg h2 { font: 400 clamp(30px, 6vw, 44px)/1.1 Georgia, serif; margin: 8px 0; } .rv-hatpg h2 em { color: #d9b36a; } .rv-hatpg .hp-hd p { color: #a99d86; font-size: 14px; margin: 0; }
+.rv-hatpg .hp-form, .rv-hatpg .hp-out { display: flex; flex-direction: column; gap: 14px; padding: 22px; border: 1px solid #2a251d; border-radius: 14px; background: #14110d; }
+.rv-hatpg .hp-out { margin-top: 16px; } .rv-hatpg .hp-out[hidden] { display: none; }
+.rv-hatpg label, .rv-hatpg .hp-out span { display: flex; flex-direction: column; gap: 6px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #b9ad94; }
+.rv-hatpg input, .rv-hatpg select, .rv-hatpg textarea { box-sizing: border-box; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #3a3326; background: #0e0c09; color: #efe6d2; font: 400 15px/1.4 inherit; letter-spacing: 0; text-transform: none; }
+.rv-hatpg button { padding: 14px 22px; border-radius: 99px; border: 0; background: #d9b36a; color: #14110d; font: 700 12px/1 inherit; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; }
+.rv-hatpg #hp-cp { background: transparent; color: #d9b36a; border: 1px solid #d9b36a; align-self: flex-start; }

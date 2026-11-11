@@ -1353,7 +1353,7 @@
 				'<div class="jg-list" data-t="pres"></div><button type="button" class="pf-btn ghost jg-add" data-add="pres">+ Ajouter un lien recherché</button>') +
 			sec('VI', 'Autres recherches', 'Ce que tu cherches sans personnage précis : un rival, un ami, un secret partagé.',
 				'<div class="jg-list" data-t="seeks"></div><button type="button" class="pf-btn ghost jg-add" data-add="seeks">+ Ajouter une recherche</button>') +
-			'<div class="pf-acts"><p>Le générateur écrit ton journal : tu récupères le code prêt à coller, ou tu l’envoies directement dans l’éditeur. Ton brouillon est gardé sur cet appareil.</p><div><button type="button" class="pf-btn" id="jg-go">Générer mon journal</button></div></div>' +
+			'<div class="pf-acts"><p>Le générateur écrit ton journal : tu récupères le code prêt à coller, ou tu l’envoies directement dans l’éditeur.<br><span class="jg-draft" id="jg-draft">Brouillon enregistré automatiquement sur cet appareil.</span> <button type="button" class="jg-clr" id="jg-clr">Effacer le brouillon</button></p><div><button type="button" class="pf-btn" id="jg-go">Générer mon journal</button></div></div>' +
 			'<div class="pf-out" id="jg-out" style="display:none"></div>' +
 			'</form><aside class="pf-side">' +
 			'<section class="pf-box pf-card"><h3>Aperçu</h3><div class="pf-pv" id="jg-pv"></div></section>' +
@@ -1392,7 +1392,8 @@
 			return d;
 		}
 		var saveT = null;
-		function save() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(FKEY, JSON.stringify(snap())); } catch (e) { } }, 400); }
+		function stamp(t) { var e = $('draft'); if (e) { e.textContent = t; } }
+		function save() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(FKEY, JSON.stringify(snap())); var d = new Date(); stamp('Brouillon enregistré à ' + (d.getHours() < 10 ? '0' : '') + d.getHours() + ':' + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes() + '.'); } catch (e) { stamp('Brouillon non enregistré (stockage du navigateur indisponible).'); } }, 400); }
 		function restore() {
 			var raw; try { raw = localStorage.getItem(FKEY); } catch (e) { return; }
 			if (!raw) { return; }
@@ -1400,6 +1401,7 @@
 			Object.keys(d.f || {}).forEach(function (k) { var e = $(k); if (e) { e.value = d.f[k]; } });
 			Object.keys(d.g || {}).forEach(function (k) { var g = box.querySelector('.pf-sec [data-g="' + k + '"]'); if (g && !g.closest('.jg-card')) { Array.prototype.forEach.call(g.querySelectorAll('.pf-pill'), function (x, i) { x.className = 'pf-pill' + (i === d.g[k] ? ' on' : ''); }); } });
 			['links', 'pres', 'seeks'].forEach(function (t) { ((d.L || {})[t] || []).forEach(function (o) { addCard(t, o); }); });
+			stamp('Brouillon restauré depuis ta dernière visite.');
 		}
 
 		/* ---------- aperçu + avancement ---------- */
@@ -1487,6 +1489,7 @@
 				if (!(was && opt)) { b.className = 'pf-pill on'; }
 				update(); save(); return;
 			}
+			if (b.id === 'jg-clr') { if (b.getAttribute('data-sure')) { try { localStorage.removeItem(FKEY); } catch (x) { } location.reload(); } else { b.setAttribute('data-sure', '1'); b.textContent = 'Confirmer : tout effacer'; setTimeout(function () { b.removeAttribute('data-sure'); b.textContent = 'Effacer le brouillon'; }, 4000); } return; }
 			if (b.id === 'jg-go') { gen(); }
 		});
 		box.addEventListener('input', function () { update(); save(); });

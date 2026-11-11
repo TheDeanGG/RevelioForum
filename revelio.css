@@ -1812,3 +1812,5 @@ body.rv-fp .rv-vt{grid-template-columns:minmax(0,1fr) !important}
 #main-content .rv-jact{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 #main-content .rv-jact .ja-btn{display:inline-flex;align-items:center;padding:8px 13px;border:1px solid rgba(255,255,255,.14);color:#a8a193;font:700 9.5px 'Montserrat',sans-serif;letter-spacing:1.6px;text-transform:uppercase;text-decoration:none}
 #main-content .rv-jact .ja-btn:hover{color:#f4efe0;border-color:#d9b36a}
+#rv-jr .jg-draft{color:#8cc7a0}
+#rv-jr .jg-clr{margin-left:8px;padding:0;cursor:pointer;background:none !important;border:0 !important;border-bottom:1px solid rgba(217,179,106,.5) !important;color:#d9b36a !important;font:600 11.5px 'Poppins',sans-serif}

@@ -1770,7 +1770,7 @@
 		at(t, function () { ov.classList.add('shout'); say(h.cry, true); }); t += 1700;
 		at(t, result);
 	}
-	window.RVHat = { play: play, houses: H };
+	window.RVHat = { play: play, houses: H, hat: HAT };
 
 	/* --- page : <div id="rv-hat"></div> (cérémonie libre + BBCode staff) --- */
 	function page() {
@@ -1834,6 +1834,9 @@
 		var ud = window._userdata || {}, st = { i: -1, sc: { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 }, name: (ud.user_id > 0 && ud.username) ? ud.username : '' };
 		var box = document.createElement('div'); box.className = 'rv-quiz'; root.appendChild(box);
 		function swap(html, cls) { box.className = 'rv-quiz out'; setTimeout(function () { box.className = 'rv-quiz in ' + (cls || ''); box.innerHTML = html; bind(); }, 320); }
+		var REA = ['Hmm… intéressant.', 'Ah, je vois…', 'Voilà qui en dit long.', 'Oh, tiens, tiens…', 'Curieux… très curieux.', 'Je note, je note…'], INT = ['Voyons voir… une première question.'];
+		function hatBlk(txt, big) { var hh = window.RVHat ? window.RVHat.hat : ''; return '<div class="qz-hatw' + (big ? ' big' : '') + '"><div class="qz-hat talk">' + hh + '</div><div class="qz-sub">' + txt + '</div></div>'; }
+		function calm(ms) { setTimeout(function () { var e = box.querySelector('.qz-hat'); if (e) { e.className = 'qz-hat'; } }, ms || 1700); }
 		function dots() { var s = ''; for (var k = 0; k < Q.length; k++) { s += '<i class="' + (k < st.i ? 'd' : k === st.i ? 'n' : '') + '"></i>'; } return '<div class="qz-dots">' + s + '</div>'; }
 		function intro() {
 			st.i = -1; st.sc = { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 };
@@ -1842,10 +1845,10 @@
 		}
 		function ask() {
 			var q = Q[st.i], opts = q.bin ? q.o : shuf(q.o);
-			var h = dots() + '<div class="qz-n">Question ' + (st.i + 1) + ' sur ' + Q.length + '</div><h3>' + esc(q.t) + '</h3>';
+			var h = hatBlk(st.i === 0 ? INT[0] : REA[Math.floor(Math.random() * REA.length)]) + dots() + '<div class="qz-n">Question ' + (st.i + 1) + ' sur ' + Q.length + '</div><h3>' + esc(q.t) + '</h3>';
 			if (q.bin) { h += '<div class="qz-bin">' + opts.map(function (o, k) { return '<button type="button" class="qz-b ' + o[3] + '" data-k="' + k + '"><b>' + o[0] + '</b><span>' + o[1] + '</span></button>'; }).join('') + '</div>'; }
 			else { h += '<div class="qz-opts">' + opts.map(function (o, k) { return '<button type="button" class="qz-o" data-k="' + k + '"><span class="qz-bul"></span>' + o[0] + '</button>'; }).join('') + '</div>'; }
-			q._cur = opts; swap(h, q.bin ? 'qz-q qz-isbin' : 'qz-q');
+			q._cur = opts; swap(h, q.bin ? 'qz-q qz-isbin' : 'qz-q'); setTimeout(calm, 320);
 		}
 		function pick(k) {
 			var q = Q[st.i], o = q._cur[k], hs = q.bin ? o[2] : o[1], w = q.bin ? 1 : 2; hs.forEach(function (x) { st.sc[x] += w; });
@@ -1853,8 +1856,11 @@
 		}
 		function verdict() {
 			var mx = Math.max.apply(null, Object.keys(st.sc).map(function (k) { return st.sc[k]; })), top = Object.keys(st.sc).filter(function (k) { return st.sc[k] === mx; }), h = top[Math.floor(Math.random() * top.length)];
-			swap('<div class="qz-wait"><div class="qz-eye">Le Choixpeau délibère</div><div class="qz-dotsw"><i></i><i></i><i></i></div></div>', 'qz-w');
-			setTimeout(function () { if (window.RVHat) { window.RVHat.play({ name: st.name || 'jeune sorcier', house: h }, function () { result(h); }); } else { result(h); } }, 1900);
+			swap(hatBlk('Hmm…', 1) + '<div class="qz-eye">Le Choixpeau délibère</div>', 'qz-w');
+			var L = ['Hmm… difficile, très difficile…', 'Du courage, de la ruse… non, pas seulement…', 'Je crois que je tiens ma réponse.'], k = 0, sub = null;
+			function tick() { sub = box.querySelector('.qz-sub'); if (sub && k < L.length) { sub.textContent = L[k++]; setTimeout(tick, 1500); } }
+			setTimeout(tick, 700);
+			setTimeout(function () { if (window.RVHat) { window.RVHat.play({ name: st.name || 'jeune sorcier', house: h }, function () { result(h); }); } else { result(h); } }, 5400);
 		}
 		function result(h) {
 			var I = window.RVHat ? window.RVHat.houses[h] : { n: h, tag: '' }, total = Object.keys(st.sc).reduce(function (a, k) { return a + st.sc[k]; }, 0) || 1;

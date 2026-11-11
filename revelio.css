@@ -1912,3 +1912,12 @@ body.rv-hat-on { overflow: hidden; }
 .rv-quiz .qz-bb { margin-top: 16px; max-width: 360px; text-align: center; resize: none; opacity: .75; }
 @media (max-width: 560px) { .rv-quiz .qz-bin { grid-template-columns: 1fr; } .rv-quiz .qz-b { min-height: 120px; } }
 @media (prefers-reduced-motion: reduce) { .rv-quiz, .rv-quiz * { transition: none !important; animation: none !important; } }
+
+.rv-quiz .qz-hatw { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 10px; }
+.rv-quiz .qz-hat { width: 96px; } .rv-quiz .qz-hatw.big .qz-hat { width: 200px; margin-top: 18px; animation: htFloat 4s ease-in-out infinite; }
+.rv-quiz .qz-hat .ht-svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 10px 14px rgba(0,0,0,.55)); }
+.rv-quiz .qz-hat .ht-mouth { transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(.25); }
+.rv-quiz .qz-hat.talk .ht-mouth { animation: htTalk .36s ease-in-out infinite; }
+.rv-quiz .qz-sub { min-height: 1.6em; font: italic 300 17px/1.5 Georgia, serif; color: #d9cdb2; animation: htIn .5s ease both; }
+.rv-quiz .qz-hatw.big .qz-sub { font-size: 22px; margin-top: 10px; min-height: 3em; }
+.rv-quiz .qz-w .qz-eye { margin-top: 10px; }

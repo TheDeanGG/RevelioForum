@@ -2121,7 +2121,21 @@
 			c.innerHTML = h;
 		}
 	}
-	function run() { try { badges(); cards(); } catch (e) { } }
+	/* 1b. vue profil : bandeau + badge d'après la ligne « Absence » */
+	function profile() {
+		var pv = document.querySelector('.rv-pv'); if (!pv || pv.querySelector('.rv-abp')) { return; }
+		var ks = pv.querySelectorAll('.pa-k'), cell = null, i;
+		for (i = 0; i < ks.length; i++) { if (/^\s*absence\s*$/i.test(ks[i].textContent)) { cell = ks[i].parentNode; break; } }
+		if (!cell) { return; }
+		var vEl = cell.querySelector('.pa-v'), val = (vEl ? vEl.textContent : '').replace(/[«»]/g, '').replace(/\s+/g, ' ').trim();
+		if (!val || /^(non|aucune?|présent|-|—)$/i.test(val)) { cell.style.display = 'none'; return; }
+		var pause = /pause/i.test(val); cell.className += ' pa-abs ' + (pause ? 'is-pause' : 'is-abs');
+		var nm = pv.querySelector('.pa-name'); if (nm && !nm.querySelector('.rv-absb')) { var b = document.createElement('div'); b.className = 'rv-absb big ' + (pause ? 'is-pause' : 'is-abs'); b.innerHTML = '<i></i><b>' + (pause ? 'En pause' : 'Absent') + '</b><span>' + esc(val) + '</span>'; nm.appendChild(b); }
+		var body = pv.querySelector('.pa-body'), n = document.createElement('div'); n.className = 'rv-abp ' + (pause ? 'is-pause' : 'is-abs');
+		n.innerHTML = '<i></i><div><b>' + (pause ? 'Ce joueur est en pause' : 'Ce joueur est absent') + '</b><span>' + esc(val) + '. Ses réponses peuvent tarder.</span></div><a href="/h8-absences-pauses">Absences &amp; pauses</a>';
+		if (body) { body.parentNode.insertBefore(n, body); } else { pv.insertBefore(n, pv.children[1] || null); }
+	}
+	function run() { try { badges(); cards(); profile(); } catch (e) { } }
 	[80, 600, 1600, 3200].forEach(function (d) { setTimeout(run, d); });
 
 	/* 3. page de déclaration (#rv-absence) */

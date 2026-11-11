@@ -2202,3 +2202,34 @@ html.rv-gaz .rv-aside { display: none !important; }
 .gp-btn { background: linear-gradient(90deg, #8a5a12, #b8902f); color: #fff !important; }
 .gp-btn:hover { filter: brightness(1.1); background: linear-gradient(90deg, #8a5a12, #b8902f); }
 .gp-body p.gp-note { background: rgba(184, 144, 47, .12); border: 0; border-left: 5px solid #b8902f; padding: 16px 20px; text-align: left; color: #3a2f12; }
+
+/* ===== REVELIO : Gazette (page) — mise en page "une de journal" ===== */
+.gz-title { display: flex; align-items: center; justify-content: center; gap: 28px; }
+.gz-mc { flex: none; width: 92px; height: 92px; object-fit: contain; filter: drop-shadow(0 0 18px rgba(217, 179, 106, .35)); }
+.gz-mast { padding: 34px 0 30px; border-top: 3px double rgba(217, 179, 106, .7); border-bottom: 3px double rgba(217, 179, 106, .7); }
+.gz-mast h1 { font-family: 'UnifrakturCook', 'Cinzel', serif; font-weight: 700; font-size: clamp(44px, 8.4vw, 112px); line-height: .98; letter-spacing: 0; text-transform: none; color: #f4efe0; text-shadow: 0 0 40px rgba(217, 179, 106, .35), 3px 3px 0 rgba(217, 179, 106, .18); }
+.gz-tag { font-size: 24px; }
+.gz-lead { margin: 34px auto 0; max-width: 820px; text-align: center; font: italic 400 24px/1.55 'EB Garamond', serif; color: #cfc9ba; }
+.gz-lead:first-letter { font-size: inherit; float: none; }
+.gz-h2 { display: flex; align-items: center; gap: 16px; margin: 70px 0 10px; font-size: clamp(26px, 4vw, 40px); font-weight: 600; letter-spacing: 2px; }
+.gz-h2:after { content: ''; flex: 1; height: 8px; border-top: 2px solid rgba(217, 179, 106, .7); border-bottom: 1px solid rgba(217, 179, 106, .7); }
+.gz-rn { font-family: 'UnifrakturCook', 'Cinzel', serif; font-size: 1.6em; line-height: .7; letter-spacing: 0; color: #d9b36a; }
+.gz-card { position: relative; overflow: hidden; padding: 0; background: #100e0a; border: 1px solid rgba(217, 179, 106, .3); border-top: 0; transition: transform .25s, box-shadow .25s; }
+.gz-card:hover { transform: translateY(-6px); box-shadow: 0 14px 34px rgba(0, 0, 0, .5), 0 0 0 1px var(--l); }
+.gz-port { height: 168px; display: flex; align-items: flex-end; justify-content: center; position: relative; overflow: hidden; background: linear-gradient(180deg, var(--l), rgba(0, 0, 0, .55)); background-color: var(--l); border-bottom: 1px solid rgba(217, 179, 106, .3); }
+.gz-port svg { width: 120px; height: 150px; fill: rgba(11, 10, 8, .62); }
+.gz-port:after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(0, 0, 0, .3) 1.2px, transparent 1.4px); background-size: 7px 7px; }
+.gz-num { position: absolute; right: 6px; bottom: -34px; z-index: 0; font: 900 160px/1 'Cinzel', serif; color: var(--l); opacity: .08; pointer-events: none; }
+.gz-kind, .gz-card h3, .gz-d, .gz-who { position: relative; z-index: 1; margin-left: 22px; margin-right: 22px; }
+.gz-kind { margin-top: 20px; }
+.gz-who { padding-bottom: 22px; }
+.gz-houses { margin: 70px -24px 0; padding: 4px 24px 40px; background: radial-gradient(120% 90% at 50% 0, rgba(217, 179, 106, .13), rgba(8, 7, 5, .9) 70%), #080705; border-top: 3px double rgba(217, 179, 106, .7); border-bottom: 3px double rgba(217, 179, 106, .7); }
+.gz-houses .gz-h2 { margin-top: 44px; }
+.gz-houses .gz-row { padding: 20px 0; }
+.gz-houses .gz-crest { width: 76px; height: 76px; filter: drop-shadow(0 0 16px var(--l)); }
+.gz-houses .gz-hn { font-size: 24px; letter-spacing: 2px; }
+.gz-houses .gz-bar { height: 14px; border-radius: 0; border: 1px solid var(--l); background: rgba(255, 255, 255, .05); }
+.gz-houses .gz-bar i { background: repeating-linear-gradient(115deg, var(--l), var(--l) 8px, rgba(255, 255, 255, .35) 8px, rgba(255, 255, 255, .35) 11px); min-width: 7%; }
+.gz-houses .gz-n { font-size: 34px; font-weight: 600; }
+.gz-vote { text-align: center; font-family: 'EB Garamond', serif; border-style: dashed; }
+@media (max-width: 860px) { .gz-mc { width: 52px; height: 52px; } .gz-title { gap: 12px; } .gz-houses { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; } .gz-houses .gz-crest { width: 52px; height: 52px; } }

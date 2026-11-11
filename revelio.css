@@ -2366,3 +2366,24 @@ html.rv-gaz .rv-aside { display: none !important; }
 /* marge ajoutée retirée */
 .rv-abc { padding-bottom: 0; margin-bottom: 8px; }
 @media (max-width: 640px) { .rv-abc { padding-bottom: 0; } }
+
+/* ===== REVELIO : posts officiels (ANNONCE / REGLEMENT / GAZETTE / GUIDE / VOTE) ===== */
+.gp.of { --c: #d9b36a; background: #14120e; color: #e8e4d8; box-shadow: none; border: 1px solid rgba(217, 179, 106, .22); border-left: 3px solid var(--c); padding: 22px 30px 28px; max-width: 860px; }
+.gp.of-annonce { --c: #d9b36a; } .gp.of-reglement { --c: #d65a6b; } .gp.of-gazette { --c: #f0d28f; } .gp.of-guide { --c: #6fb0cf; } .gp.of-vote { --c: #5fc4a0; }
+.gp.of .gp-mast { border: 0; border-bottom: 1px solid rgba(217, 179, 106, .2); padding: 6px 0 20px; text-align: left; }
+.gp.of .gp-meta { justify-content: space-between; border: 0; padding: 0; margin-bottom: 12px; color: #8f8878; }
+.gp.of .gp-meta span:first-child { order: 0; flex: none; text-align: left; color: var(--c); }
+.gp.of .gp-meta span:nth-child(2) { order: 0; }
+.gp.of .gp-mast h2 { font-size: clamp(20px, 3.6vw, 30px); letter-spacing: 3px; color: #f4efe0; }
+.gp.of .gp-tag { color: var(--c); font-size: 18px; }
+.gp.of .gp-crests { justify-content: flex-start; gap: 12px; margin-top: 14px; }
+.gp.of .gp-crests img { width: 26px; height: 26px; opacity: .85; }
+.gp.of .gp-body { padding-top: 22px; }
+.gp.of .gp-body p { color: #cfc9ba; font-weight: 300; font-size: 15px; line-height: 1.85; }
+.gp.of .gp-body h3 { color: var(--c); border: 0; margin: 26px 0 14px; padding: 0; }
+.gp.of .gp-cards { gap: 14px; margin-bottom: 24px; }
+.gp.of .gp-card { background: #100e0a; border: 1px solid rgba(217, 179, 106, .16) !important; border-top: 2px solid var(--c) !important; border-left: 1px solid rgba(217, 179, 106, .16) !important; margin: 0; padding: 18px 20px !important; }
+.gp.of .gp-card b { color: #f4efe0; filter: none; } .gp.of .gp-card span { color: #cfc9ba; font: 300 13.5px/1.7 'Poppins', sans-serif; text-align: left; }
+.gp.of .gp-btn { background: var(--c); color: #0b0a08 !important; }
+.gp.of .gp-btn:hover { filter: brightness(1.12); }
+.gp.of .gp-body p.gp-note { background: none; border: 0; border-top: 1px solid rgba(217, 179, 106, .22); padding: 20px 0 0; text-align: center; color: #a8a193; font: italic 400 18px 'EB Garamond', serif; }

@@ -2053,6 +2053,30 @@
 	'use strict';
 	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 	function GB() { var sc = document.querySelector('script[src*="revelio.js"]'); return sc ? sc.getAttribute('src').replace(/revelio\.js.*$/, '') : 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/'; }
+	var OF_IC = { ANNONCE: '<path d="M4 10v4h3l6 4V6L7 10H4zm12-1.5a4 4 0 010 7M18 6a7.5 7.5 0 010 12"/>', REGLEMENT: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h7"/>', GAZETTE: '<path d="M4 5h13v14H6a2 2 0 01-2-2zM17 9h3v8a2 2 0 01-2 2M7 9h7M7 13h7"/>', GUIDE: '<path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v13c-3-1-6-1-8 1-2-2-5-2-8-1zM12 6v13"/>', VOTE: '<path d="M5 12l4 4 10-10M4 20h16"/>' };
+	var OF_LB = { ANNONCE: 'Annonce', REGLEMENT: 'Règlement', GAZETTE: 'Gazette', GUIDE: 'Guide', VOTE: 'Vote' };
+	var OF_HOUSES = ['Gryffondor', 'Serpentard', 'Serdaigle', 'Poufsouffle'], OF_ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
+	function buildOf(TY, lines, lists, links) {
+		var h = '<div class="gp of of-' + TY.toLowerCase() + '"><header class="mast"><div class="emb"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + OF_IC[TY] + '</svg></div><div class="mt"><div class="meta"><span class="kind">' + OF_LB[TY] + '</span><span>Revelio</span></div><h2>' + esc(lines[0]) + '</h2>' + (lines[1] ? '<p class="tag">' + esc(lines[1]) + '</p>' : '') + '</div></header><div class="orn" aria-hidden="true"><i></i><b></b><i></i></div><div class="gp-body">';
+		var rest = lines.slice(2), last = rest.length - 1;
+		rest.forEach(function (l, k) {
+			var m;
+			if ((m = /^§L(\d+)§$/.exec(l))) {
+				var it = lists[+m[1]].map(function (t) { return t.split(' : '); });
+				if (TY === 'ANNONCE') { h += '<dl class="facts">' + it.map(function (x) { return '<div><dt>' + esc(x[0]) + '</dt><dd>' + esc(x.slice(1).join(' : ')) + '</dd></div>'; }).join('') + '</dl>'; }
+				else if (TY === 'REGLEMENT') { h += '<ol class="rules">' + it.map(function (x) { return '<li><b>' + esc(x[0]) + '</b><span>' + esc(x.slice(1).join(' : ')) + '</span></li>'; }).join('') + '</ol>'; }
+				else if (TY === 'GAZETTE') { h += '<ul class="gzl">' + it.map(function (x) { var hs = OF_HOUSES.indexOf(x[2] || ''); return '<li>' + (hs >= 0 ? '<img class="cr" src="' + GB() + 'img/ecussons/' + OF_HOUSES[hs] + '.png" alt="">' : '') + '<span class="rk">' + esc(x[0]) + '</span><span class="dots"></span><b>' + esc(x[1] || '') + '</b></li>'; }).join('') + '</ul>'; }
+				else if (TY === 'GUIDE') { h += '<ul class="idx">' + it.map(function (x, i) { return '<li><i>' + (OF_ROMAN[i] || i + 1) + '</i><div><b>' + esc(x[0]) + '</b><span>' + esc(x.slice(1).join(' : ')) + '</span></div><em>→</em></li>'; }).join('') + '</ul>'; }
+				else { h += '<ul class="opts">' + it.map(function (x) { return '<li><span class="rad"></span><div><b>' + esc(x[0]) + '</b><span>' + esc(x.slice(1).join(' : ')) + '</span></div></li>'; }).join('') + '</ul>'; }
+			}
+			else if ((m = /^§A(\d+)§$/.exec(l))) { var a = links[+m[1]]; h += '<a class="gp-btn" href="' + esc(a[0]) + '">' + esc(a[1]) + '</a>'; }
+			else if (/:$/.test(l)) { h += '<h3>' + esc(l.replace(/\s*:$/, '')) + '</h3>'; }
+			else if (k === last && k > 0) { h += '<p class="gp-note">' + esc(l) + '</p>'; }
+			else { h += '<p>' + esc(l) + '</p>'; }
+		});
+		if (TY === 'ANNONCE') { h += '<img class="of-seal" src="' + GB() + 'img/cire.png" alt="">'; }
+		return h + '</div></div>';
+	}
 	function build(c) {
 		var cl = c.cloneNode(true), lists = [], links = [], i;
 		Array.prototype.forEach.call(cl.querySelectorAll('ul,ol'), function (u) { var items = []; Array.prototype.forEach.call(u.querySelectorAll('li'), function (li) { items.push(li.textContent.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')); }); lists.push(items); u.parentNode.replaceChild(document.createTextNode('\n§L' + (lists.length - 1) + '§\n'), u); });
@@ -2063,6 +2087,7 @@
 		if (tm) { TY = tm[1].toUpperCase().replace('È', 'E'); lines = lines.slice(1); }
 		else if (!lines.length || (lines[0].toUpperCase() !== 'LA GAZETTE DU SORCIER' && lines[0].toUpperCase() !== 'LE GUIDEBOOK')) { return null; }
 		if (!lines.length) { return null; }
+		if (TY) { return buildOf(TY, lines, lists, links); }
 		var LB = { ANNONCE: 'Annonce', REGLEMENT: 'Règlement', GAZETTE: 'Gazette', GUIDE: 'Guide', VOTE: 'Vote' };
 		var h = '<div class="gp' + (TY ? ' of of-' + TY.toLowerCase() : '') + '"><header class="gp-mast"><div class="gp-meta"><span>' + (TY ? LB[TY] : 'Hors RP') + '</span><span>Revelio</span></div><h2>' + esc(lines[0]) + '</h2>' + (lines[1] ? '<p class="gp-tag">' + esc(lines[1]) + '</p>' : '') + '<div class="gp-crests">' + ['Gryffondor', 'Serpentard', 'Serdaigle', 'Poufsouffle'].map(function (n) { return '<img src="' + GB() + 'img/ecussons/' + n + '.png" alt="">'; }).join('') + '</div></header><div class="gp-body">';
 		var rest = lines.slice(2), last = rest.length - 1;

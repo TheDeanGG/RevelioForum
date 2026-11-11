@@ -2358,3 +2358,8 @@ html.rv-gaz .rv-aside { display: none !important; }
 .rv-abc-seal { position: absolute; right: 18px; top: -26px; z-index: 2; width: 92px; height: auto; transform: rotate(-9deg); filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .55)); pointer-events: none; }
 .rv-abc-h { padding-right: 130px; min-height: 44px; }
 @media (max-width: 640px) { .rv-abc-seal { width: 64px; right: 10px; top: -20px; } .rv-abc-h { padding-right: 84px; } }
+/* sceau en bas à droite */
+.rv-abc { padding-bottom: 44px; margin-bottom: 34px; }
+.rv-abc-seal { top: auto; bottom: -34px; right: 22px; }
+.rv-abc-h { padding-right: 22px; min-height: 0; }
+@media (max-width: 640px) { .rv-abc-seal { top: auto; bottom: -24px; right: 12px; } .rv-abc-h { padding-right: 18px; } .rv-abc { padding-bottom: 34px; } }

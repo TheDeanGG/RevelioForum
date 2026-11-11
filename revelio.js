@@ -1680,8 +1680,8 @@
 		function setPhase(n) { S.phase = n; render(); }
 		function play() {
 			clear(); var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { }
-			var seen = false; try { seen = !!sessionStorage.getItem(seenKey); } catch (e) { }
-			if (reduce || seen) { setPhase(2); return; }
+			
+			if (reduce) { setPhase(2); return; }
 			setPhase(-1);
 			timers.push(setTimeout(function () { setPhase(0); }, 80));
 			timers.push(setTimeout(function () { setPhase(1); }, 6600));

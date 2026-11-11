@@ -1665,7 +1665,9 @@
 		function spans(arr) { return arr.map(function (c) { return '<span class="jr-ch" style="animation-delay:' + c.d + '">' + esc(c.ch) + '</span>'; }).join(''); }
 		function render() {
 			var p = S.phase, pg = pages[S.sel], turn = function (d) { return S.dir === d ? (S.k % 2 ? 'kb' : 'ka') : ''; };
-			var lC = dis(chars('Depuis plusieurs mois, ma nouvelle cible, c’est toi.', 0.5, 0.045)), lA = dis(chars('Bonjour', 3.1, 0.1)), lB = dis(chars(ctx.viewer, 4.1, 0.11));
+			var lC, lA, lB;
+			if (ctx.isOwner) { lC = dis(chars('Depuis plusieurs mois, ma nouvelle cible, c’est toi.', 0.5, 0.045)); lA = dis(chars('Bonjour', 3.1, 0.1)); lB = dis(chars(ctx.viewer, 4.1, 0.11)); }
+			else { lC = dis(chars('La curiosité est un vilain défaut,', 0.5, 0.05)); lA = []; lB = dis(chars(ctx.viewer, 2.9, 0.11)); }
 			stage.innerHTML = '<button type="button" class="jr-replay" data-act="replay"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>Rejouer l’ouverture</button>' +
 				'<div class="jr-pg"><div class="jr-hello ' + (p < 0 ? '' : p === 0 ? 'w' : p === 1 ? 'f' : 'h') + '" aria-live="polite"><i class="jr-rip"></i><i class="jr-rip b"></i><div class="jr-lC">' + spans(lC) + '</div><div class="jr-lA">' + spans(lA) + '</div><div class="jr-lB">' + spans(lB) + '</div></div>' +
 				'<div class="jr-fade ' + (p >= 2 ? 'on' : '') + '"><div class="jr-view ' + (S.k % 2 ? 'kb' : 'ka') + '">' + pg.v() + '</div>' +
@@ -1707,7 +1709,9 @@
 		if (!D.own.name) { return; }
 		var quote = post.querySelector('a[href*="mode=quote"]'), edit = post.querySelector('a[href*="mode=editpost"]'), reply = document.querySelector('a[href*="mode=reply"]');
 		var ud = window._userdata || {}, viewer = (ud.user_id > 0 && ud.username) ? ud.username : 'voyageur';
-		var ctx = { reply: reply ? reply.getAttribute('href') : '#', viewer: viewer, id: (location.pathname.match(/\/t(\d+)/) || [])[1] || '' };
+		var au = post.querySelector('.postprofile .author a, .postprofile dt a, a.username, .postprofile a[href^="/u"]'), auId = au ? (/\/u(\d+)/.exec(au.getAttribute('href') || '') || [])[1] : '', auName = au ? trim(au.textContent).toLowerCase() : '';
+		var isOwner = !au || (ud.user_id > 0 && ((auId && String(ud.user_id) === auId) || (!auId && auName && auName === trim(ud.username).toLowerCase())));
+		var ctx = { reply: reply ? reply.getAttribute('href') : '#', viewer: viewer, isOwner: isOwner, id: (location.pathname.match(/\/t(\d+)/) || [])[1] || '' };
 		var el = mount(D, ctx), wrap = document.createElement('div'); wrap.className = 'rv-jpost';
 		wrap.appendChild(el);
 		if (quote || edit) { var act = document.createElement('div'); act.className = 'rv-jact'; act.innerHTML = (quote ? '<a class="ja-btn" href="' + esc(quote.getAttribute('href')) + '">Citer</a>' : '') + (edit ? '<a class="ja-btn" href="' + esc(edit.getAttribute('href')) + '">Modifier</a>' : ''); wrap.appendChild(act); }

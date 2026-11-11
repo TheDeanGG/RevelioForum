@@ -2072,6 +2072,8 @@
 			if ((c.textContent || '').indexOf('LA GAZETTE DU SORCIER') < 0) { continue; }
 			var html = build(c); if (!html) { continue; }
 			var d = document.createElement('div'); d.innerHTML = html; c.style.display = 'none'; c.parentNode.insertBefore(d.firstChild, c);
+			var po = c.closest('.post'); if (po) { po.className += ' rv-gazp'; } document.documentElement.className += ' rv-gaz';
+			var dl = /(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+(\d{4})/i.exec(document.title), sp = document.querySelector('.gp-meta span:first-child'); if (sp && dl) { sp.textContent = 'Édition de ' + dl[1].toLowerCase() + ' ' + dl[2]; }
 		}
 	}
 	setTimeout(run, 70);

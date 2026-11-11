@@ -1806,7 +1806,7 @@
 	function posts() {
 		var L = document.querySelectorAll('.post .content:not([data-rvh]), .post .postbody .content:not([data-rvh])'), i;
 		for (i = 0; i < L.length; i++) {
-			var c = L[i]; c.setAttribute('data-rvh', '1'); var tx = c.innerText || c.textContent || '';
+			var c = L[i]; c.setAttribute('data-rvh', '1'); var tmp = document.createElement('div'); tmp.innerHTML = c.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(p|div|li)>/gi, '\n'); var tx = tmp.textContent || '';
 			if (tx.indexOf('RÉPARTITION DU CHOIXPEAU') < 0) { continue; }
 			var m = /Élève\s*:\s*([^\n\r]+)/.exec(tx), mh = /Maison\s*:\s*([^\n\r]+)/.exec(tx); if (!m || !mh) { continue; }
 			var name = m[1].replace(/\s+$/, ''), hk = norm(mh[1]); if (!H[hk]) { continue; }

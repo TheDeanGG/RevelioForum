@@ -2235,3 +2235,6 @@ html.rv-gaz .rv-aside { display: none !important; }
 @media (max-width: 860px) { .gz-mc { width: 52px; height: 52px; } .gz-title { gap: 12px; } .gz-houses { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; } .gz-houses .gz-crest { width: 52px; height: 52px; } }
 .gz-houses .gz-colh .gz-n { font-size: 9px; font-weight: 600; }
 .gz-houses .gz-colh .sp { width: 76px; }
+.gz-mast h1 { font-family: 'Cinzel', serif; font-weight: 600; font-size: clamp(30px, 5.6vw, 72px); line-height: 1.08; letter-spacing: 6px; text-transform: uppercase; text-shadow: 0 0 36px rgba(217, 179, 106, .3); }
+.gz-meta span:nth-child(2) { color: #d9b36a; }
+@media (max-width: 860px) { .gz-mast h1 { letter-spacing: 3px; } }

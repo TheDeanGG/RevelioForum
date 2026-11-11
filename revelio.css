@@ -1868,3 +1868,12 @@ body.rv-hat-on { overflow: hidden; }
 .rv-hatpg input, .rv-hatpg select, .rv-hatpg textarea { box-sizing: border-box; width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #3a3326; background: #0e0c09; color: #efe6d2; font: 400 15px/1.4 inherit; letter-spacing: 0; text-transform: none; }
 .rv-hatpg button { padding: 14px 22px; border-radius: 99px; border: 0; background: #d9b36a; color: #14110d; font: 700 12px/1 inherit; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; }
 .rv-hatpg #hp-cp { background: transparent; color: #d9b36a; border: 1px solid #d9b36a; align-self: flex-start; }
+
+/* quiz du Choixpeau */
+.rv-hatpg .hq-p { margin: 0; color: #b9ad94; font-size: 14.5px; line-height: 1.6; } .rv-hatpg .hq-p b { color: #efe6d2; }
+.rv-hatpg .hq-q { margin: 0 0 4px; font: 400 clamp(19px, 3.6vw, 24px)/1.35 Georgia, serif; color: #f1e8d4; }
+.rv-hatpg .hq-bar { height: 4px; border-radius: 4px; background: #241f17; margin: -8px 0 14px; overflow: hidden; } .rv-hatpg .hq-bar i { display: block; height: 100%; background: #d9b36a; transition: width .3s; }
+.rv-hatpg .hq-o { text-align: left; text-transform: none; letter-spacing: 0; font: 400 15px/1.45 inherit; background: #0e0c09; color: #e4dac4; border: 1px solid #3a3326; border-radius: 12px; padding: 14px 18px; transition: border-color .15s, background .15s; }
+.rv-hatpg .hq-o:hover { border-color: #d9b36a; background: #1a160f; } .rv-hatpg .hq-o.on { border-color: #d9b36a; background: #2a2214; }
+.rv-hatpg .hq-r { display: grid; grid-template-columns: 96px 1fr 22px; align-items: center; gap: 10px; font-size: 13px; color: #b9ad94; } .rv-hatpg .hq-r div { height: 8px; border-radius: 8px; background: #241f17; overflow: hidden; } .rv-hatpg .hq-r i { display: block; height: 100%; } .rv-hatpg .hq-r b { color: #efe6d2; text-align: right; }
+.rv-hatpg #hq-again { background: transparent; color: #d9b36a; border: 1px solid #d9b36a; align-self: flex-start; } .rv-hatpg #hq-cp { background: transparent; color: #d9b36a; border: 1px solid #d9b36a; align-self: flex-start; }

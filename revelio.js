@@ -2005,3 +2005,39 @@
 	}
 	setTimeout(mount, 60);
 })();
+
+/* ===== REVELIO : La Gazette du sorcier (page contenant <div id="rv-gazette"></div>) ===== */
+(function () {
+	'use strict';
+	if (window.__rvGaz) { return; } window.__rvGaz = 1;
+	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+	var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+	var TITLES = [['plume', 'Choisi par le staff', 'Plume du mois', 'Le meilleur RP du mois.', '#d9b36a'], ['revelation', 'Choisi par le staff', 'Révélation du mois', 'Le meilleur nouveau venu.', '#6fb0cf'], ['esprit', 'Choisi par le staff', 'Esprit de maison', 'Celui qui fait vivre sa maison.', '#5fc4a0'], ['elu', 'Élu par les membres', 'Élu', 'Le favori de la communauté.', '#8f94e0']];
+	var HOUSES = [['Gryffondor', '#d65a6b', 'Gryffondor'], ['Serpentard', '#5fc4a0', 'Serpentard'], ['Serdaigle', '#6fb0cf', 'Serdaigle'], ['Poufsouffle', '#d9b650', 'Poufsouffle']];
+	var FACTS = [['Personnel de Poudlard', '#c98a52', 'Poudlard-4-maisons'], ['Ministère de la Magie', '#8f94e0', 'Ministere-de-la-Magie'], ['Sorciers', '#8fb0d8', 'sor'], ['Mages noirs', '#aeb6c2', 'mag'], ['Personnes sans pouvoirs magiques', '#c9a24f', 'mol']];
+	var STEPS = [['1', 'Les hiboux', 'Chaque hibou écrit rapporte automatiquement des points à %s de son auteur.'], ['2', 'Les votes', 'Les votes ajoutent eux aussi des points.'], ['3', 'Le rythme', 'Un classement chaque mois, un cumul sur l’année, et une Coupe finalisée à la fin de l’année.']];
+	function board(list, label, base, data) {
+		var mx = 1, i; list.forEach(function (x) { var d = data[x[0]] || [0, 0]; mx = Math.max(mx, d[1] || 0); });
+		var h = '<div class="gz-board"><div class="gz-colh"><div class="sp"></div><div class="gz-hm">' + label + '</div><div class="gz-n">Ce mois</div><div class="gz-n">Année</div></div>';
+		list.forEach(function (x) { var d = data[x[0]], has = !!d; d = d || [0, 0]; h += '<div class="gz-row" style="--l:' + x[1] + '"><img class="gz-crest" src="' + base + 'img/ecussons/' + x[2] + '.png" alt=""><div class="gz-hm"><div class="gz-hn">' + esc(x[0]) + '</div><div class="gz-bar"><i style="width:' + Math.round(100 * (d[1] || 0) / mx) + '%"></i></div></div><div class="gz-n">' + (has ? d[0] : '—') + '</div><div class="gz-n">' + (has ? d[1] : '—') + '</div></div>'; });
+		return h + '</div>';
+	}
+	function steps(who) { var h = '<aside class="gz-side"><h3>Comment les points arrivent</h3>'; STEPS.forEach(function (s) { h += '<div class="gz-step"><em>' + s[0] + '</em><div><b>' + s[1] + '</b><span>' + esc(s[2].replace('%s', who)) + '</span></div></div>'; }); return h + '</aside>'; }
+	function mount() {
+		var host = document.getElementById('rv-gazette'); if (!host) { return; }
+		var data = {}; try { data = JSON.parse(host.getAttribute('data-gz') || '{}'); } catch (e) { }
+		var sc = document.querySelector('script[src*="revelio.js"]'), base = sc ? sc.getAttribute('src').replace(/revelio\.js.*$/, '') : 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
+		var now = new Date(), mois = data.mois || (MOIS[now.getMonth()] + ' ' + now.getFullYear()), L = data.laureats || {};
+		var h = '<div class="gz"><div class="gz-wrap"><header class="gz-mast"><div class="gz-meta"><span>Hors RP</span><span>' + esc(mois) + '</span><span>Revelio</span></div><h1>La Gazette du sorcier</h1><p class="gz-tag">Les membres du mois et la Coupe des maisons</p></header>';
+		h += '<p class="gz-lead">Chaque mois, le staff distingue trois membres et la communauté en élit un quatrième. Pendant ce temps, les maisons et les factions se disputent chacune leur Coupe.</p>';
+		h += '<h2 class="gz-h2">Les quatre titres du mois</h2><p class="gz-sub">Trois titres sont décernés par le staff, un par le vote des membres.</p><div class="gz-cards">';
+		TITLES.forEach(function (t) { var l = L[t[0]]; h += '<article class="gz-card" style="--l:' + t[4] + '"><div class="gz-kind">' + t[1] + '</div><h3>' + t[2] + '</h3><p class="gz-d">' + t[3] + '</p><div class="gz-who"><div class="gz-who-in">' + (l ? '<b>' + esc(l[0]) + '</b>' + (l[1] ? '<span>' + esc(l[1]) + '</span>' : '') + (l[2] ? '<p>' + esc(l[2]) + '</p>' : '') : '<b class="gz-soon">À annoncer</b><span>Le lauréat sera dévoilé dans la prochaine Gazette.</span>') + '</div></div></article>'; });
+		h += '</div><div class="gz-vote"><p>Le titre d’Élu se joue au vote : les membres élisent celui qu’ils veulent voir à la une du mois.</p></div>';
+		h += '<h2 class="gz-h2">La Coupe des maisons</h2><p class="gz-sub">Le classement est publié chaque mois dans la Gazette. Les mois s’additionnent, et la Coupe est finalisée à la fin de l’année.</p><div class="gz-cup">' + board(HOUSES, 'Maison', base, data.maisons || {}) + steps('la maison') + '</div>';
+		h += '<h2 class="gz-h2">La Coupe des factions</h2><p class="gz-sub">Les cinq factions s’affrontent selon le même principe : un classement publié chaque mois dans la Gazette, un cumul sur l’année, et une Coupe finalisée à la fin de l’année.</p><div class="gz-cup">' + board(FACTS, 'Faction', base, data.factions || {}) + steps('la faction') + '</div>';
+		if (data.interview && data.interview.qa && data.interview.qa.length) { h += '<h2 class="gz-h2">L’interview du mois</h2><p class="gz-sub">' + esc(data.interview.qui || '') + '</p><div class="gz-int">'; data.interview.qa.forEach(function (q) { h += '<div class="gz-q"><b>' + esc(q[0]) + '</b><p>' + esc(q[1]) + '</p></div>'; }); h += '</div>'; }
+		h += '<h2 class="gz-h2">Le règlement</h2><ul class="gz-rules"><li>Le staff choisit la Plume du mois, la Révélation du mois et l’Esprit de maison.</li><li>Les membres élisent l’Élu du mois.</li></ul></div></div>';
+		host.innerHTML = h;
+	}
+	setTimeout(mount, 60);
+})();

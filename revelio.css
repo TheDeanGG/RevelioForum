@@ -2067,3 +2067,54 @@ body.rv-hat-on { overflow: hidden; }
 
 .gd-go { display: inline-block; margin-top: 12px; font: 700 10px 'Montserrat', 'Poppins', sans-serif; letter-spacing: 2px; text-transform: uppercase; color: var(--s); text-decoration: none; }
 .gd-go:hover { text-decoration: underline; }
+
+/* ===== REVELIO : Gazette du sorcier ===== */
+.gz { background: #0b0a08; color: #e8e4d8; padding: 48px 48px 64px; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+.gz-wrap { max-width: 1180px; margin: 0 auto; }
+.gz-mast { position: relative; text-align: center; padding: 30px 0 28px; border-top: 1px solid rgba(217, 179, 106, .55); border-bottom: 1px solid rgba(217, 179, 106, .55); }
+.gz-meta { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; font: 600 10px 'Poppins', sans-serif; letter-spacing: 2.5px; text-transform: uppercase; color: #8f8878; }
+.gz-mast h1 { margin: 0; font-family: 'Cinzel', serif; font-weight: 500; font-size: clamp(30px, 6vw, 60px); letter-spacing: 6px; text-transform: uppercase; color: #f4efe0; }
+.gz-tag { margin: 10px 0 0; font: italic 400 22px 'EB Garamond', serif; color: #d9b36a; }
+.gz-lead { margin: 30px 0 0; max-width: 780px; font-weight: 300; font-size: 16px; line-height: 1.9; color: #cfc9ba; }
+.gz-h2 { margin: 56px 0 8px; padding: 0; border: 0; font-family: 'Cinzel', serif; font-weight: 500; font-size: 26px; letter-spacing: 3px; text-transform: uppercase; color: #f4efe0; }
+.gz-sub { margin: 0 0 26px; max-width: 760px; font-weight: 300; font-size: 14px; line-height: 1.8; color: #a8a193; }
+.gz-cards { display: flex; flex-wrap: wrap; gap: 20px; }
+.gz-card { flex: 1 1 250px; min-width: 0; box-sizing: border-box; padding: 26px 22px 24px; display: flex; flex-direction: column; background: #100e0a; border: 1px solid rgba(217, 179, 106, .16); border-top: 2px solid var(--l); }
+.gz-kind { font: 600 9px 'Poppins', sans-serif; letter-spacing: 2.2px; text-transform: uppercase; color: var(--l); }
+.gz-card h3 { margin: 12px 0 8px; padding: 0; border: 0; font-family: 'Cinzel', serif; font-weight: 600; font-size: 22px; letter-spacing: 1.5px; text-transform: uppercase; color: #f4efe0; }
+.gz-d { margin: 0; font-weight: 300; font-size: 14px; line-height: 1.7; color: #cfc9ba; }
+.gz-who { margin-top: auto; padding-top: 18px; }
+.gz-who-in { padding-top: 16px; border-top: 1px solid rgba(217, 179, 106, .16); }
+.gz-who b { display: block; font-family: 'Cinzel', serif; font-weight: 600; font-size: 15px; letter-spacing: 1.2px; color: var(--l); }
+.gz-who b.gz-soon { color: #8f8878; }
+.gz-who span { display: block; margin-top: 4px; font-size: 12px; color: #8f8878; }
+.gz-who p { margin: 10px 0 0; font: italic 400 16px 'EB Garamond', serif; line-height: 1.5; color: #cfc9ba; }
+.gz-vote { margin-top: 26px; padding: 18px 24px; border: 1px solid rgba(143, 148, 224, .28); }
+.gz-vote p { margin: 0; font-weight: 300; font-size: 14px; line-height: 1.7; color: #cfc9ba; }
+.gz-cup { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+.gz-board { flex: 999 1 520px; min-width: 0; }
+.gz-colh { display: flex; align-items: center; gap: 18px; padding: 0 0 10px; }
+.gz-colh .sp { flex: none; width: 56px; }
+.gz-colh .gz-hm, .gz-colh .gz-n { font: 600 9px 'Poppins', sans-serif; letter-spacing: 2px; text-transform: uppercase; color: #8f8878; }
+.gz-row { display: flex; align-items: center; gap: 18px; padding: 16px 0; border-top: 1px solid rgba(217, 179, 106, .14); }
+.gz-crest { flex: none; width: 56px; height: 56px; object-fit: contain; }
+.gz-hm { flex: 1; min-width: 0; }
+.gz-hn { font-family: 'Cinzel', serif; font-weight: 600; font-size: 17px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--l); }
+.gz-bar { margin-top: 9px; height: 4px; border-radius: 2px; overflow: hidden; background: rgba(255, 255, 255, .08); }
+.gz-bar i { display: block; height: 100%; background: var(--l); }
+.gz-n { flex: none; width: 84px; text-align: right; font-family: 'Cinzel', serif; font-size: 20px; color: #f4efe0; }
+.gz-colh .gz-n { font-size: 9px; }
+.gz-side { flex: 1 1 300px; min-width: 0; box-sizing: border-box; padding: 24px 24px 14px; background: #100e0a; border: 1px solid rgba(217, 179, 106, .16); }
+.gz-side h3 { margin: 0 0 6px; padding: 0; border: 0; font-family: 'Cinzel', serif; font-weight: 600; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; color: #d9b36a; }
+.gz-step { display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid rgba(217, 179, 106, .14); }
+.gz-step em { flex: none; width: 26px; font: normal 600 15px 'Cinzel', serif; color: #d9b36a; }
+.gz-step b { display: block; font-weight: 500; font-size: 14px; color: #f4efe0; }
+.gz-step span { display: block; margin-top: 3px; font-weight: 300; font-size: 13px; line-height: 1.65; color: #cfc9ba; }
+.gz-int { box-sizing: border-box; padding: 12px 32px 14px; background: #100e0a; border: 1px solid rgba(217, 179, 106, .16); }
+.gz-q { padding: 18px 0; border-top: 1px solid rgba(217, 179, 106, .14); }
+.gz-q:first-child { border-top: 0; }
+.gz-q b { display: block; font: 500 19px 'EB Garamond', serif; color: #f4efe0; }
+.gz-q p { margin: 6px 0 0; font-weight: 300; font-size: 14px; line-height: 1.8; color: #a8a193; }
+.gz-rules { margin: 0; padding: 0; list-style: none; }
+.gz-rules li { padding: 13px 0; border-top: 1px solid rgba(217, 179, 106, .14); font-weight: 300; font-size: 14px; line-height: 1.7; color: #cfc9ba; }
+@media (max-width: 860px) { .gz { padding: 24px 16px 48px; } .gz-n { width: 56px; font-size: 16px; } .gz-crest { width: 40px; height: 40px; } .gz-colh .sp { width: 40px; } }

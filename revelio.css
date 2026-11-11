@@ -2353,3 +2353,8 @@ html.rv-gaz .rv-aside { display: none !important; }
 .pa-cell.pa-abs { box-shadow: inset 3px 0 0 #e0a24a; }
 .pa-cell.pa-abs.is-pause { box-shadow: inset 3px 0 0 #8fa9c4; }
 @media (max-width: 640px) { .rv-abp { flex-wrap: wrap; padding: 14px 18px; } }
+/* absences : sceau de cire */
+.rv-abc { position: relative; }
+.rv-abc-seal { position: absolute; right: 18px; top: -26px; z-index: 2; width: 92px; height: auto; transform: rotate(-9deg); filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .55)); pointer-events: none; }
+.rv-abc-h { padding-right: 130px; min-height: 44px; }
+@media (max-width: 640px) { .rv-abc-seal { width: 64px; right: 10px; top: -20px; } .rv-abc-h { padding-right: 84px; } }

@@ -2115,7 +2115,8 @@
 			c.setAttribute('data-rvabs', '1');
 			var kind = m[1] === 'PAUSE LONGUE' ? 'pause' : 'abs', lines = t.slice(m[0].length).split('\n'), kv = {}, free = [], k;
 			lines.forEach(function (ln) { var x = /^\s*([^:\n]{2,30})\s*:\s*(.+)$/.exec(ln); if (x) { kv[x[1].trim().toLowerCase()] = x[2].trim(); } else if (ln.trim()) { free.push(ln.trim()); } });
-			var h = '<div class="rv-abc ' + (kind === 'pause' ? 'is-pause' : 'is-abs') + '"><div class="rv-abc-h"><span class="rv-abc-k">' + (kind === 'pause' ? 'Pause longue' : 'Absence courte') + '</span><span class="rv-abc-s">' + (kv['retour'] ? 'Retour prévu · ' + esc(kv['retour']) : '') + '</span></div><div class="rv-abc-b">';
+			var sc = document.querySelector('script[src*="revelio.js"]'), sb = sc ? sc.getAttribute('src').replace(/revelio\.js.*$/, '') : 'https://cdn.jsdelivr.net/gh/TheDeanGG/RevelioForum@main/';
+			var h = '<div class="rv-abc ' + (kind === 'pause' ? 'is-pause' : 'is-abs') + '"><img class="rv-abc-seal" src="' + sb + 'img/cire.png" alt=""><div class="rv-abc-h"><span class="rv-abc-k">' + (kind === 'pause' ? 'Pause longue' : 'Absence courte') + '</span><span class="rv-abc-s">' + (kv['retour'] ? 'Retour prévu · ' + esc(kv['retour']) : '') + '</span></div><div class="rv-abc-b">';
 			[['du', 'Depuis le'], ['retour', 'Retour prévu'], ['raison', 'Raison'], ['prophéties', 'Mes prophéties'], ['joignable', 'Joignable']].forEach(function (p) { if (kv[p[0]]) { h += '<div class="rv-abc-r"><em>' + p[1] + '</em><span>' + esc(kv[p[0]]) + '</span></div>'; } });
 			h += '</div>' + (free.length ? '<p class="rv-abc-n">' + esc(free.join(' ')) + '</p>' : '') + '</div>';
 			c.innerHTML = h;

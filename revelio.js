@@ -1324,7 +1324,7 @@
 					'<div class="pf-row pf-gap">' + field('fc', 'Faceclaim', 'Nom de l’acteur ou de l’actrice', 0, 1) + field('im', 'Lien de l’image', 'https://…', 0, 1) + '</div>' +
 					'<div class="pf-row3 pf-gap">' + field('sg', 'Statut du sang', 'Sang-pur', 0, 1) + field('si', 'Première rencontre', 'Leurs 10 ans', 0, 1) + field('li', 'Lieu', 'Poudlard', 0, 1) + '</div>' +
 					'<div class="pf-gap">' + area('st', 'Leur histoire', 'Comment ils se sont connus, où en est le lien. Si le texte dépasse 110 mots, un bouton « Lire la suite » est ajouté. Si tu préfères une simple citation, écris-la ici (une seule phrase).', 1, 1, 'tall') + '<p class="pf-wc" data-wc="st">0 mot</p></div>' +
-					'<div class="pf-gap">' + area('sc', 'Scènes jouées ensemble', 'Une par ligne : Titre | date | résumé | lien du sujet   (ex : La promesse des dix ans | 14 octobre 1986 | Deux enfants, deux familles… | /t12-la-promesse)', 0, 1) + '</div>';
+					'<div class="pf-gap">' + area('sc', 'Scènes jouées ensemble', 'Une par ligne : Titre | date | résumé | lien du sujet | terminé (facultatif)   (ex : La promesse des dix ans | 14 octobre 1986 | Deux enfants, deux familles… | /t12-la-promesse | terminé)', 0, 1) + '</div>';
 			}
 		};
 
@@ -1510,4 +1510,205 @@
 		restore(); update();
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();
+
+/* ===== REVELIO : journal posté (met en page le code généré par le générateur de journal) ===== */
+(function () {
+	var AFF = { 'amour': ['Amour', '#d65a6b'], 'amitié': ['Amitié', '#8cc7a0'], 'neutre': ['Neutre', '#a8a193'], 'rivalité': ['Rivalité', '#e0975f'], 'ennemi': ['Ennemi', '#b79be0'] };
+	var AFFL = ['amour', 'amitié', 'neutre', 'rivalité', 'ennemi'];
+	var HCOL = { 'gryffondor': '#d65a6b', 'serdaigle': '#6fb0cf', 'serpentard': '#5fc4a0', 'poufsouffle': '#d9b650' };
+	var HEADS = ['JOURNAL', 'RÉSUMÉ DU JOURNAL', 'NOTE DU JOUEUR', 'DERRIÈRE LE PERSONNAGE', 'PHYSIQUE', 'MENTAL', 'LIENS', 'RECHERCHÉS', 'AUTRES RECHERCHES', 'HISTOIRE'];
+	function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+	function plain(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
+	function words(s) { var m = String(s).match(/\S+/g); return m ? m.length : 0; }
+	function trim(s) { return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
+	function ini(nm) { return nm.split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase(); }
+	function aff(n) { return AFF[trim(n).toLowerCase()] || AFF['neutre']; }
+	function safeUrl(u) { u = trim(u); return /^(https?:\/\/|\/)/i.test(u) ? u : ''; }
+	function kv(lines) { var o = {}; lines.forEach(function (l) { var m = /^([^:]+?)\s*:\s*(.*)$/.exec(l); if (m && !(m[1] in o)) { o[m[1]] = trim(m[2]); } }); return o; }
+	var STAT = ['Tout a commencé…', 'Autre scène'];
+
+	/* ---------- lecture du message ---------- */
+	function parse(c) {
+		var clone = c.cloneNode(true), portrait = '', first = true;
+		Array.prototype.forEach.call(clone.querySelectorAll('img'), function (im) {
+			var s = im.getAttribute('src') || '';
+			if (!/smil|emoticon|icon_/i.test(s) && first) { portrait = s; first = false; }
+			im.parentNode.removeChild(im);
+		});
+		Array.prototype.forEach.call(clone.querySelectorAll('script,style'), function (n) { n.parentNode.removeChild(n); });
+		var lines = plain(clone.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(div|p|li)>/gi, '\n')).replace(/ /g, ' ').split('\n').map(trim);
+		var blocks = [], cur = null, sub = null, i, l;
+		for (i = 0; i < lines.length; i++) {
+			l = lines[i];
+			if (!l) { if (cur && sub) { sub.push(''); } continue; }
+			var isH = (l === l.toUpperCase() && HEADS.indexOf(l) > -1) || /^LIEN : /.test(l) || /^RECHERCHÉ : /.test(l);
+			if (isH && l !== 'LIENS' && l !== 'RECHERCHÉS' && l !== 'HISTOIRE') {
+				cur = { h: l, kv: [], hist: [], hasHist: false }; blocks.push(cur); sub = cur.kv; continue;
+			}
+			if (l === 'HISTOIRE' && cur && /^(LIEN|RECHERCHÉ) : /.test(cur.h)) { cur.hasHist = true; sub = cur.hist; continue; }
+			if (l === 'LIENS' || l === 'RECHERCHÉS') { cur = null; sub = null; continue; }
+			if (cur) { sub.push(l); }
+		}
+		function block(h) { for (var j = 0; j < blocks.length; j++) { if (blocks[j].h === h) { return blocks[j]; } } return null; }
+		function text(h) { var b = block(h); return b ? b.kv.filter(function (x, idx, a) { return !(x === '' && (idx === 0 || idx === a.length - 1)); }).join('\n') : ''; }
+		var J = block('JOURNAL'), jk = J ? kv(J.kv) : {};
+		var first_ = jk['Prénom'] || '', last_ = jk['Nom'] || '';
+		var own = {
+			first: first_, last: last_, name: trim(first_ + ' ' + last_), alias: jk['Alias'] || '', age: jk['Âge'] || '', yf: jk['Année ou fonction'] || '', born: jk['Naissance'] || '', origin: jk['Origine'] || '', sx: jk['Orientation'] || '',
+			blood: jk['Statut du sang'] || '', house: jk['Maison'] || '', fc: jk['Faceclaim'] || '', open: !/^ferm/i.test(jk['Ouvert aux liens'] || 'Ouvert'), portrait: portrait,
+			sum: text('RÉSUMÉ DU JOURNAL'), note: text('NOTE DU JOUEUR')
+		};
+		var pb = block('DERRIÈRE LE PERSONNAGE'); own.facts = pb ? kv(pb.kv) : {};
+		function pm(h) { var b = block(h); if (!b) { return null; } var tr = '', body = []; b.kv.forEach(function (x) { var m = /^Traits\s*:\s*(.*)$/.exec(x); if (m) { tr = m[1]; } else if (x) { body.push(x); } }); return { p: body, tags: tr.split(',').map(trim).filter(Boolean) }; }
+		own.phy = pm('PHYSIQUE'); own.men = pm('MENTAL');
+		var links = [], pres = [], seeks = [];
+		blocks.forEach(function (b) {
+			var m;
+			if ((m = /^LIEN : (.*)$/.exec(b.h))) {
+				var k = kv(b.kv), nm = trim(m[1]), sc = [], story = [];
+				b.hist.forEach(function (x) { var s = /^Scène\s*:\s*(.*)$/.exec(x); if (s) { var p = s[1].split('|').map(trim); sc.push({ t: p[0] || '', d: p[1] || '', x: p[2] || '', u: safeUrl(p[3]), fin: /^term/i.test(p[4] || '') }); } else if (x) { story.push(x); } });
+				var dp = parseInt(k['Profondeur'], 10);
+				links.push({ name: nm, first: nm.split(' ')[0], last: nm.split(' ').slice(1).join(' '), nat: k['Nature'] || 'Neutre', rel: k['Relation'] || '', ok: !/attente/i.test(k['Statut'] || ''), depth: isNaN(dp) ? null : Math.max(0, Math.min(5, dp)), fc: k['Faceclaim'] || '', img: safeUrl(k['Image']), blood: k['Statut du sang'] || '', since: k['Première rencontre'] || '', lieu: k['Lieu'] || '', story: story, scenes: sc });
+			} else if ((m = /^RECHERCHÉ : (.*)$/.exec(b.h))) {
+				var k2 = kv(b.kv), nm2 = trim(m[1]), oth = [], st2 = [], sc2 = null;
+				b.hist.forEach(function (x) { var o = /^Autre lien\s*:\s*(.*)$/.exec(x), s = /^Scène\s*:\s*(.*)$/.exec(x); if (o) { var p = o[1].split('|').map(trim); oth.push({ name: p[0] || '', rel: p[1] || '' }); } else if (s) { var q = s[1].split('|').map(trim); sc2 = { t: q[0] || '', d: q[1] || '', x: q[2] || '' }; } else if (x) { st2.push(x); } });
+				pres.push({ name: nm2, first: nm2.split(' ')[0], last: nm2.split(' ').slice(1).join(' '), nat: k2['Nature'] || 'Neutre', rel: k2['Relation'] || '', dispo: k2['Disponibilité'] || 'Disponible', age: k2['Âge'] || '', house: k2['Maison'] || '', blood: k2['Statut du sang'] || '', fc: k2['Faceclaim'] || 'libre', story: st2, others: oth, scene: sc2 });
+			} else if (b.h === 'AUTRES RECHERCHES') {
+				b.kv.forEach(function (x) { var s = /^Recherche\s*:\s*(.*)$/.exec(x); if (s) { var p = s[1].split('|'); seeks.push({ nat: trim(p[0]), desc: trim(p.slice(1).join('|')) }); } });
+			}
+		});
+		return { own: own, links: links, pres: pres, seeks: seeks };
+	}
+
+	/* ---------- gabarits ---------- */
+	var SVG_PERSON = '<svg viewBox="0 0 66 86" aria-hidden="true"><circle cx="33" cy="26" r="16"/><path d="M0 86c2-24 14-38 33-38s31 14 33 38z"/></svg>';
+	function paras(arr) { return arr.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(''); }
+	function facts(list) { var f = list.filter(function (x) { return x[1]; }); return f.map(function (x) { return '<div><i class="fk">' + esc(x[0]) + '</i><span>' + esc(x[1]) + '</span></div>'; }).join(''); }
+	function story(title, arr, cls) { var w = words(arr.join(' ')), fold = w > 110; return '<div class="jr-story ' + (cls || '') + (fold ? ' clamp' : '') + '" data-fold="' + (fold ? 1 : 0) + '"><h5 class="sh"><span>' + title + '</span></h5><div class="sbody">' + paras(arr) + '</div><button type="button" class="jr-fold' + (fold ? '' : ' jr-off') + '" data-more="1">Lire la suite ↓</button></div>'; }
+	function ownView(D, ctx) {
+		var o = D.own, hc = HCOL[(o.house || '').toLowerCase()] || '#d9b36a', okN = D.links.filter(function (l) { return l.ok; }).length, kinds = {}; D.links.forEach(function (l) { kinds[aff(l.nat)[0]] = 1; });
+		var chips = [o.age, o.yf, o.sx, o.origin, o.blood].filter(Boolean).map(function (t) { return '<b>' + esc(t) + '</b>'; }).join('');
+		var kpi = [[okN, 'Liens établis'], [D.links.length - okN, 'En attente'], [D.pres.length + D.seeks.length, 'Recherchés'], [Object.keys(kinds).length, 'Natures de lien']].map(function (q) { return '<div><strong>' + q[0] + '</strong><span>' + q[1] + '</span></div>'; }).join('');
+		var f = facts([['Rythme de réponse', o.facts['Rythme de réponse']], ['Style de jeu', o.facts['Style de jeu']], ['Lieux favoris', o.facts['Lieux favoris']], ['Contact', o.facts['Contact']]]);
+		var pmHtml = [['Physique', o.phy], ['Mental', o.men]].filter(function (x) { return x[1]; }).map(function (x) { return '<article><h3><span>' + x[0] + '</span></h3><p>' + esc(x[1].p.join(' ')) + '</p><div class="tg">' + x[1].tags.map(function (t) { return '<b>' + esc(t) + '</b>'; }).join('') + '</div></article>'; }).join('');
+		return '<div class="jr-body">' +
+			'<header class="lp-hero jr-blk" style="animation-delay:.1s"><div class="lp-ban"></div><div class="lp-hi" style="--c:' + hc + '">' +
+			'<div class="jr-dm jr-hdm"><i>' + SVG_PERSON + (o.portrait ? '<img src="' + esc(o.portrait) + '" alt="' + esc(o.name) + '">' : '') + '</i></div>' +
+			'<div class="lp-who"><small>Journal' + (o.house ? ' · ' + esc(o.house) : '') + '</small><h1>' + esc(o.name) + '</h1><div class="jr-alias">' + (o.alias ? '<span class="al"><u></u><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15M5 19l8-8"/></svg><em>' + esc(o.alias) + '</em><u></u></span>' : '') + '<div class="jr-meta">' + (o.born ? '<p>' + esc(o.born) + '</p>' : '') + '<div class="jr-chips">' + chips + '</div></div></div></div>' +
+			'<div class="lp-cta"><div class="lp-stat" style="--s:' + (o.open ? '#8cc7a0' : '#e08a8a') + '"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + (o.open ? 'M5 12l5 5L20 7' : 'M6 6l12 12M18 6L6 18') + '"/></svg></div><div><small>Ouvert aux liens</small><strong>' + (o.open ? 'Ouvert' : 'Fermé') + '</strong></div></div><a class="lp-btn" href="' + esc(ctx.reply) + '">Proposer un lien à ' + esc(o.first) + '</a></div></div>' +
+			'<div class="lp-kpi">' + kpi + '</div></header>' +
+			'<section class="lp-sec jr-grow jr-blk" style="animation-delay:.5s"><h2 class="lp-h">Résumé</h2><p class="jr-sum">' + esc(o.sum.replace(/\n+/g, ' ')) + '</p>' +
+			((o.note || f) ? '<div class="jr-play">' + (o.note ? '<p class="lp-note">' + esc(o.note.replace(/\n+/g, ' ')) + '<cite>Note du joueur</cite></p>' : '<span></span>') + (f ? '<div class="lp-facts">' + f + '</div>' : '') + '</div>' : '') + '</section>' +
+			(pmHtml ? '<section class="lp-sec jr-blk jr-pm" style="animation-delay:.6s"><h2 class="lp-h">Physique &amp; mental</h2><div class="jr-pmg">' + pmHtml + '</div></section>' : '') + '</div>';
+	}
+	function seekView(D, ctx) {
+		var o = D.own, h = '<div class="jr-body">';
+		if (D.pres.length) {
+			h += '<section class="lp-sec jr-blk" style="margin-top:0;animation-delay:.05s"><h2 class="lp-h">Pré-lien · un personnage à pourvoir</h2>';
+			D.pres.forEach(function (p) {
+				var a = aff(p.nat), c = a[1], fcFree = !p.fc || /^libre$/i.test(p.fc);
+				var others = p.others.map(function (x) { var free = /^à définir/i.test(x.name); return '<a class="o' + (free ? ' free' : '') + '" href="' + esc(ctx.reply) + '" style="--c:' + (free ? '#b79be0' : '#8cc7a0') + '"><i><b>' + esc(free ? '?' : ini(x.name)) + '</b></i><div><strong>' + esc(x.name) + '</strong><em>' + esc(x.rel) + '</em></div><u>' + (free ? 'À pourvoir' : 'Joué') + '</u></a>'; }).join('');
+				h += '<article class="lp-cd wait pre" style="--c:' + c + '"><div class="jr-cg"><aside class="jr-as"><div class="jr-dm"><i><b>' + esc(ini(p.name)) + '</b></i></div><div class="cd-fcn">' + (fcFree ? 'Faceclaim libre' : 'Faceclaim · ' + esc(p.fc)) + '</div>' +
+					'<div class="jr-gj"><div class="gh"><span>Profondeur du lien</span><b>0 / 5</b></div><div class="gd"><i></i><i></i><i></i><i></i><i></i></div><p class="gn">Tout reste à écrire.</p></div>' +
+					'<div class="lp-facts jr-f3">' + facts([['Âge', p.age], ['Maison', p.house], ['Sang', p.blood]]) + '</div></aside>' +
+					'<div class="jr-mn"><div class="jr-hd"><span class="aff dash"><i></i><span>Pré-lien · ' + esc(a[0]) + '</span></span><span class="no">À pourvoir</span></div>' +
+					'<h4 class="jr-nm"><small>' + esc(p.first) + '</small><span>' + esc(p.last) + '</span></h4><div class="jr-ln"><i></i><em>' + esc(p.rel) + '</em><u></u></div>' +
+					story('Ce qui les lie', p.story) +
+					'<div class="jr-dg mini"><div class="nd"><div class="sm own"><i><b>' + esc(ini(o.name)) + '</b>' + (o.portrait ? '<img src="' + esc(o.portrait) + '" alt="">' : '') + '</i></div><small>' + esc(o.name) + '</small></div><div class="ln"><span class="lb">' + esc(p.rel) + '</span></div><div class="nd"><div class="sm ghost"><i><b>' + esc(ini(p.name)) + '</b></i></div><small>' + esc(p.name) + '</small></div></div>' +
+					(others ? '<div class="jr-around"><h5 class="sh"><span>Autres liens de ' + esc(p.first) + '</span></h5><div class="ar">' + others + '</div></div>' : '') +
+					(p.scene && p.scene.t ? '<div class="jr-tl"><div class="rh"><span>Pensine · scène d’ouverture proposée</span></div><a class="jr-ev" href="' + esc(ctx.reply) + '"><i class="nd"></i><div class="bd"><small>À jouer ensemble</small><b>' + esc(p.scene.t) + '</b><em>' + esc(p.scene.d) + '</em><p>' + esc(p.scene.x) + '</p></div><u>Ouvert</u></a></div>' : '') +
+					'</div></div><div class="cd-ft"><a class="lp-b2 g" href="' + esc(ctx.reply) + '">Proposer ' + esc(p.name) + '</a><a class="lp-b2" href="' + esc(ctx.reply) + '">Poser une question</a><span class="cd-st' + (/réserv/i.test(p.dispo) ? ' wt' : '') + '"><i></i>' + esc(p.dispo) + '</span></div></article>';
+			});
+			h += '</section>';
+		}
+		if (D.seeks.length) {
+			h += '<section class="lp-sec jr-grow jr-blk" style="animation-delay:.4s"><h2 class="lp-h">Ce qu’on recherche aussi</h2><p class="jr-lead">Ces pages sont encore blanches. Si l’un de ces liens vous ressemble, écrivez-vous dessus.</p><div class="jr-seek1">' +
+				D.seeks.map(function (k, i) { var a = aff(k.nat); return '<div class="lp-sk jr-blk" style="--c:' + a[1] + ';animation-delay:' + (0.3 + i * 0.18).toFixed(2) + 's"><i><b>?</b></i><div><em>' + esc(a[0]) + '</em><p>' + esc(k.desc) + '</p><a class="go" href="' + esc(ctx.reply) + '">Me proposer ce lien →</a></div></div>'; }).join('') + '</div></section>';
+		}
+		var cnt = {}; D.links.forEach(function (l) { var n = aff(l.nat)[0]; cnt[n] = (cnt[n] || 0) + 1; });
+		h += '<section class="lp-sec jr-blk" style="animation-delay:.9s"><h2 class="lp-h">Natures de lien</h2><div class="jr-leg">' + AFFL.map(function (k) { var a = AFF[k]; return '<span style="--c:' + a[1] + '"><i></i>' + a[0] + ' <b>' + (cnt[a[0]] || 0) + '</b></span>'; }).join('') + '</div></section></div>';
+		return h;
+	}
+	function linkView(D, i, ctx) {
+		var l = D.links[i], a = aff(l.nat), c = a[1], sc = l.scenes, depth = l.depth != null ? l.depth : (l.ok ? Math.min(5, 1 + sc.length) : 0);
+		var one = l.story.length === 1 && words(l.story[0]) <= 45, quote = one ? l.story[0] : '';
+		var q = quote.split(' ').map(function (w, k, arr) { return '<span class="jr-w" style="animation-delay:' + (0.5 + k * 0.07).toFixed(2) + 's">' + esc(w + (k < arr.length - 1 ? ' ' : '')) + '</span>'; }).join('');
+		var rows = sc.length ? sc.map(function (r, k) { return '<a class="jr-ev" href="' + esc(r.u || ctx.reply) + '"><i class="nd"></i><div class="bd"><small>' + STAT[k === 0 ? 0 : 1] + '</small><b>' + esc(r.t) + '</b><em>' + esc(r.d) + '</em><p>' + esc(r.x) + '</p></div><u class="' + (r.fin ? 'fin' : '') + '">' + (r.fin ? 'Terminé' : 'En cours') + '</u></a>'; }).join('') :
+			'<a class="jr-ev none" href="' + esc(ctx.reply) + '"><i class="nd"></i><div class="bd"><small>Pensine vide</small><b>Aucune scène pour l’instant</b><em></em><p>Ce lien attend sa première page.</p></div><u></u></a>';
+		var last = sc.length ? sc[0].d : '—';
+		var gauge = [0, 1, 2, 3, 4].map(function (g) { return '<i class="' + (g < depth ? 'on' : '') + '"></i>'; }).join('');
+		return '<div class="jr-body ent"><article class="lp-cd' + (l.ok ? '' : ' wait') + '" style="--c:' + c + '"><div class="cd-wm" aria-hidden="true"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M60 10L110 102H10Z"/><circle cx="60" cy="72" r="30"/><path d="M60 10V102"/></svg></div>' +
+			'<div class="jr-cg"><aside class="jr-as"><div class="jr-dm"><i>' + SVG_PERSON + (l.img ? '<img src="' + esc(l.img) + '" alt="">' : '') + '</i></div><div class="cd-fcn">' + (l.fc ? 'Faceclaim · ' + esc(l.fc) : 'Faceclaim') + '</div>' +
+			'<div class="jr-gj"><div class="gh"><span>Profondeur du lien</span><b>' + depth + ' / 5</b></div><div class="gd">' + gauge + '</div></div>' +
+			'<div class="lp-facts jr-f3">' + facts([['Première rencontre', l.since], ['Lieu', l.lieu], ['Dernière scène', last], ['Sang', l.blood]]) + '</div></aside>' +
+			'<div class="jr-mn"><div class="jr-hd"><span class="aff"><i></i><span>' + esc(a[0]) + '</span></span><span class="no">n° ' + (i < 9 ? '0' : '') + (i + 1) + '</span></div>' +
+			'<h4 class="jr-nm"><small>' + esc(l.first) + '</small><span>' + esc(l.last) + '</span></h4><div class="jr-ln"><i></i><em>' + esc(l.rel) + '</em><u></u></div>' +
+			(one ? '<p class="cd-q">' + q + '</p>' : story('Leur histoire', l.story)) +
+			'<div class="jr-tl"><div class="rh"><span>Pensine · scènes ensemble</span></div>' + rows + '</div></div></div>' +
+			'<div class="cd-ft"><a class="lp-b2 g" href="' + esc(sc.length && sc[0].u ? sc[0].u : ctx.reply) + '">' + (sc.length ? 'Lire la première scène' : 'Proposer un RP') + '</a><span class="cd-st' + (l.ok ? '' : ' wt') + '"><i></i>' + (l.ok ? 'Lien établi' : 'En attente') + '</span></div></article></div>';
+	}
+
+	/* ---------- composant ---------- */
+	function mount(D, ctx) {
+		var pages = [{ name: 'Journal', c: '#6fb0cf', nav: 'Détenteur', v: function () { return ownView(D, ctx); } }];
+		if (D.pres.length || D.seeks.length) { pages.push({ name: 'Recherchés', c: '#d9b36a', nav: 'Recherchés', v: function () { return seekView(D, ctx); } }); }
+		D.links.forEach(function (l, i) { pages.push({ name: l.first, c: aff(l.nat)[1], nav: 'Lien ' + (i < 9 ? '0' : '') + (i + 1) + ' / ' + (D.links.length < 10 ? '0' : '') + D.links.length, v: function () { return linkView(D, i, ctx); } }); });
+		var S = { phase: -1, sel: 0, k: 0, dir: 0 }, timers = [], root = document.createElement('div'), seenKey = 'rv_jr_seen_' + (ctx.id || '');
+		root.className = 'rv-journal'; root.innerHTML = '<div class="jr-wrap"><div class="jr-stage"></div></div>';
+		var stage = root.querySelector('.jr-stage');
+		function chars(txt, t0, step) { return txt.split('').map(function (ch, i) { return { ch: ch, d: (t0 + i * step).toFixed(2) + 's' }; }); }
+		function dis(arr) { return arr.map(function (c, i) { return { ch: c.ch, d: S.phase === 1 ? (((i * 37) % 11) * 0.07).toFixed(2) + 's' : c.d }; }); }
+		function spans(arr) { return arr.map(function (c) { return '<span class="jr-ch" style="animation-delay:' + c.d + '">' + esc(c.ch) + '</span>'; }).join(''); }
+		function render() {
+			var p = S.phase, pg = pages[S.sel], turn = function (d) { return S.dir === d ? (S.k % 2 ? 'kb' : 'ka') : ''; };
+			var lC = dis(chars('Depuis plusieurs mois, ma nouvelle cible, c’est toi.', 0.5, 0.045)), lA = dis(chars('Bonjour', 3.1, 0.1)), lB = dis(chars(ctx.viewer, 4.1, 0.11));
+			stage.innerHTML = '<button type="button" class="jr-replay" data-act="replay"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>Rejouer l’ouverture</button>' +
+				'<div class="jr-pg"><div class="jr-hello ' + (p < 0 ? '' : p === 0 ? 'w' : p === 1 ? 'f' : 'h') + '" aria-live="polite"><i class="jr-rip"></i><i class="jr-rip b"></i><div class="jr-lC">' + spans(lC) + '</div><div class="jr-lA">' + spans(lA) + '</div><div class="jr-lB">' + spans(lB) + '</div></div>' +
+				'<div class="jr-fade ' + (p >= 2 ? 'on' : '') + '"><div class="jr-view ' + (S.k % 2 ? 'kb' : 'ka') + '">' + pg.v() + '</div>' +
+				'<div class="jr-nav"><button type="button" class="jr-arw" data-act="prev" aria-label="Page précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span>' + esc(pg.nav) + '</span><button type="button" class="jr-arw" data-act="next" aria-label="Page suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div></div>' +
+				'<div class="jr-turn jr-tN ' + (S.k > 0 ? turn(1) : '') + '"></div><div class="jr-turn jr-tP ' + (S.k > 0 ? turn(-1) : '') + '"></div>' +
+				'<button type="button" class="jr-skip ' + (p === 0 || p === 1 ? '' : 'h') + '" data-act="skip">Passer</button></div>' +
+				'<div class="jr-tabs">' + pages.map(function (t, i) { return '<button type="button" class="lp-tab jr-tab ' + (i === S.sel ? 'on' : '') + '" style="--c:' + t.c + '" data-tab="' + i + '"><i></i>' + esc(t.name) + '</button>'; }).join('') + '</div>';
+		}
+		function clear() { timers.forEach(clearTimeout); timers = []; }
+		function setPhase(n) { S.phase = n; render(); }
+		function play() {
+			clear(); var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { }
+			var seen = false; try { seen = !!sessionStorage.getItem(seenKey); } catch (e) { }
+			if (reduce || seen) { setPhase(2); return; }
+			setPhase(-1);
+			timers.push(setTimeout(function () { setPhase(0); }, 80));
+			timers.push(setTimeout(function () { setPhase(1); }, 6600));
+			timers.push(setTimeout(function () { setPhase(2); try { sessionStorage.setItem(seenKey, '1'); } catch (e) { } }, 8000));
+		}
+		function go(i, dir) { var m = pages.length, j = ((i % m) + m) % m; S.dir = dir !== undefined ? dir : (j >= S.sel ? 1 : -1); S.sel = j; S.k++; render(); }
+		root.addEventListener('click', function (e) {
+			var b = e.target.closest ? e.target.closest('button') : null; if (!b) { return; }
+			var act = b.getAttribute('data-act');
+			if (b.getAttribute('data-tab') != null) { var t = parseInt(b.getAttribute('data-tab'), 10); go(t, t >= S.sel ? 1 : -1); return; }
+			if (b.getAttribute('data-more')) { var st = b.closest('.jr-story'), cl = st.className.indexOf('clamp') > -1; st.className = cl ? st.className.replace(/\s*\bclamp\b/, '') : st.className + ' clamp'; b.textContent = cl ? 'Réduire ↑' : 'Lire la suite ↓'; return; }
+			if (act === 'prev') { go(S.sel - 1, -1); } else if (act === 'next') { go(S.sel + 1, 1); } else if (act === 'skip') { clear(); setPhase(2); try { sessionStorage.setItem(seenKey, '1'); } catch (x) { } } else if (act === 'replay') { S.sel = 0; S.k = 0; S.dir = 0; play(); }
+		});
+		render(); play();
+		return root;
+	}
+
+	function run() {
+		var main = document.getElementById('main-content');
+		if (!main || main.querySelector('.rv-journal')) { return; }
+		var cs = main.querySelectorAll('.postbody .content, .post .content'), c = null, i;
+		for (i = 0; i < cs.length; i++) { var tx = cs[i].textContent; if (tx.indexOf('RÉSUMÉ DU JOURNAL') > -1 && tx.indexOf('Prénom :') > -1) { c = cs[i]; break; } }
+		if (!c) { return; }
+		var post = c.closest('.post') || c.parentNode, D = parse(c);
+		if (!D.own.name) { return; }
+		var quote = post.querySelector('a[href*="mode=quote"]'), edit = post.querySelector('a[href*="mode=editpost"]'), reply = document.querySelector('a[href*="mode=reply"]');
+		var ud = window._userdata || {}, viewer = (ud.user_id > 0 && ud.username) ? ud.username : 'voyageur';
+		var ctx = { reply: reply ? reply.getAttribute('href') : '#', viewer: viewer, id: (location.pathname.match(/\/t(\d+)/) || [])[1] || '' };
+		var el = mount(D, ctx), wrap = document.createElement('div'); wrap.className = 'rv-jpost';
+		wrap.appendChild(el);
+		if (quote || edit) { var act = document.createElement('div'); act.className = 'rv-jact'; act.innerHTML = (quote ? '<a class="ja-btn" href="' + esc(quote.getAttribute('href')) + '">Citer</a>' : '') + (edit ? '<a class="ja-btn" href="' + esc(edit.getAttribute('href')) + '">Modifier</a>' : ''); wrap.appendChild(act); }
+		post.parentNode.insertBefore(wrap, post); post.style.display = 'none'; document.body.className += ' rv-jp';
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 50); }); } else { setTimeout(run, 50); }
 })();

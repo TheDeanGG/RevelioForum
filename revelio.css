@@ -2004,3 +2004,5 @@ body.rv-hat-on { overflow: hidden; }
 	.gd-sec { flex-direction: column; gap: 14px; }
 	.gd-tly { width: 70px; font-size: 13px; }
 }
+
+.gd-sec h3 { border: 0; padding: 0; }

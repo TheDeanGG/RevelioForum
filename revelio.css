@@ -2241,3 +2241,7 @@ html.rv-gaz .rv-aside { display: none !important; }
 /* Gazette : jauges segmentées */
 .gz-houses .gz-bar { position: relative; height: 16px; border: 0; background: rgba(255, 255, 255, .07); overflow: visible; -webkit-mask-image: repeating-linear-gradient(90deg, #000 0, #000 calc(5% - 4px), transparent calc(5% - 4px), transparent 5%); mask-image: repeating-linear-gradient(90deg, #000 0, #000 calc(5% - 4px), transparent calc(5% - 4px), transparent 5%); }
 .gz-houses .gz-bar i { min-width: 0; background: linear-gradient(180deg, rgba(255, 255, 255, .45), var(--l) 45%, var(--l)); }
+/* Gazette : sobriété — pas de lueur, jauge fine */
+.gz-houses .gz-crest, .gz-mc, .gz-crest { filter: none; }
+.gz-houses .gz-bar { height: 6px; border: 0; border-radius: 3px; overflow: hidden; background: rgba(255, 255, 255, .1); -webkit-mask-image: none; mask-image: none; }
+.gz-houses .gz-bar i { min-width: 0; background: var(--l); }

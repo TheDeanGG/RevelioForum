@@ -288,7 +288,7 @@
       ['Image', ['portrait', 'faceclaim']],
       ['Histoire', ['resume', 'citation']],
       ['Serment inviolable', ['serment inviolable', 'serment • type', 'serment • depuis', 'serment • citation', 'serment • infos', 'serment • profil']],
-      ['Hors RP', ['multicomptes', 'credits', 'discord']]
+      ['Hors RP', ['multicomptes', 'credits', 'discord', 'absence']]
     ];
     var REN = { 'serment inviolable': 'Avec qui', 'serment • type': 'Type', 'serment • depuis': 'Depuis', 'serment • citation': 'Citation', 'serment • infos': 'Infos', 'serment • profil': 'Profil', 'changer votre mot de passe': 'Mot de passe' };
     var S3 = { 'genre': 1, 'date de naissance': 1, 'lieu de naissance': 1, 'habitation / colocation': 1 };
@@ -2084,4 +2084,73 @@
 		}
 	}
 	setTimeout(run, 70);
+})();
+
+/* ===== REVELIO : absences et pauses ===== */
+(function () {
+	if (window.__rvAbs) { return; } window.__rvAbs = 1;
+	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+	/* 1. badge à côté du nom, d'après le champ de profil « Absence » */
+	function badges() {
+		var posts = document.querySelectorAll('.post'), i;
+		for (i = 0; i < posts.length; i++) {
+			var post = posts[i], rows = post.querySelectorAll('.rv-pf'), j, val = '';
+			for (j = 0; j < rows.length; j++) {
+				var l = rows[j].querySelector('.rv-pfl'), c = rows[j].querySelector('.rv-pfc');
+				if (l && /^\s*absence\s*:?\s*$/i.test(l.textContent)) { val = (c ? c.textContent : '').replace(/\s+/g, ' ').trim(); rows[j].style.display = 'none'; }
+			}
+			if (!val || /^(non|aucune?|présent|-|—)$/i.test(val) || post.querySelector('.rv-absb')) { continue; }
+			var host = post.querySelector('.rvb-id') || post.querySelector('.postprofile-name'); if (!host) { continue; }
+			var pause = /pause/i.test(val), b = document.createElement('div'); b.className = 'rv-absb ' + (pause ? 'is-pause' : 'is-abs');
+			b.innerHTML = '<i></i><b>' + (pause ? 'En pause' : 'Absent') + '</b><span>' + esc(val) + '</span>';
+			host.appendChild(b);
+		}
+	}
+	/* 2. message d'absence mis en forme */
+	function cards() {
+		var cs = document.querySelectorAll('.post .content'), i;
+		for (i = 0; i < cs.length; i++) {
+			var c = cs[i]; if (c.getAttribute('data-rvabs')) { continue; }
+			var t = (c.innerText || '').replace(/\r/g, ''), m = /^\s*(ABSENCE COURTE|PAUSE LONGUE)\s*\n/.exec(t); if (!m) { continue; }
+			c.setAttribute('data-rvabs', '1');
+			var kind = m[1] === 'PAUSE LONGUE' ? 'pause' : 'abs', lines = t.slice(m[0].length).split('\n'), kv = {}, free = [], k;
+			lines.forEach(function (ln) { var x = /^\s*([^:\n]{2,30})\s*:\s*(.+)$/.exec(ln); if (x) { kv[x[1].trim().toLowerCase()] = x[2].trim(); } else if (ln.trim()) { free.push(ln.trim()); } });
+			var h = '<div class="rv-abc ' + (kind === 'pause' ? 'is-pause' : 'is-abs') + '"><div class="rv-abc-h"><span class="rv-abc-k">' + (kind === 'pause' ? 'Pause longue' : 'Absence courte') + '</span><span class="rv-abc-s">' + (kv['retour'] ? 'Retour prévu · ' + esc(kv['retour']) : '') + '</span></div><div class="rv-abc-b">';
+			[['du', 'Depuis le'], ['retour', 'Retour prévu'], ['raison', 'Raison'], ['prophéties', 'Mes prophéties'], ['joignable', 'Joignable']].forEach(function (p) { if (kv[p[0]]) { h += '<div class="rv-abc-r"><em>' + p[1] + '</em><span>' + esc(kv[p[0]]) + '</span></div>'; } });
+			h += '</div>' + (free.length ? '<p class="rv-abc-n">' + esc(free.join(' ')) + '</p>' : '') + '</div>';
+			c.innerHTML = h;
+		}
+	}
+	function run() { try { badges(); cards(); } catch (e) { } }
+	[80, 600, 1600, 3200].forEach(function (d) { setTimeout(run, d); });
+
+	/* 3. page de déclaration (#rv-absence) */
+	function mount() {
+		var host = document.getElementById('rv-absence'); if (!host) { return; }
+		var data = {}; try { data = JSON.parse(host.getAttribute('data-abs') || '{}'); } catch (e) { }
+		var S = { kind: 'abs', sort: 0 }, SORTS = ['Mes prophéties continuent sans moi : mon personnage devient un PNJ.', 'Mes prophéties sont mises en attente jusqu’à mon retour.', 'Mon personnage quitte la scène : à mes partenaires de conclure.'];
+		var h = '<div class="ab"><div class="ab-wrap"><header class="ab-mast"><div class="ab-eye">Hors RP</div><h1>Absences &amp; pauses</h1><p class="ab-tag">Prévenir, c’est laisser le jeu vivre sans toi.</p></header>';
+		h += '<div class="ab-grid"><form class="ab-form" onsubmit="return false"><div class="ab-step"><em>1</em><h2>Ton absence</h2></div><div class="ab-kinds"><button type="button" class="on" data-k="abs"><b>Absence courte</b><span>Quelques jours, tu reviens vite.</span></button><button type="button" data-k="pause"><b>Pause longue</b><span>Plusieurs semaines, avec une date de retour.</span></button></div>';
+		h += '<div class="ab-row"><label>Depuis le<input type="date" id="ab-du"></label><label>Retour prévu<input type="date" id="ab-re"></label></div><label class="ab-l">Raison <i>(facultatif)</i><input type="text" id="ab-ra" maxlength="120" placeholder="Examens, voyage, besoin de souffler…"></label>';
+		h += '<div class="ab-step"><em>2</em><h2>Tes prophéties</h2></div><div class="ab-sorts">' + SORTS.map(function (s, i) { return '<button type="button"' + (i === 0 ? ' class="on"' : '') + ' data-s="' + i + '">' + s + '</button>'; }).join('') + '</div><label class="ab-l">Joignable pour te prévenir <i>(facultatif)</i><input type="text" id="ab-jo" maxlength="80" placeholder="Beuglante, Discord…"></label><label class="ab-l">Un mot pour tes partenaires <i>(facultatif)</i><input type="text" id="ab-mo" maxlength="160"></label></form>';
+		h += '<aside class="ab-out"><div class="ab-step"><em>3</em><h2>Copie et colle</h2></div><div class="ab-box"><div class="ab-bt">Dans ton profil, champ « Absence »</div><code id="ab-p"></code><button type="button" class="ab-cp" data-c="p">Copier</button><a class="ab-go" href="/profile?mode=editprofile">Ouvrir mon profil</a></div><div class="ab-box"><div class="ab-bt">Le message à poster</div><pre id="ab-m"></pre><button type="button" class="ab-cp" data-c="m">Copier</button>' + (data.url ? '<a class="ab-go" href="' + esc(data.url) + '">Aller poster</a>' : '') + '</div></aside></div>';
+		h += '<section class="ab-rules"><h2>Comment ça marche</h2><div class="ab-cols"><div><b>Absence courte</b><p>Jusqu’à deux semaines. Un message suffit, tes prophéties peuvent continuer sans toi ou attendre.</p></div><div><b>Pause longue</b><p>De deux semaines à trois mois. Indique une date de retour ; à ton retour, retire le mot de ton profil.</p></div><div><b>Sans nouvelles</b><p>Au-delà de trois mois sans signe, le staff te contacte avant de libérer ton personnage.</p></div></div></section></div></div>';
+		host.innerHTML = h;
+		function fd(v) { if (!v) { return ''; } var p = v.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+		function g(id) { return host.querySelector('#' + id); }
+		function upd() {
+			var du = fd(g('ab-du').value), re = fd(g('ab-re').value), ra = g('ab-ra').value.trim(), jo = g('ab-jo').value.trim(), mo = g('ab-mo').value.trim(), pause = S.kind === 'pause';
+			g('ab-p').textContent = (pause ? 'Pause longue' : 'Absent') + (re ? (pause ? ', retour le ' : ' jusqu’au ') + re : '');
+			var m = (pause ? 'PAUSE LONGUE' : 'ABSENCE COURTE') + '\n'; if (du) { m += 'Du : ' + du + '\n'; } if (re) { m += 'Retour : ' + re + '\n'; } if (ra) { m += 'Raison : ' + ra + '\n'; } m += 'Prophéties : ' + SORTS[S.sort] + '\n'; if (jo) { m += 'Joignable : ' + jo + '\n'; } if (mo) { m += mo + '\n'; }
+			g('ab-m').textContent = m.replace(/\n$/, '');
+		}
+		host.addEventListener('click', function (e) {
+			var b = e.target.closest('button'); if (!b) { return; }
+			if (b.getAttribute('data-k')) { S.kind = b.getAttribute('data-k'); [].forEach.call(host.querySelectorAll('.ab-kinds button'), function (x) { x.classList.toggle('on', x === b); }); upd(); }
+			else if (b.getAttribute('data-s')) { S.sort = +b.getAttribute('data-s'); [].forEach.call(host.querySelectorAll('.ab-sorts button'), function (x) { x.classList.toggle('on', x === b); }); upd(); }
+			else if (b.getAttribute('data-c')) { var t = g('ab-' + b.getAttribute('data-c')).textContent; var done = function () { b.textContent = 'Copié'; setTimeout(function () { b.textContent = 'Copier'; }, 1600); }; if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(done, done); } else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (x) { } document.body.removeChild(ta); done(); } }
+		});
+		host.addEventListener('input', upd); upd();
+	}
+	setTimeout(mount, 60);
 })();

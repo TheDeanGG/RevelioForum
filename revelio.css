@@ -2181,3 +2181,4 @@ html.rv-gaz .rv-aside { display: none !important; }
 .gp-card b { font-size: 16px; }
 .gp-card span { font: 400 16px/1.6 'EB Garamond', Georgia, serif; text-align: justify; color: #2b2720; }
 @media (max-width: 640px) { .gp { padding: 20px 18px 26px; } .gp-card:nth-child(odd) { border-right: 0; } .gp-card { padding-left: 0; padding-right: 0; border-bottom: 1px solid rgba(20, 17, 12, .2); } }
+.gp-body > p:first-of-type::first-letter { float: none; font: inherit; padding: 0; color: inherit; }

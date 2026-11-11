@@ -2245,3 +2245,13 @@ html.rv-gaz .rv-aside { display: none !important; }
 .gz-houses .gz-crest, .gz-mc, .gz-crest { filter: none; }
 .gz-houses .gz-bar { height: 6px; border: 0; border-radius: 3px; overflow: hidden; background: rgba(255, 255, 255, .1); -webkit-mask-image: none; mask-image: none; }
 .gz-houses .gz-bar i { min-width: 0; background: var(--l); }
+/* Gazette : factions, même traitement que les maisons */
+.gz-fact .gz-row { padding: 20px 0; }
+.gz-fact .gz-crest { width: 76px; height: 76px; filter: none; }
+.gz-fact .gz-hn { font-size: 22px; letter-spacing: 2px; }
+.gz-fact .gz-bar { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .1); }
+.gz-fact .gz-n { font-size: 34px; font-weight: 600; }
+.gz-fact .gz-colh .gz-n { font-size: 9px; }
+.gz-fact .gz-colh .sp { width: 76px; }
+.gz-fact .gz-side { background: transparent; }
+@media (max-width: 860px) { .gz-fact .gz-crest { width: 52px; height: 52px; } .gz-fact .gz-colh .sp { width: 52px; } }

@@ -1734,52 +1734,29 @@
 	var reduce = false; try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { }
 	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 	function norm(s) { s = String(s || '').toLowerCase().replace(/^\s+|\s+$/g, ''); return s.normalize ? s.normalize('NFD').replace(/[̀-ͯ]/g, '') : s; }
-	var HATP = 'M72 254 C80 204 108 164 122 122 C132 88 148 64 190 46 C214 36 238 42 254 64 C238 72 214 64 196 78 C177 93 178 112 185 130 C197 160 232 206 250 254 Z';
-	var HAT = '<svg class="ht-svg" viewBox="0 0 320 300" aria-hidden="true"><defs>' +
-		'<linearGradient id="htg" x1="0" x2="1"><stop offset="0" stop-color="#2b1d11"/><stop offset=".38" stop-color="#7a5836"/><stop offset=".62" stop-color="#5c4128"/><stop offset="1" stop-color="#22160d"/></linearGradient>' +
-		'<linearGradient id="htb" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6a4b2e"/><stop offset=".55" stop-color="#3e2a18"/><stop offset="1" stop-color="#1f140b"/></linearGradient>' +
-		'<radialGradient id="htm" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#3a0d0a"/><stop offset="1" stop-color="#070302"/></radialGradient>' +
-		'<filter id="htn" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .06  0 0 0 0 .03  0 0 0 0 .01  0 0 0 1.1 -.35"/><feComposite in2="SourceAlpha" operator="in"/></filter>' +
-		'<clipPath id="htc"><path d="' + HATP + '"/></clipPath></defs>' +
-		'<ellipse cx="160" cy="272" rx="118" ry="12" fill="#000" opacity=".35"/>' +
-		/* bord */
-		'<path d="M18 252 C34 232 78 238 160 238 C242 238 288 232 304 252 C306 268 270 282 160 282 C50 282 14 268 18 252Z" fill="url(#htb)"/>' +
-		'<path d="M18 252 C34 232 78 238 160 238 C242 238 288 232 304 252" fill="none" stroke="#8b6a45" stroke-width="2" opacity=".7"/>' +
-		'<path d="M30 262 C60 276 120 279 160 279 C200 279 262 276 292 262" fill="none" stroke="#120a05" stroke-width="3" opacity=".5"/>' +
-		'<path d="M44 256 l8 0 M64 262 l8 0 M92 267 l8 0 M122 270 l8 0 M152 271 l8 0 M184 270 l8 0 M214 267 l8 0 M244 262 l8 0 M268 256 l8 0" stroke="#c9a874" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>' +
-		/* corps */
-		'<path d="' + HATP + '" fill="url(#htg)"/>' +
-		'<path d="' + HATP + '" filter="url(#htn)" opacity=".75"/>' +
-		'<g clip-path="url(#htc)" fill="none" stroke-linecap="round">' +
-		'<path d="M70 212 C110 196 200 196 252 214" stroke="#150c06" stroke-width="5" opacity=".5"/><path d="M70 207 C110 192 200 192 252 209" stroke="#a37d52" stroke-width="2" opacity=".5"/>' +
-		'<path d="M96 160 C130 148 176 150 214 164" stroke="#150c06" stroke-width="4" opacity=".45"/><path d="M96 155 C130 143 176 145 214 159" stroke="#a37d52" stroke-width="1.8" opacity=".45"/>' +
-		'<path d="M118 118 C140 108 166 110 184 120" stroke="#150c06" stroke-width="3.5" opacity=".42"/><path d="M130 88 C148 80 168 82 182 90" stroke="#150c06" stroke-width="3" opacity=".38"/>' +
-		'<path d="M172 60 C196 54 224 62 246 72" stroke="#150c06" stroke-width="3" opacity=".38"/>' +
-		'<path d="M92 230 C98 190 120 160 136 120" stroke="#150c06" stroke-width="4" opacity=".28"/>' +
-		'<path d="M232 236 C226 200 200 166 190 128" stroke="#120a05" stroke-width="5" opacity=".28"/>' +
-		'<path d="M148 230 C150 205 152 160 150 116" stroke="#a37d52" stroke-width="2" opacity=".18"/></g>' +
-		/* pièces cousues */
-		'<g transform="rotate(14 205 176)"><rect x="190" y="164" width="30" height="24" rx="2" fill="#52381f" stroke="#8d6d46" stroke-width="1" stroke-dasharray="3 2.5"/></g>' +
-		'<g transform="rotate(-10 116 140)"><rect x="104" y="130" width="24" height="20" rx="2" fill="#3a2714" stroke="#8d6d46" stroke-width="1" stroke-dasharray="3 2.5"/></g>' +
-				/* visage */
-		'<g class="ht-face">' +
-		'<g class="ht-brows" fill="none" stroke-linecap="round"><path d="M106 192 C118 186 134 188 146 198" stroke="#150c06" stroke-width="5.5"/><path d="M174 198 C186 188 202 186 214 192" stroke="#150c06" stroke-width="5.5"/></g>' +
-		'<g class="ht-eyes"><path d="M110 206 Q128 194 146 205 Q128 213 110 206Z" fill="#0b0503"/><path d="M174 205 Q192 194 210 206 Q192 213 174 205Z" fill="#0b0503"/><path d="M110 206 Q128 194 146 205" fill="none" stroke="#a37d52" stroke-width="1.6" opacity=".55"/><path d="M174 205 Q192 194 210 206" fill="none" stroke="#a37d52" stroke-width="1.6" opacity=".55"/><circle cx="131" cy="204" r="1.8" fill="#e9d3a4" opacity=".7"/><circle cx="195" cy="204" r="1.8" fill="#e9d3a4" opacity=".7"/></g>' +
-		'<path d="M158 208 C153 218 153 224 160 226 C167 224 167 218 162 208" fill="none" stroke="#150c06" stroke-width="2.5" opacity=".55" stroke-linecap="round"/>' +
-		'<g class="ht-mouth"><path d="M102 240 C122 230 140 236 160 234 C182 232 198 228 218 238 C200 252 126 254 102 240Z" fill="url(#htm)" stroke="#120a05" stroke-width="2.5" stroke-linejoin="round"/><path d="M124 243 C144 248 178 248 198 242 C180 238 142 238 124 243Z" fill="#6d1d17" opacity=".65"/></g></g></svg>';
+	/* Choixpeau : images de l'artiste (12 expressions), la bouche alterne quand il parle */
+	var FR = BASE + 'img/choixpeau/f', M = { curious: [1, 11], warm: [9, 10], stern: [4, 6], think: [2, 4, 5], shock: [7, 12] }, IDLE = { curious: 11, warm: 9, stern: 4, think: 2, shock: 12 };
+	function fsrc(n) { return FR + (n < 10 ? '0' : '') + n + '.webp'; }
+	(function () { for (var i = 1; i <= 12; i++) { var im = new Image(); im.src = fsrc(i); } })();
+	function faceHtml(n) { return '<div class="ht-fr"><img alt="" draggable="false" src="' + fsrc(n || 11) + '"></div>'; }
+	function fimg(root) { return root && root.querySelector('.ht-fr img'); }
+	function stopTalk(root) { if (root && root.__ft) { clearInterval(root.__ft); root.__ft = 0; } }
+	function idleF(root, n) { stopTalk(root); var i = fimg(root); if (i) { i.src = fsrc(n || 11); } }
+	function talkF(root, fr) { stopTalk(root); var i = fimg(root), last = 0; if (!i || !fr) { return; } root.__ft = setInterval(function () { var n; do { n = fr[Math.floor(Math.random() * fr.length)]; } while (n === last && fr.length > 1); last = n; i.src = fsrc(n); }, 190); }
+	var HAT = faceHtml(11);
 	function play(opts, done) {
 		var name = opts.name || 'Élève', key = KEYS.indexOf(opts.house) > -1 ? opts.house : KEYS[Math.floor(Math.random() * 4)], h = H[key];
 		var other = H[KEYS[(KEYS.indexOf(key) + 1 + Math.floor(Math.random() * 3)) % 4]];
 		var ov = document.createElement('div'); ov.className = 'rv-hat'; ov.style.setProperty('--hc', h.c);
-		ov.innerHTML = '<div class="ht-dim"></div><div class="ht-stars"></div><div class="ht-box"><div class="ht-hat">' + HAT + '</div><div class="ht-line" aria-live="polite"></div>' +
+		ov.innerHTML = '<div class="ht-dim"></div><div class="ht-stars"></div><div class="ht-box"><div class="ht-hat">' + faceHtml(11) + '</div><div class="ht-line" aria-live="polite"></div>' +
 			'<div class="ht-res"><img class="ht-crest" alt="" src="' + BASE + 'img/ecussons/' + h.n + '.png"><div class="ht-cry">' + h.cry + '</div><div class="ht-sub">Bienvenue chez ' + h.n + ', <b>' + esc(name) + '</b>.<br><em>' + h.tag + '</em></div><button type="button" class="ht-ok">Fermer</button></div></div>' +
 			'<button type="button" class="ht-skip">Passer</button>';
 		document.body.appendChild(ov); document.body.className += ' rv-hat-on'; if (window.RVMusic) { var mb = window.RVMusic.button(); mb.className += ' ht-music'; ov.appendChild(mb); }
 		var tm = [], line = ov.querySelector('.ht-line'), box = ov.querySelector('.ht-box');
 		function at(ms, f) { tm.push(setTimeout(f, ms)); }
-		function say(t, talk) { line.className = 'ht-line'; void line.offsetWidth; line.textContent = t; line.className = 'ht-line on' + (talk ? ' talk' : ''); box.classList.toggle('talk', !!talk); }
+		function say(t, mood) { line.className = 'ht-line'; void line.offsetWidth; line.textContent = t; line.className = 'ht-line on'; if (mood) { talkF(box, M[mood]); } else { idleF(box, 11); } }
 		function stop() { tm.forEach(clearTimeout); tm = []; }
-		function result() { stop(); box.classList.remove('talk'); ov.classList.add('res'); line.textContent = ''; }
+		function result() { stop(); stopTalk(box); ov.classList.add('res'); line.textContent = ''; }
 		function close() { stop(); ov.classList.add('out'); document.body.className = document.body.className.replace(/\s*rv-hat-on/, ''); setTimeout(function () { if (ov.parentNode) { ov.parentNode.removeChild(ov); } }, 500); document.removeEventListener('keydown', key2); if (done) { done(key); } }
 		function key2(e) { if (e.key === 'Escape') { close(); } }
 		document.addEventListener('keydown', key2);
@@ -1788,15 +1765,15 @@
 		if (reduce) { result(); return; }
 		requestAnimationFrame(function () { ov.classList.add('in'); });
 		var t = 1800;
-		[['Hmm… voyons voir…', 2200], ['Oh, oui. Je lis en toi, ' + name + '…', 3000], ['Il y a ' + h.tr[0] + ', c’est certain…', 3000], ['Mais aussi ' + h.tr[1] + '… intéressant.', 3000],
-		['Je vois ' + other.tr[0] + '… non, ce n’est pas ici que tu brilleras.', 3400], ['Difficile… très difficile…', 2600], ['Ah ! ' + h.tr[2].charAt(0).toUpperCase() + h.tr[2].slice(1) + '. Voilà ce que je cherchais.', 3200]].forEach(function (s) {
-			(function (txt, d, t0) { at(t0, function () { say(txt, true); at(d - 300, function () { box.classList.remove('talk'); }); }); })(s[0], s[1], t); t += s[1];
+		[['Hmm… voyons voir…', 2200, 'curious'], ['Oh, oui. Je lis en toi, ' + name + '…', 3000, 'warm'], ['Il y a ' + h.tr[0] + ', c’est certain…', 3000, 'curious'], ['Mais aussi ' + h.tr[1] + '… intéressant.', 3000, 'warm'],
+		['Je vois ' + other.tr[0] + '… non, ce n’est pas ici que tu brilleras.', 3400, 'stern'], ['Difficile… très difficile…', 2600, 'think'], ['Ah ! ' + h.tr[2].charAt(0).toUpperCase() + h.tr[2].slice(1) + '. Voilà ce que je cherchais.', 3200, 'warm']].forEach(function (s) {
+			(function (txt, d, mo, t0) { at(t0, function () { say(txt, mo); at(d - 350, function () { idleF(box, IDLE[mo]); }); }); })(s[0], s[1], s[2], t); t += s[1];
 		});
-		at(t, function () { say('Alors… que ce soit…', true); }); t += 1800;
-		at(t, function () { ov.classList.add('shout'); say(h.cry, true); }); t += 1700;
+		at(t, function () { say('Alors… que ce soit…', 'curious'); }); t += 1800;
+		at(t, function () { ov.classList.add('shout'); say(h.cry, 'shock'); }); t += 1700;
 		at(t, result);
 	}
-	window.RVHat = { play: play, houses: H, hat: HAT };
+	window.RVHat = { play: play, houses: H, hat: HAT, face: faceHtml, talk: talkF, idle: idleF, M: M, IDLE: IDLE };
 
 	/* --- page : <div id="rv-hat"></div> (cérémonie libre + BBCode staff) --- */
 	function page() {
@@ -1827,7 +1804,7 @@
 			try { seen = !!localStorage.getItem(seenKey); } catch (e) { }
 			var card = document.createElement('div'); card.className = 'rv-hatcard'; card.style.setProperty('--hc', H[hk].c);
 			function draw(done) {
-				card.innerHTML = '<div class="hc-ic">' + HAT + '</div><div class="hc-tx"><span>Le Choixpeau a parlé</span><b>' + esc(name) + '</b>' + (done ? '<em>Réparti à <i>' + H[hk].n + '</i></em>' : '<em>Sa Répartition l’attend…</em>') + '</div><button type="button" class="hc-bt">' + (done ? 'Revoir la cérémonie' : 'Écouter le Choixpeau') + '</button>';
+				card.innerHTML = '<div class="hc-ic">' + faceHtml(9) + '</div><div class="hc-tx"><span>Le Choixpeau a parlé</span><b>' + esc(name) + '</b>' + (done ? '<em>Réparti à <i>' + H[hk].n + '</i></em>' : '<em>Sa Répartition l’attend…</em>') + '</div><button type="button" class="hc-bt">' + (done ? 'Revoir la cérémonie' : 'Écouter le Choixpeau') + '</button>';
 				card.querySelector('.hc-bt').onclick = function () { play({ name: name, house: hk }, function () { try { localStorage.setItem(seenKey, '1'); } catch (e) { } draw(true); }); };
 			}
 			draw(seen); c.style.display = 'none'; c.parentNode.insertBefore(card, c);
@@ -1865,12 +1842,12 @@
 		var box = document.createElement('div'); box.className = 'rv-quiz'; stage.appendChild(box); root.appendChild(stage);
 		function swap(html, cls) { box.className = 'rv-quiz out'; setTimeout(function () { box.className = 'rv-quiz in ' + (cls || ''); box.innerHTML = html; bind(); }, 320); }
 		var REA = ['Hmm… intéressant.', 'Ah, je vois…', 'Voilà qui en dit long.', 'Oh, tiens, tiens…', 'Curieux… très curieux.', 'Je note, je note…'], INT = ['Voyons voir… une première question.'];
-		function hatBlk(txt, big) { var hh = window.RVHat ? window.RVHat.hat : ''; return '<div class="qz-hatw' + (big ? ' big' : '') + '"><div class="qz-hat talk">' + hh + '</div><div class="qz-sub">' + txt + '</div></div>'; }
-		function calm(ms) { setTimeout(function () { var e = box.querySelector('.qz-hat'); if (e) { e.className = 'qz-hat'; } }, ms || 1700); }
+		function hatBlk(txt, big) { var R = window.RVHat; return '<div class="qz-hatw' + (big ? ' big' : '') + '"><div class="qz-hat">' + (R ? R.face(11) : '') + '</div><div class="qz-sub">' + txt + '</div></div>'; }
+		function speak(mood, ms) { var R = window.RVHat, e = box.querySelector('.qz-hat'); if (!R || !e) { return; } R.talk(e, R.M[mood]); if (ms) { setTimeout(function () { if (e.isConnected !== false) { R.idle(e, R.IDLE[mood]); } }, ms); } }
 		function dots() { var s = ''; for (var k = 0; k < Q.length; k++) { s += '<i class="' + (k < st.i ? 'd' : k === st.i ? 'n' : '') + '"></i>'; } return '<div class="qz-dots">' + s + '</div>'; }
 		function intro() {
 			st.i = -1; st.sc = { gryffondor: 0, serdaigle: 0, serpentard: 0, poufsouffle: 0 };
-			swap(hatBlk('Approche, jeune sorcier… Je t’attendais.', 1) + '<div class="qz-eye">Le Choixpeau magique</div><h2>Quelle est ta <em>maison</em> ?</h2><p class="qz-p">Sept questions, pas de bonne réponse. Réponds avec ton instinct : le Choixpeau écoute ce que tu es vraiment.</p>' +
+			setTimeout(function () { speak('warm', 2600); }, 360); swap(hatBlk('Approche, jeune sorcier… Je t’attendais.', 1) + '<div class="qz-eye">Le Choixpeau magique</div><h2>Quelle est ta <em>maison</em> ?</h2><p class="qz-p">Sept questions, pas de bonne réponse. Réponds avec ton instinct : le Choixpeau écoute ce que tu es vraiment.</p>' +
 				'<div class="qz-crests">' + ['Gryffondor', 'Serdaigle', 'Serpentard', 'Poufsouffle'].map(function (n) { return '<img alt="' + n + '" src="' + QB + 'img/ecussons/' + n + '.png">'; }).join('') + '</div><label class="qz-lab">Ton nom de sorcier<input id="qz-n" type="text" maxlength="60" placeholder="Prénom Nom" value="' + esc(st.name) + '"></label><button type="button" class="qz-go" data-a="start">Commencer</button>', 'qz-intro');
 		}
 		function ask() {
@@ -1878,7 +1855,7 @@
 			var h = hatBlk(st.i === 0 ? INT[0] : REA[Math.floor(Math.random() * REA.length)]) + dots() + '<div class="qz-n">Question ' + (st.i + 1) + ' sur ' + Q.length + '</div><h3>' + esc(q.t) + '</h3>';
 			if (q.bin) { h += '<div class="qz-bin">' + opts.map(function (o, k) { return '<button type="button" class="qz-b ' + o[3] + '" data-k="' + k + '"><b>' + o[0] + '</b><span>' + o[1] + '</span></button>'; }).join('') + '</div>'; }
 			else { h += '<div class="qz-opts">' + opts.map(function (o, k) { return '<button type="button" class="qz-o" data-k="' + k + '"><span class="qz-bul"></span>' + o[0] + '</button>'; }).join('') + '</div>'; }
-			q._cur = opts; swap(h, q.bin ? 'qz-q qz-isbin' : 'qz-q'); setTimeout(calm, 320);
+			q._cur = opts; swap(h, q.bin ? 'qz-q qz-isbin' : 'qz-q'); setTimeout(function () { speak(['curious', 'warm', 'stern', 'think'][Math.floor(Math.random() * 4)], 1700); }, 360);
 		}
 		function pick(k) {
 			var q = Q[st.i], o = q._cur[k], hs = q.bin ? o[2] : o[1], w = q.bin ? 1 : 2; hs.forEach(function (x) { st.sc[x] += w; });
@@ -1886,9 +1863,9 @@
 		}
 		function verdict() {
 			var mx = Math.max.apply(null, Object.keys(st.sc).map(function (k) { return st.sc[k]; })), top = Object.keys(st.sc).filter(function (k) { return st.sc[k] === mx; }), h = top[Math.floor(Math.random() * top.length)];
-			swap(hatBlk('Hmm…', 1) + '<div class="qz-eye">Le Choixpeau délibère</div>', 'qz-w');
+			swap(hatBlk('Hmm…', 1) + '<div class="qz-eye">Le Choixpeau délibère</div>', 'qz-w'); var MO = ['think', 'stern', 'warm'];
 			var L = ['Hmm… difficile, très difficile…', 'Du courage, de la ruse… non, pas seulement…', 'Je crois que je tiens ma réponse.'], k = 0, sub = null;
-			function tick() { sub = box.querySelector('.qz-sub'); if (sub && k < L.length) { sub.textContent = L[k++]; setTimeout(tick, 1500); } }
+			function tick() { sub = box.querySelector('.qz-sub'); if (sub && k < L.length) { speak(MO[k]); sub.textContent = L[k++]; setTimeout(tick, 1500); } }
 			setTimeout(tick, 700);
 			setTimeout(function () { if (window.RVHat) { window.RVHat.play({ name: st.name || 'jeune sorcier', house: h }, function () { result(h); }); } else { result(h); } }, 5400);
 		}

@@ -2006,3 +2006,9 @@ body.rv-hat-on { overflow: hidden; }
 }
 
 .gd-sec h3 { border: 0; padding: 0; }
+.gd-nb, .gd-nb:hover, .gd-nb.on { background: none; }
+.gd-nb.on { border-left-color: transparent; color: var(--c); }
+.gd-nav { border-left: 0; border-bottom: 0; }
+.gd-rule { display: none; }
+.gd-sub { margin-bottom: 26px; }
+@media (max-width: 860px) { .gd-nb.on { border-bottom-color: transparent; } }

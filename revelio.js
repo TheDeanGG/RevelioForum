@@ -1257,7 +1257,7 @@
 
 /* ===== REVELIO : générateur de journal (page HTML contenant <div id="rv-jr"></div>) ===== */
 (function () {
-	var JR_FORUM = 0;                 /* id du forum où se poste le journal (0 = pas de bouton « ouvrir l'éditeur ») */
+	var JR_FORUM = 15;               /* id du forum « Le Carnet des relations » où se postent les journaux */
 	var KEY = 'rv_jr_draft', FKEY = 'rv_jr_form';
 	var AFF = [['Amour', '#d65a6b'], ['Amitié', '#8cc7a0'], ['Neutre', '#a8a193'], ['Rivalité', '#e0975f'], ['Ennemi', '#b79be0']];
 	var BLOODS = ['Sang-pur', 'Sang-mêlé', 'Né-moldu', 'Cracmol'];

@@ -2418,3 +2418,4 @@ html.rv-gaz .rv-aside { display: none !important; }
 .gp.of .opts b { display: block; font: 600 14px 'Cinzel', serif; letter-spacing: 1.2px; text-transform: uppercase; color: #f4efe0; }
 .gp.of .opts span { font-weight: 300; font-size: 13px; color: #cfc9ba; }
 @media (max-width: 520px) { .gp.of { padding: 20px 18px 24px; } .gp.of .mast { grid-template-columns: 1fr; gap: 12px; } .gp.of .emb { width: 52px; height: 52px; } .gp.of .of-seal { width: 54px; right: 16px; } .gp.of .facts div { grid-template-columns: 1fr; gap: 4px; } .gp.of .gzl li { flex-wrap: wrap; } .gp.of .gzl .dots { display: none; } .gp.of .gzl b { margin-left: auto; } }
+.gp.of { max-width: none; margin: 8px 0; }

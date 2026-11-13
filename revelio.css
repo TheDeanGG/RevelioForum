@@ -2421,3 +2421,4 @@ html.rv-gaz .rv-aside { display: none !important; }
 .gp.of { max-width: none; margin: 8px 0; }
 .post.rv-gazp .content { width: 100% !important; max-width: none !important; }
 .gp.of .gp-body > p:not(.gp-note) { max-width: 900px; }
+.gp.of .gp-body > p:not(.gp-note) { font-family: 'Poppins', sans-serif !important; font-weight: 300 !important; font-size: 15px !important; line-height: 1.85 !important; font-style: normal !important; color: #cfc9ba !important; }

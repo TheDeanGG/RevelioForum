@@ -2108,7 +2108,7 @@
 			if (!/LA GAZETTE DU SORCIER|LE GUIDEBOOK|^\s*\[?\s*(ANNONCE|R[ÈE]GLEMENT|GAZETTE|GUIDE|VOTE)\s*\]?/i.test(c.textContent || '')) { continue; }
 			var html = build(c); if (!html) { continue; }
 			var d = document.createElement('div'); d.innerHTML = html; c.style.display = 'none'; c.parentNode.insertBefore(d.firstChild, c);
-			var po = c.closest('.post'); if (po) { po.className += ' rv-gazp'; } document.documentElement.className += ' rv-gaz';
+			if (!(d.firstChild.className || '').match(/(^|\s)of(\s|$)/)) { var po = c.closest('.post'); if (po) { po.className += ' rv-gazp'; } document.documentElement.className += ' rv-gaz'; }
 			var dl = !c.parentNode.querySelector('.of') && /GAZETTE DU/i.test(c.textContent) && /(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+(\d{4})/i.exec(document.title), sp = document.querySelector('.gp-meta span:first-child'); if (sp && dl) { sp.textContent = 'Édition de ' + dl[1].toLowerCase() + ' ' + dl[2]; }
 		}
 	}

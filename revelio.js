@@ -1,3 +1,16 @@
+/* REVELIO — date « Dim 25 Oct 2026 - 19:55 » → horodatage (utilisé pour trouver le dernier hibou) */
+(function () {
+	var MO = { jan: 0, fev: 1, mar: 2, avr: 3, mai: 4, jun: 5, jui: 5, juil: 6, aou: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+	window.__rvTs = function (t) {
+		var s = String(t || '').toLowerCase(); if (s.normalize) { s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+		var m = /(\d{1,2})\s+([a-z]+)\.?\s+(\d{4})\s*[-–]?\s*(\d{1,2}):(\d{2})/.exec(s);
+		if (m) { var k = m[2].indexOf('juil') === 0 ? 'juil' : m[2].slice(0, 3); return new Date(+m[3], MO[k] === undefined ? 0 : MO[k], +m[1], +m[4], +m[5]).getTime(); }
+		var tm = /(\d{1,2}):(\d{2})/.exec(s), d = new Date();
+		if (tm && /aujourd/.test(s)) { d.setHours(+tm[1], +tm[2], 0, 0); return d.getTime(); }
+		if (tm && /hier/.test(s)) { d.setDate(d.getDate() - 1); d.setHours(+tm[1], +tm[2], 0, 0); return d.getTime(); }
+		return 0;
+	};
+})();
 /* REVELIO — citations et spoilers */
 (function () {
   if (window.__rvSp) { return; } window.__rvSp = 1;
@@ -2210,7 +2223,6 @@
 		if (tm && /hier/.test(s)) { d.setDate(d.getDate() - 1); d.setHours(+tm[1], +tm[2], 0, 0); return d.getTime(); }
 		return 0;
 	}
-	window.__rvTs = ts;
 	function read(card) {
 		var best = null;
 		Array.prototype.forEach.call(card.querySelectorAll('li.row'), function (row) {

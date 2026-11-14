@@ -450,7 +450,7 @@
 			rows.push({
 				name: clean(a.textContent), href: a.getAttribute('href'), subs: subs,
 				topics: num(row.querySelector('dd.topics')), posts: num(row.querySelector('dd.posts')),
-				lastTitle: ta && clean(ta.textContent) ? clean(ta.textContent) : '', lastHref: ta ? ta.getAttribute('href') : '',
+				lastTitle: ta && clean(ta.getAttribute('title') || ta.textContent) ? clean(ta.getAttribute('title') || ta.textContent) : '', lastHref: ta ? ta.getAttribute('href') : '',
 				lastRest: date && whoTxt ? date + ' · ' + whoTxt : (date || whoTxt), lastBy: whoTxt
 			});
 		});
@@ -469,7 +469,7 @@
 		var places = [], houses = [], topics = 0, posts = 0, last = null;
 		rows.forEach(function (r) {
 			topics += r.topics; posts += r.posts;
-			if (!last && r.lastTitle) { last = r; }
+			if (r.lastTitle && (!last || (window.__rvTs && window.__rvTs(r.lastRest) > window.__rvTs(last.lastRest)))) { last = r; }
 			var n = norm(r.name), hs = null;
 			HOUSES.forEach(function (x) { if (n.indexOf('maison') === 0 && n.indexOf(x.k) > -1) { hs = x; } });
 			if (hs) { houses.push({ r: r, h: hs }); } else { places.push(r); }
@@ -2210,6 +2210,7 @@
 		if (tm && /hier/.test(s)) { d.setDate(d.getDate() - 1); d.setHours(+tm[1], +tm[2], 0, 0); return d.getTime(); }
 		return 0;
 	}
+	window.__rvTs = ts;
 	function read(card) {
 		var best = null;
 		Array.prototype.forEach.call(card.querySelectorAll('li.row'), function (row) {

@@ -2427,3 +2427,7 @@ html.rv-gaz .rv-aside { display: none !important; }
 .rvx-last.rvx-last-v2 .rvx-pl-lt { min-width: 0; }
 .rvx-last.rvx-last-v2 .rvx-pl-lt-title, .rvx-pl-last .rvx-pl-lt-title { white-space: normal; overflow: visible; text-overflow: clip; }
 .rvx-last.rvx-last-v2 .rvx-pl-lt span { white-space: normal; }
+
+/* Anti-flash : contenu masque jusqu'a ce que le script ait fini */
+html:not(.rv-ready) #page-body, html:not(.rv-ready) .rvx { opacity: 0; }
+#page-body { transition: opacity .25s ease; }

@@ -2273,3 +2273,11 @@
 	function go() { init(); setTimeout(init, 400); setTimeout(init, 1500); }
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
 })();
+
+/* Anti-flash : revele la page une fois les modules passes */
+(function () {
+	function show() { document.documentElement.classList.add('rv-ready'); }
+	function go() { setTimeout(function () { (window.requestAnimationFrame || setTimeout)(show); }, 450); }
+	if (document.readyState === 'complete') { go(); } else { window.addEventListener('load', go); }
+	setTimeout(show, 2800);
+})();

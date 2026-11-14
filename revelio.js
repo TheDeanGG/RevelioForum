@@ -2281,3 +2281,23 @@
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
 	setTimeout(show, 1800);
 })();
+
+/* Hors RP : (Hors RP : ...) en italique devient un encadre */
+(function () {
+	function run() {
+		try {
+			var ems = document.querySelectorAll('.postbody .content em, .post .content em, .content i');
+			Array.prototype.forEach.call(ems, function (em) {
+				if (em.closest && em.closest('.rv-hrp, .gp, .gz, .ab')) { return; }
+				var t = (em.textContent || '').replace(/^\s+|\s+$/g, '');
+				if (!/^\(\s*(hors\s*rp|hrp)\b/i.test(t) || t.charAt(t.length - 1) !== ')') { return; }
+				var inner = em.innerHTML.replace(/^\s*\(\s*/, '').replace(/\s*\)\s*$/, '');
+				var d = document.createElement('div');
+				d.className = 'rv-hrp';
+				d.innerHTML = inner;
+				em.parentNode.replaceChild(d, em);
+			});
+		} catch (e) { }
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

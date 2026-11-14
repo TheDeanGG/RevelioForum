@@ -2431,3 +2431,6 @@ html.rv-gaz .rv-aside { display: none !important; }
 /* Anti-flash : contenu masque jusqu'a ce que le script ait fini */
 html:not(.rv-ready) #page-body, html:not(.rv-ready) .rvx { opacity: 0; }
 #page-body { transition: opacity .18s ease; }
+
+/* Hors RP */
+.rv-hrp{display:block;margin:10px 0;padding:14px 22px;border-left:4px solid #5b5648;background:#171614;font:400 15px/1.6 'Poppins',sans-serif !important;font-style:normal !important;color:#a8a193 !important}

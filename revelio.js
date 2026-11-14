@@ -492,7 +492,7 @@
 		var lb = h('div', 'cp-last');
 		lb.appendChild(h('span', 'dm', last && last.lastBy ? last.lastBy.charAt(0).toUpperCase() : '✦'));
 		var lt = h('div'); lt.appendChild(h('small', '', 'Dernier hibou'));
-		if (last) { var sa = h('strong'); sa.appendChild(link('', last.lastTitle, last.lastHref)); lt.appendChild(sa); lt.appendChild(h('span', '', last.lastRest)); }
+		if (last) { var sa = h('strong'); var sl = link('', last.lastTitle.split('|')[0].replace(/\s+$/, ''), last.lastHref); sl.title = last.lastTitle; sa.appendChild(sl); lt.appendChild(sa); lt.appendChild(h('span', '', last.lastRest)); }
 		else { lt.appendChild(h('strong', '', 'Aucun hibou')); lt.appendChild(h('span', '', 'pour le moment')); }
 		lb.appendChild(lt);
 		var act = h('div', 'cp-act');
@@ -2230,7 +2230,7 @@
 	}
 	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 	function box(b) {
-		return '<span class="rvx-pl-av"><b>' + esc(b.who ? b.who.charAt(0).toUpperCase() : '✦') + '</b></span><div class="rvx-pl-lt"><small>Dernier hibou</small><a class="rvx-pl-lt-title" href="' + esc(b.href) + '">' + esc(b.title) + '</a><span>' + esc(b.rest) + '</span></div>';
+		return '<span class="rvx-pl-av"><b>' + esc(b.who ? b.who.charAt(0).toUpperCase() : '✦') + '</b></span><div class="rvx-pl-lt"><small>Dernier hibou</small><a class="rvx-pl-lt-title" href="' + esc(b.href) + '" title="' + esc(b.title) + '">' + esc(b.title.split('|')[0].replace(/\s+$/, '')) + '</a><span>' + esc(b.rest) + '</span></div>';
 	}
 	function patch() {
 		var stage = document.querySelector('.rvx-stage-body');

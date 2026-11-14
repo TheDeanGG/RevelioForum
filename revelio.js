@@ -2197,3 +2197,66 @@
 	}
 	setTimeout(mount, 60);
 })();
+
+/* ===== REVELIO : accueil, « Dernier hibou » des catégories (le plus récent, titre complet, losange) ===== */
+(function () {
+	function norm(s) { var t = String(s || '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '').toLowerCase(); if (t.normalize) { t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } return t.replace(/^[ivx]+\.\s*/, ''); }
+	var MO = { jan: 0, fev: 1, mar: 2, avr: 3, mai: 4, jun: 5, jui: 5, juil: 6, aou: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+	function ts(t) {
+		var s = norm(t), m = /(\d{1,2})\s+([a-z]+)\.?\s+(\d{4})\s*[-–]?\s*(\d{1,2}):(\d{2})/.exec(s);
+		if (m) { var k = m[2].indexOf('juil') === 0 ? 'juil' : m[2].slice(0, 3); return new Date(+m[3], MO[k] === undefined ? 0 : MO[k], +m[1], +m[4], +m[5]).getTime(); }
+		var tm = /(\d{1,2}):(\d{2})/.exec(s), d = new Date();
+		if (tm && /aujourd/.test(s)) { d.setHours(+tm[1], +tm[2], 0, 0); return d.getTime(); }
+		if (tm && /hier/.test(s)) { d.setDate(d.getDate() - 1); d.setHours(+tm[1], +tm[2], 0, 0); return d.getTime(); }
+		return 0;
+	}
+	function read(card) {
+		var best = null;
+		Array.prototype.forEach.call(card.querySelectorAll('li.row'), function (row) {
+			var lp = row.querySelector('dd.lastpost .lastpost-infos'), a = lp ? lp.querySelector('a[href]') : null;
+			if (!a) { return; }
+			var date = ''; Array.prototype.forEach.call(lp.childNodes, function (n) { if (n.nodeType === 3) { date += n.nodeValue; } });
+			date = date.replace(/ /g, ' ').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '').replace(/\s*\bpar\b\s*$/i, '');
+			var st = lp.querySelector('strong'), who = st ? st.textContent.replace(/^\s+|\s+$/g, '') : '';
+			var last = lp.querySelector('a.last-post-icon'), t = ts(date);
+			if (!best || t > best.t) { best = { t: t, title: a.getAttribute('title') || a.textContent, href: a.getAttribute('href'), who: who, rest: date + (who ? ' · ' + who : '') }; }
+		});
+		return best;
+	}
+	function find(name) {
+		var cards = document.querySelectorAll('.forabg'), n = norm(name);
+		for (var i = 0; i < cards.length; i++) { var t = cards[i].querySelector('.table-title'); if (t && norm(t.textContent) === n) { return cards[i]; } }
+		return null;
+	}
+	function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+	function box(b) {
+		return '<span class="rvx-pl-av"><b>' + esc(b.who ? b.who.charAt(0).toUpperCase() : '✦') + '</b></span><div class="rvx-pl-lt"><small>Dernier hibou</small><a class="rvx-pl-lt-title" href="' + esc(b.href) + '">' + esc(b.title) + '</a><span>' + esc(b.rest) + '</span></div>';
+	}
+	function patch() {
+		var stage = document.querySelector('.rvx-stage-body');
+		if (stage) {
+			var h3 = stage.querySelector('h3'), ln = stage.querySelector('.rvx-last');
+			if (h3 && ln && ln.getAttribute('data-rvl') !== h3.textContent) {
+				var c = find(h3.textContent), b = c ? read(c) : null;
+				ln.setAttribute('data-rvl', h3.textContent);
+				if (b) { ln.className = 'rvx-last rvx-last-v2'; ln.innerHTML = box(b); }
+			}
+		}
+		Array.prototype.forEach.call(document.querySelectorAll('.rvx-place'), function (pl) {
+			if (pl.getAttribute('data-rvl')) { return; }
+			var h = pl.querySelector('.rvx-pl-hd h3'), lastBox = pl.querySelector('.rvx-pl-last');
+			if (!h || !lastBox) { return; }
+			pl.setAttribute('data-rvl', '1');
+			var c = find(h.textContent), b = c ? read(c) : null;
+			if (b) { lastBox.innerHTML = box(b); }
+		});
+	}
+	function init() {
+		var w = document.querySelector('.rvx'); if (!w || w.__rvl) { return; } w.__rvl = 1;
+		patch();
+		var sb = w.querySelector('.rvx-stage-body');
+		if (sb && window.MutationObserver) { new MutationObserver(function () { patch(); }).observe(sb, { childList: true }); }
+	}
+	function go() { init(); setTimeout(init, 400); setTimeout(init, 1500); }
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+})();

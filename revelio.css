@@ -2422,3 +2422,8 @@ html.rv-gaz .rv-aside { display: none !important; }
 .post.rv-gazp .content { width: 100% !important; max-width: none !important; }
 .gp.of .gp-body > p:not(.gp-note) { max-width: 900px; }
 .gp.of .gp-body > p:not(.gp-note) { font-family: 'Poppins', sans-serif !important; font-weight: 300 !important; font-size: 15px !important; line-height: 1.85 !important; font-style: normal !important; color: #cfc9ba !important; }
+/* Accueil : « Dernier hibou » des catégories (titre complet, losange) */
+.rvx-last.rvx-last-v2 { align-items: center; gap: 14px; margin-top: 22px; }
+.rvx-last.rvx-last-v2 .rvx-pl-lt { min-width: 0; }
+.rvx-last.rvx-last-v2 .rvx-pl-lt-title, .rvx-pl-last .rvx-pl-lt-title { white-space: normal; overflow: visible; text-overflow: clip; }
+.rvx-last.rvx-last-v2 .rvx-pl-lt span { white-space: normal; }

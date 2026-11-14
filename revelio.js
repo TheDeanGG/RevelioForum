@@ -2274,10 +2274,10 @@
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
 })();
 
-/* Anti-flash : revele la page une fois les modules passes */
+/* Anti-flash : revele la page des que les modules ont passe */
 (function () {
 	function show() { document.documentElement.classList.add('rv-ready'); }
-	function go() { setTimeout(function () { (window.requestAnimationFrame || setTimeout)(show); }, 450); }
-	if (document.readyState === 'complete') { go(); } else { window.addEventListener('load', go); }
-	setTimeout(show, 2800);
+	function go() { setTimeout(function () { (window.requestAnimationFrame || setTimeout)(show); }, 120); }
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+	setTimeout(show, 1800);
 })();

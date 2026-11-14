@@ -2430,4 +2430,4 @@ html.rv-gaz .rv-aside { display: none !important; }
 
 /* Anti-flash : contenu masque jusqu'a ce que le script ait fini */
 html:not(.rv-ready) #page-body, html:not(.rv-ready) .rvx { opacity: 0; }
-#page-body { transition: opacity .25s ease; }
+#page-body { transition: opacity .18s ease; }

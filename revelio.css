@@ -2434,3 +2434,10 @@ html:not(.rv-ready) #page-body, html:not(.rv-ready) .rvx { opacity: 0; }
 
 /* Hors RP */
 .rv-hrp{display:block;margin:10px 0;padding:14px 22px;border-left:4px solid #5b5648;background:#171614;font:400 15px/1.6 'Poppins',sans-serif !important;font-style:normal !important;color:#a8a193 !important}
+
+/* Messagerie : fil de l'echange lisible sur mobile (titre pleine largeur) */
+@media (max-width: 640px) {
+	body .rv-rd-th .rv-th-i { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 14px 16px; }
+	body .rv-rd-th .rv-th-i strong { font-size: 14px; line-height: 1.35; }
+	body .rv-rd-th .rv-th-i em { line-height: 1.4; }
+}

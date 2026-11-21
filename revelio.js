@@ -2450,12 +2450,21 @@
 			var mx = ORDER[0], hmn = 4, i;
 			ORDER.forEach(function (g) { if ((bal[g] || 0) > (bal[mx] || 0)) { mx = g; } });
 			[4, 5, 6, 7].forEach(function (g) { if ((bal[g] || 0) < (bal[hmn] || 0)) { hmn = g; } });
-			h += '<div class="rvo-bal"><h4>Équilibre des factions</h4><div class="rvo-seg">';
-			ORDER.forEach(function (g) {
-				var G = GROUPS[g], n = bal[g] || 0, cl = g === mx ? ' max' : (g === hmn ? ' min' : '');
-				h += '<div class="rvo-s' + cl + '" style="--l:' + G.l + ';--t:' + G.t + ';--w:' + Math.max(n, 1) + '">' + (nat.crests[g] ? '<img src="' + esc(nat.crests[g]) + '" alt="">' : '') + '<div><b>' + esc(G.n) + '</b><small>' + n + ' ' + plural(n, 'sorcier', 'sorciers') + '</small></div>' + (cl === ' max' ? '<em>La plus peuplée</em>' : (cl === ' min' ? '<em>À rejoindre</em>' : '')) + '</div>';
-			});
-			h += '</div><p class="rvo-inv"><b style="color:' + GROUPS[mx].t + '">' + esc(GROUPS[mx].n) + '</b> règne avec ' + (bal[mx] || 0) + ' ' + plural(bal[mx] || 0, 'sorcier', 'sorciers') + ', mais <b style="color:' + GROUPS[hmn].t + '">' + esc(GROUPS[hmn].n) + '</b> manque encore de monde : choisissez-la pour rééquilibrer la balance.<a href="/g' + hmn + '">Choisir ma faction</a></p></div>';
+			var RN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'], tot = 0, rk;
+			ORDER.forEach(function (g) { tot += bal[g] || 0; });
+			rk = ORDER.slice().sort(function (a, b) { return (bal[b] || 0) - (bal[a] || 0) || ORDER.indexOf(a) - ORDER.indexOf(b); });
+			var crest = function (g) { return nat.crests[g] ? '<img src="' + esc(nat.crests[g]) + '" alt="">' : ''; };
+			var pl = function (k, cls, ph) {
+				var g = rk[k], G = GROUPS[g], n = bal[g] || 0;
+				return '<div class="rvo-pl ' + cls + '" style="--l:' + G.l + ';--t:' + G.t + ';--ph:' + ph + 'px"><span class="cr">' + (k === 0 ? '<svg class="cw" width="22" height="16" viewBox="0 0 24 18" fill="currentColor" aria-hidden="true"><path d="M2 16 1 4l6 5 5-7 5 7 6-5-1 12z"/></svg>' : '') + crest(g) + '</span><strong>' + n + '</strong><span>' + esc(G.n) + '</span><div class="rvo-pd"><b>' + RN[k] + '</b></div></div>';
+			};
+			h += '<div class="rvo-bal"><div class="rvo-bh">Équilibre des factions <span>' + ORDER.length + ' factions · ' + tot + ' ' + plural(tot, 'sorcier', 'sorciers') + '</span></div>';
+			h += '<div class="rvo-pod">' + pl(1, 'p2', 60) + pl(0, 'p1', 84) + pl(2, 'p3', 44) + '</div><ol class="rvo-rk">';
+			for (i = 3; i < rk.length; i++) {
+				var g2 = rk[i], G2 = GROUPS[g2], n2 = bal[g2] || 0, mn = g2 === hmn;
+				h += '<li class="rvo-r' + (mn ? ' min' : '') + '" style="--l:' + G2.l + ';--t:' + G2.t + ';--h:' + Math.max(6, Math.round(n2 * 100 / Math.max(bal[mx] || 1, 1))) + '%"><i class="n">' + RN[i] + '</i>' + crest(g2) + '<b>' + esc(G2.n) + '</b><span class="tr"><i></i></span><strong>' + n2 + '</strong>' + (mn ? '<em>À rejoindre</em>' : '') + '</li>';
+			}
+			h += '</ol><div class="rvo-inv" style="--l:' + GROUPS[hmn].l + ';--t:' + GROUPS[hmn].t + '"><span class="hat"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19.5c5-1.5 13-1.5 18 0"/><path d="M6.5 18.5C7.5 12 9.5 7 13.5 3c.5 2.5 1.5 3.5 3 5 1 3.5 1 7 1.5 10.5"/><path d="M7.5 15.5c3 1 6.5 1 9.8 0"/><path d="M11 10.5c.6.6 1.5.6 2.2 0"/></svg></span><div><h5>Le Choixpeau hésite</h5><p><b style="color:' + GROUPS[mx].t + '">' + esc(GROUPS[mx].n) + '</b> règne avec ' + (bal[mx] || 0) + ' ' + plural(bal[mx] || 0, 'sorcier', 'sorciers') + ', tandis que <b style="color:' + GROUPS[hmn].t + '">' + esc(GROUPS[hmn].n) + '</b> n’en compte que ' + (bal[hmn] || 0) + '. Laissez le Choixpeau décider de votre place.</p></div><a href="/h4-quiz-du-choixpeau" class="rvo-cta">Passer le Quiz du Choixpeau<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>';
 		}
 		/* anniversaire : uniquement le jour J */
 		if (nat.bday.length) {

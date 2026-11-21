@@ -2561,3 +2561,5 @@ html:not(.rv-ready) #page-body, html:not(.rv-ready) .rvx { opacity: 0; }
 
 @container rvo (max-width: 1099px){.rvo-bal{grid-template-columns:1fr;gap:26px 0}.rvo-pod{padding:0}.rvo-rk{padding:0;border:0}.rvo-inv{padding:0;flex-direction:row;flex-wrap:wrap;align-items:center}.rvo-inv>div{flex:1 1 260px}}
 @container rvo (max-width: 619px){.rvo-pl{width:96px}.rvo-r{grid-template-columns:20px 22px minmax(0,1fr) 60px 24px;gap:0 8px;padding:6px 4px}.rvo-pl span{font-size:8px;letter-spacing:1px}}
+/* bloc de stats natif masqué : doublon du pied de forum .rvo */
+body:has(.rvo) .statistics{display:none !important}

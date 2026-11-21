@@ -2301,3 +2301,199 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
+
+/* REVELIO — Qui est en ligne (pied de forum) : reconstruit le bloc a partir des donnees natives */
+(function () {
+	if (window.__rvOn) { return; } window.__rvOn = 1;
+	var GROUPS = {
+		4: { k: 'gry', n: 'Gryffondor', l: '#d65a6b', t: '#ec8794', house: 1 },
+		5: { k: 'ser', n: 'Serpentard', l: '#5fc4a0', t: '#86d6b8', house: 1 },
+		6: { k: 'srd', n: 'Serdaigle', l: '#6fb0cf', t: '#9cc7dc', house: 1 },
+		7: { k: 'pou', n: 'Poufsouffle', l: '#d9b650', t: '#e8cc7a', house: 1 },
+		8: { k: 'per', n: 'Personnel de Poudlard', l: '#c98a52', t: '#e0aa78' },
+		9: { k: 'min', n: 'Ministère de la Magie', l: '#8f94e0', t: '#b8bcf2' },
+		10: { k: 'sor', n: 'Sorciers', l: '#8fb0d8', t: '#b5cbe8' },
+		11: { k: 'mol', n: 'Sans pouvoirs', l: '#c9a24f', t: '#e0c389' },
+		12: { k: 'mag', n: 'Mages noirs', l: '#aeb6c2', t: '#d0d6de' }
+	};
+	var ORDER = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+	var BYKEY = {}; ORDER.forEach(function (g) { BYKEY[GROUPS[g].k] = g; });
+	var NEUTRAL = '#cfc9ba';
+	function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+	function num(s) { var m = /(\d[\d\s.]*)/.exec(String(s || '')); return m ? parseInt(m[1].replace(/\D/g, ''), 10) : 0; }
+	function plural(n, a, b) { return n > 1 ? b : a; }
+
+	/* ---- lecture du bloc natif (deja groupe par maison/faction par le template) ---- */
+	function readNative(box) {
+		var d = { online: [], crests: {}, legend: [], rec: '', recDate: '', cnt: { total: 0, reg: 0, hid: 0, gst: 0 }, bday: [] };
+		var cnt = box.querySelector('.rv-online-count');
+		if (cnt) {
+			var t = cnt.textContent;
+			d.cnt.total = num((/(\d+)\s+utilisateur/i.exec(t) || [])[1]);
+			d.cnt.reg = num((/(\d+)\s+enregistr/i.exec(t) || [])[1]);
+			d.cnt.hid = num((/(\d+)\s+invisible/i.exec(t) || [])[1]);
+			d.cnt.gst = num((/(\d+)\s+invit/i.exec(t) || [])[1]);
+		}
+		[].forEach.call(box.querySelectorAll('.rv-hcard, .rv-fgrp'), function (c) {
+			var m = /rv-(?:hcard|fgrp)-([a-z]{3})\b/.exec(c.className); if (!m) { return; }
+			var g = BYKEY[m[1]]; if (!g) { return; }
+			var im = c.querySelector('img'); if (im) { d.crests[g] = im.getAttribute('src'); }
+			[].forEach.call(c.querySelectorAll('a[href]'), function (a) {
+				if (a.classList.contains('rv-chip')) { return; }
+				var nm = (a.textContent || '').replace(/^\s+|\s+$/g, ''); if (!nm) { return; }
+				d.online.push({ name: nm, href: a.getAttribute('href'), g: g });
+			});
+		});
+		[].forEach.call(box.querySelectorAll('.rv-online-groups a'), function (a) {
+			var m = /\/g(\d+)/.exec(a.getAttribute('href') || '');
+			d.legend.push({ g: m ? +m[1] : 0, name: (a.textContent || '').replace(/^\s+|\s+$/g, ''), href: a.getAttribute('href') });
+		});
+		var rc = box.querySelector('.rv-online-record');
+		if (rc) { var st = rc.querySelector('strong'); d.rec = st ? st.textContent : ''; d.recDate = (rc.textContent.split(/\bde\s+\d+\s+le\s+/i)[1] || '').replace(/^\s+|\s+$/g, ''); }
+		var bd = box.querySelector('.rv-online-bday');
+		if (bd) {
+			var parts = bd.innerHTML.split(/<br[^>]*>/i), today = '';
+			for (var i = 0; i < parts.length; i++) { if (parts[i].replace(/<[^>]*>/g, '').replace(/\s+/g, '')) { today = parts[i]; break; } }
+			if (today && !/aucun/i.test(today)) {
+				var tmp = document.createElement('div'); tmp.innerHTML = today;
+				[].forEach.call(tmp.querySelectorAll('a'), function (a) {
+					var nx = a.nextSibling, age = ''; if (!nx && a.parentNode) { nx = a.parentNode.nextSibling; }
+					var mm = nx && nx.nodeType === 3 ? /\((\d+)\)/.exec(nx.textContent) : null; if (mm) { age = mm[1]; }
+					var sp = a.querySelector('span[style*="color"]'), col = sp ? getComputedStyle(sp).color : '';
+					d.bday.push({ name: (a.textContent || '').replace(/^\s+|\s+$/g, ''), href: a.getAttribute('href'), age: age, col: col });
+				});
+			}
+		}
+		return d;
+	}
+
+	/* ---- liste des membres (/memberlist), pour 24 h, dernier arrive, totaux ---- */
+	function parseRows(html) {
+		var doc = new DOMParser().parseFromString(html, 'text/html'), out = [];
+		[].forEach.call(doc.querySelectorAll('article.mbx-row'), function (r) {
+			var a = r.querySelector('.mbx-nm a[href]'); if (!a) { return; }
+			var sp = a.querySelector('[class*="group-"]'), gm = sp ? /group-(\d+)/.exec(sp.className) : null;
+			var im = r.querySelector('.mbx-av .p img'), src = im ? im.getAttribute('src') : '';
+			if (/pp-blank|blank-thumb/.test(src || '')) { src = ''; }
+			var ds = r.querySelectorAll('.mbx-d'), joined = '', seen = '';
+			[].forEach.call(ds, function (x) { var b = x.querySelector('b'), k = b ? b.textContent : '', v = x.textContent.replace(k, '').replace(/^\s+|\s+$/g, ''); if (/inscrit/i.test(k)) { joined = v; } else if (/vu/i.test(k)) { seen = v; } });
+			var nn = r.querySelector('.mbx-n');
+			out.push({ name: (a.textContent || '').replace(/^\s+|\s+$/g, ''), href: a.getAttribute('href'), uid: +((/\/u(\d+)/.exec(a.getAttribute('href')) || [])[1] || 0), g: gm ? +gm[1] : 0, av: src, posts: nn ? num(nn.textContent) : 0, joined: joined, seen: seen });
+		});
+		return out;
+	}
+	function loadMembers(cb) {
+		try { var c = sessionStorage.getItem('rvOnMem'); if (c) { var o = JSON.parse(c); if (o && Date.now() - o.t < 120000) { cb(o.rows); return; } } } catch (e) { }
+		var all = [], start = 0;
+		function next() {
+			var x = new XMLHttpRequest();
+			x.open('GET', '/memberlist?mode=lastvisit&order=DESC&start=' + start, true);
+			x.onload = function () {
+				if (x.status !== 200) { return cb(all.length ? all : null); }
+				var rows = []; try { rows = parseRows(x.responseText); } catch (e) { }
+				if (!rows.length) { return fin(); }
+				var seen = {}; all.forEach(function (r) { seen[r.uid] = 1; });
+				var fresh = rows.filter(function (r) { return !seen[r.uid]; });
+				if (!fresh.length) { return fin(); }
+				all = all.concat(fresh); start += rows.length;
+				if (all.length >= 500 || rows.length < 5) { return fin(); }
+				next();
+			};
+			x.onerror = function () { cb(all.length ? all : null); };
+			x.send();
+		}
+		function fin() { try { sessionStorage.setItem('rvOnMem', JSON.stringify({ t: Date.now(), rows: all })); } catch (e) { } cb(all); }
+		next();
+	}
+	function joinedTs(s) { var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(s || ''); return m ? new Date(+m[3], +m[2] - 1, +m[1]).getTime() : 0; }
+
+	/* ---- rendu ---- */
+	function nameHtml(m, cls) {
+		var c = GROUPS[m.g] ? GROUPS[m.g].t : NEUTRAL;
+		return '<a href="' + esc(m.href) + '"' + (cls ? ' class="' + cls + '"' : '') + ' style="--t:' + c + '">' + esc(m.name) + '</a>';
+	}
+	function listHtml(arr) { return arr.map(function (x, i) { return x + (i < arr.length - 1 ? ',' : ''); }).join(' '); }
+	function build(box, nat, rows) {
+		var now = Date.now(), ids = {}, onl = nat.online;
+		onl.forEach(function (m) { ids[m.href] = 1; });
+		var day = onl.map(function (m) { return nameHtml(m, ''); }), nDay = onl.length, newest = null, stats = null, bal = null;
+		if (rows && rows.length) {
+			var ts = rows.map(function (r) { r.ts = window.__rvTs ? window.__rvTs(r.seen) : 0; return r; });
+			ts.sort(function (a, b) { return b.ts - a.ts; });
+			ts.forEach(function (r) { if (!ids[r.href] && r.ts && now - r.ts < 864e5) { day.push(nameHtml(r, 'off')); nDay++; } });
+			var nw = rows.slice().sort(function (a, b) { return (joinedTs(b.joined) - joinedTs(a.joined)) || (b.uid - a.uid); })[0];
+			newest = nw;
+			var posts = 0; rows.forEach(function (r) { posts += r.posts; });
+			stats = { users: rows.length, posts: posts };
+			var tot = {}, any = 0; rows.forEach(function (r) { if (GROUPS[r.g]) { tot[r.g] = (tot[r.g] || 0) + 1; any++; } });
+			if (any) { bal = tot; }
+		}
+		var h = '';
+		h += '<div class="rvo-rule"><span><i></i><a href="/viewonline" rel="nofollow">Qui est en ligne</a><i></i></span></div>';
+		h += '<div class="rvo-main"><section class="rvo-col l"><h3 class="rvo-lb">Ces dernières 24 h <b>' + nDay + '</b></h3>';
+		h += '<div class="rvo-names">' + (day.length ? listHtml(day) : '<em>Personne pour l’instant.</em>') + '</div></section>';
+		h += '<section class="rvo-core"><div class="rvo-num">' + nat.cnt.total + '</div><h3><span class="d"></span>' + plural(nat.cnt.total, 'Âme vagabonde', 'Âmes vagabondes') + '</h3>';
+		h += '<p><b>' + nat.cnt.reg + '</b> ' + plural(nat.cnt.reg, 'enregistré', 'enregistrés') + ' · <b>' + nat.cnt.hid + '</b> ' + plural(nat.cnt.hid, 'invisible', 'invisibles') + ' · <b>' + nat.cnt.gst + '</b> ' + plural(nat.cnt.gst, 'invité', 'invités') + '</p></section>';
+		h += '<section class="rvo-col r"><h3 class="rvo-lb">En ligne maintenant <b>' + onl.length + '</b></h3>';
+		h += '<div class="rvo-names on">' + (onl.length ? listHtml(onl.map(function (m) { return nameHtml(m, ''); })) : '<em>Le château est silencieux.</em>') + '</div>';
+		h += '<div class="rvo-stats">' + (stats ? '<div><b>' + stats.posts + '</b>messages</div><div><b>' + stats.users + '</b>inscrits</div>' : '') + (nat.rec ? '<div><b>' + esc(nat.rec) + '</b>record</div>' : '') + '</div></section></div>';
+		/* groupes */
+		var cnt = {}; onl.forEach(function (m) { cnt[m.g] = (cnt[m.g] || 0) + 1; });
+		h += '<div class="rvo-groups">';
+		ORDER.forEach(function (g) {
+			var G = GROUPS[g], n = cnt[g] || 0, lg = null; nat.legend.forEach(function (x) { if (x.g === g) { lg = x; } });
+			h += '<a href="' + esc(lg ? lg.href : '/g' + g) + '" class="rvo-g' + (n ? ' on' : ' off') + '" style="--l:' + G.l + ';--t:' + G.t + '"><div class="c">' + (nat.crests[g] ? '<img src="' + esc(nat.crests[g]) + '" alt="">' : '') + '<em>' + n + '</em></div><span>' + esc(G.n) + '</span></a>';
+		});
+		h += '</div>';
+		/* équilibre des factions */
+		if (bal) {
+			var mx = ORDER[0], hmn = 4, i;
+			ORDER.forEach(function (g) { if ((bal[g] || 0) > (bal[mx] || 0)) { mx = g; } });
+			[4, 5, 6, 7].forEach(function (g) { if ((bal[g] || 0) < (bal[hmn] || 0)) { hmn = g; } });
+			h += '<div class="rvo-bal"><h4>Équilibre des factions</h4><div class="rvo-seg">';
+			ORDER.forEach(function (g) {
+				var G = GROUPS[g], n = bal[g] || 0, cl = g === mx ? ' max' : (g === hmn ? ' min' : '');
+				h += '<div class="rvo-s' + cl + '" style="--l:' + G.l + ';--t:' + G.t + ';--w:' + Math.max(n, 1) + '">' + (nat.crests[g] ? '<img src="' + esc(nat.crests[g]) + '" alt="">' : '') + '<div><b>' + esc(G.n) + '</b><small>' + n + ' ' + plural(n, 'sorcier', 'sorciers') + '</small></div>' + (cl === ' max' ? '<em>La plus peuplée</em>' : (cl === ' min' ? '<em>À rejoindre</em>' : '')) + '</div>';
+			});
+			h += '</div><p class="rvo-inv"><b style="color:' + GROUPS[mx].t + '">' + esc(GROUPS[mx].n) + '</b> règne avec ' + (bal[mx] || 0) + ' ' + plural(bal[mx] || 0, 'sorcier', 'sorciers') + ', mais <b style="color:' + GROUPS[hmn].t + '">' + esc(GROUPS[hmn].n) + '</b> manque encore de monde : choisissez-la pour rééquilibrer la balance.<a href="/g' + hmn + '">Choisir ma faction</a></p></div>';
+		}
+		/* anniversaire : uniquement le jour J */
+		if (nat.bday.length) {
+			h += '<div class="rvo-bd"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21h16v-8H4z"/><path d="M12 13V8"/><path d="M12 8c-1.5-1-1.5-2.5 0-4 1.5 1.5 1.5 3 0 4z"/></svg></span><div><h4>C’est un grand jour</h4><p>Aujourd’hui, le château fête ';
+			h += nat.bday.map(function (b, i) { return '<a href="' + esc(b.href) + '"' + (b.col ? ' style="--t:' + esc(b.col) + '"' : '') + '>' + esc(b.name) + '</a>' + (b.age ? ' <span>(' + esc(b.age) + ' ans)</span>' : '') + (i < nat.bday.length - 2 ? ',' : (i === nat.bday.length - 2 ? ' et' : '.')); }).join(' ');
+			h += '</p></div></div>';
+		}
+		/* dernier arrivé */
+		if (newest) {
+			var G2 = GROUPS[newest.g], lc = G2 ? G2.l : '#d9b36a', tc = G2 ? G2.t : '#f0d28f';
+			h += '<section class="rvo-nw" style="--l:' + lc + ';--t:' + tc + '">';
+			if (G2 && nat.crests[newest.g]) { h += '<img class="wm" src="' + esc(nat.crests[newest.g]) + '" alt="">'; }
+			h += '<div class="rvo-pt">' + (newest.av ? '<img src="' + esc(newest.av) + '" alt="">' : '<span class="ini">' + esc(newest.name.charAt(0).toUpperCase()) + '</span>') + (G2 && nat.crests[newest.g] ? '<span class="cr"><img src="' + esc(nat.crests[newest.g]) + '" alt=""></span>' : '') + '</div>';
+			h += '<div class="rvo-nt"><small>Dernier sorcier arrivé · inscrit le ' + esc(newest.joined) + '</small><h4><a href="' + esc(newest.href) + '">' + esc(newest.name) + '</a></h4><p>' + (G2 ? 'Une nouvelle plume rejoint la maison <b>' + esc(G2.n) + '</b>. Allez à sa rencontre.' : 'Une nouvelle plume entre dans le château. Allez à sa rencontre.') + '</p></div>';
+			h += '<a href="/privmsg?mode=post&u=' + newest.uid + '" class="rvo-wl">Lui souhaiter la bienvenue<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></section>';
+		}
+		h += '<div class="rvo-ft">Actualisé toutes les <b>5 minutes</b></div>';
+		var w = document.createElement('section'); w.className = 'rvo block'; w.innerHTML = h;
+		return w;
+	}
+
+	function run() {
+		var box = document.querySelector('.rv-online-box');
+		if (!box || box.__rvo) { return true; }
+		if (!box.querySelector('.rv-hcard') || !box.querySelector('.rv-online-groups .rv-chip')) { return false; }
+		box.__rvo = 1;
+		var nat; try { nat = readNative(box); } catch (e) { return true; }
+		var shown = build(box, nat, null);
+		box.parentNode.insertBefore(shown, box); box.classList.add('rvo-off');
+		loadMembers(function (rows) {
+			if (!rows || !rows.length) { return; }
+			try { var w = build(box, nat, rows); shown.parentNode.replaceChild(w, shown); shown = w; } catch (e) { }
+		});
+		return true;
+	}
+	function go() {
+		if (run()) { return; }
+		var n = 0, iv = setInterval(function () { n++; if (run() || n > 30) { clearInterval(iv); } }, 150);
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+})();

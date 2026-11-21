@@ -2506,3 +2506,171 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
 })();
+
+/* REVELIO — page « Qui est en ligne » (/viewonline) */
+(function () {
+	if (window.__rvVo || !/^\/viewonline\b/.test(location.pathname)) { return; } window.__rvVo = 1;
+	var GROUPS = {
+		4: { n: 'Gryffondor', l: '#d65a6b', t: '#ec8794', f: 'Gryffondor.png', h: '/g4-gryffondor' },
+		5: { n: 'Serpentard', l: '#5fc4a0', t: '#86d6b8', f: 'Serpentard.png', h: '/g5-serpentard' },
+		6: { n: 'Serdaigle', l: '#6fb0cf', t: '#9cc7dc', f: 'Serdaigle.png', h: '/g6-serdaigle' },
+		7: { n: 'Poufsouffle', l: '#d9b650', t: '#e8cc7a', f: 'Poufsouffle.png', h: '/g7-poufsouffle' },
+		8: { n: 'Personnel de Poudlard', l: '#c98a52', t: '#e0aa78', f: 'Poudlard-4-maisons.png', h: '/g8-corps-enseignant' },
+		9: { n: 'Ministère de la Magie', l: '#8f94e0', t: '#b8bcf2', f: 'Ministere-de-la-Magie.png', h: '/g9-ministere' },
+		10: { n: 'Sorciers', l: '#8fb0d8', t: '#b5cbe8', f: 'sor.png', h: '/g10-sorciers' },
+		11: { n: 'Sans pouvoirs', l: '#c9a24f', t: '#e0c389', f: 'mol.png', h: '/g11-sans-pouvoirs-magiques' },
+		12: { n: 'Mages noirs', l: '#aeb6c2', t: '#d0d6de', f: 'mag.png', h: '/g12-mage-noirs' }
+	};
+	var ORDER = [4, 5, 6, 7, 8, 9, 10, 11, 12], NEUTRAL = '#cfc9ba', GOLD = '#d9b36a';
+	var BASE = (function () { var s = document.querySelector('script[src*="revelio.js"]'); return s ? s.src.replace(/revelio\.js.*$/, '') + 'img/ecussons/' : ''; })();
+	function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+	function trim(s) { return String(s || '').replace(/^\s+|\s+$/g, ''); }
+	function num(s) { var m = /(\d+)/.exec(String(s || '')); return m ? +m[1] : 0; }
+	function plural(n, a, b) { return n > 1 ? b : a; }
+	function ago(ts) {
+		if (!ts) { return ''; }
+		var m = Math.max(0, Math.round((Date.now() - ts) / 60000));
+		if (m < 1) { return 'à l’instant'; }
+		if (m < 60) { return 'il y a ' + m + ' min'; }
+		var h = Math.round(m / 60); if (h < 24) { return 'il y a ' + h + ' h'; }
+		var d = Math.round(h / 24); return 'il y a ' + d + ' j';
+	}
+	var FP = '<svg class="fp" viewBox="0 0 26 24" fill="currentColor" aria-hidden="true"><ellipse cx="8" cy="15" rx="3.6" ry="6.2" transform="rotate(-12 8 15)"/><ellipse cx="7" cy="6" rx="2.6" ry="2.8"/><ellipse cx="19" cy="17" rx="3.6" ry="6.2" transform="rotate(12 19 17)"/><ellipse cx="20" cy="8" rx="2.6" ry="2.8"/></svg>';
+	var PIN = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+	var REF = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>';
+
+	/* ---- lecture de la page native ---- */
+	function readNative() {
+		var h1 = document.querySelector('#main-content h1.page-title'), tb = document.querySelector('#main-content .forumbg table.table1');
+		if (!h1 || !tb) { return null; }
+		var d = { reg: 0, hid: 0, gst: 0, rows: [], off: [h1] }, p = h1.nextElementSibling;
+		var t1 = h1.textContent; d.reg = num((/(\d+)\s+utilisateur[s]?\s+enregistr/i.exec(t1) || [])[1]); d.hid = num((/(\d+)\s+utilisateur[s]?\s+invisible/i.exec(t1) || [])[1]);
+		while (p && p.tagName !== 'FORM') {
+			if (p.tagName === 'P') { var g = /(\d+)\s+invit/i.exec(p.textContent); if (g) { d.gst = +g[1]; } d.off.push(p); }
+			if (p.classList && p.classList.contains('forumbg')) { d.off.push(p); }
+			p = p.nextElementSibling;
+		}
+		[].forEach.call(tb.querySelectorAll('tbody tr'), function (tr) {
+			var td = tr.querySelectorAll('td'); if (td.length < 3) { return; }
+			var a = td[0].querySelector('a[href]'), sp = td[0].querySelector('[class*="group-"]'), gm = sp ? /group-(\d+)/.exec(sp.className) : null;
+			var pl = td[2].querySelector('a[href]');
+			d.rows.push({ guest: !a, name: trim(td[0].textContent), href: a ? a.getAttribute('href') : '', g: gm ? +gm[1] : 0, full: trim(td[1].textContent), ts: window.__rvTs ? window.__rvTs(td[1].textContent) : 0, place: trim(td[2].textContent), plink: pl ? pl.getAttribute('href') : '' });
+		});
+		return d;
+	}
+
+	/* ---- /memberlist (24 h) et record (accueil) ---- */
+	function parseRows(html) {
+		var doc = new DOMParser().parseFromString(html, 'text/html'), out = [];
+		[].forEach.call(doc.querySelectorAll('article.mbx-row'), function (r) {
+			var a = r.querySelector('.mbx-nm a[href]'); if (!a) { return; }
+			var sp = a.querySelector('[class*="group-"]'), gm = sp ? /group-(\d+)/.exec(sp.className) : null, seen = '';
+			[].forEach.call(r.querySelectorAll('.mbx-d'), function (x) { var b = x.querySelector('b'), k = b ? b.textContent : '', v = trim(x.textContent.replace(k, '')); if (/vu/i.test(k)) { seen = v; } });
+			out.push({ name: trim(a.textContent), href: a.getAttribute('href'), g: gm ? +gm[1] : 0, seen: seen });
+		});
+		return out;
+	}
+	function loadMembers(cb) {
+		try { var c = sessionStorage.getItem('rvVoMem'); if (c) { var o = JSON.parse(c); if (o && Date.now() - o.t < 120000) { cb(o.rows); return; } } } catch (e) { }
+		var all = [], start = 0;
+		function fin() { try { sessionStorage.setItem('rvVoMem', JSON.stringify({ t: Date.now(), rows: all })); } catch (e) { } cb(all); }
+		function next() {
+			var x = new XMLHttpRequest();
+			x.open('GET', '/memberlist?mode=lastvisit&order=DESC&start=' + start, true);
+			x.onload = function () {
+				if (x.status !== 200) { return cb(all.length ? all : null); }
+				var rows = []; try { rows = parseRows(x.responseText); } catch (e) { }
+				var seen = {}; all.forEach(function (r) { seen[r.href] = 1; });
+				var fresh = rows.filter(function (r) { return !seen[r.href]; });
+				if (!fresh.length) { return fin(); }
+				all = all.concat(fresh); start += rows.length;
+				if (all.length >= 500 || rows.length < 5) { return fin(); }
+				next();
+			};
+			x.onerror = function () { cb(all.length ? all : null); };
+			x.send();
+		}
+		next();
+	}
+	function loadRecord(cb) {
+		var x = new XMLHttpRequest(); x.open('GET', '/', true);
+		x.onload = function () {
+			if (x.status !== 200) { return cb(null); }
+			var doc = new DOMParser().parseFromString(x.responseText, 'text/html'), r = doc.querySelector('.rv-online-record'), st = r ? r.querySelector('strong') : null;
+			if (!st) { return cb(null); }
+			cb({ n: trim(st.textContent), date: trim((r.textContent.split(/\bde\s+\d+\s+le\s+/i)[1] || '')) });
+		};
+		x.onerror = function () { cb(null); };
+		x.send();
+	}
+
+	/* ---- rendu ---- */
+	function crest(g) { return GROUPS[g] && BASE ? '<img src="' + BASE + GROUPS[g].f + '" alt="">' : ''; }
+	function rowHtml(m) {
+		var G = GROUPS[m.g], l = G ? G.l : NEUTRAL, t = G ? G.t : NEUTRAL, live = !m.guest;
+		var h = '<article class="rvv-row" data-k="' + (m.guest ? 'g' : 'm') + '" style="--l:' + l + ';--t:' + t + '"><div class="rvv-who"><div class="rvv-dm' + (live ? ' live' : ' ghost') + '" aria-hidden="true">' + FP + '</div><div class="rvv-nm">';
+		h += m.guest ? '<span class="g">Visiteur de passage</span>' : '<a href="' + esc(m.href) + '">' + esc(m.name) + '</a>';
+		h += '<small>' + (G ? crest(m.g) + esc(G.n) : (m.guest ? 'Invité' : '')) + '</small></div></div>';
+		h += '<div class="rvv-loc">' + PIN + (m.plink ? '<a href="' + esc(m.plink) + '">' + esc(m.place) + '</a>' : '<em>' + esc(m.place) + '</em>') + '</div>';
+		h += '<div class="rvv-t"><small title="' + esc(m.full) + '">' + esc(ago(m.ts) || m.full) + '</small></div></article>';
+		return h;
+	}
+	function render(d, mem, rec) {
+		var now = Date.now(), ids = {}, i;
+		d.rows.forEach(function (m) { if (m.href) { ids[m.href] = 1; } });
+		var nm = d.rows.filter(function (m) { return !m.guest; }).length, ng = d.rows.length - nm;
+		var day = d.rows.filter(function (m) { return !m.guest; }).map(function (m) { return { name: m.name, href: m.href, g: m.g, ts: m.ts }; });
+		if (mem) {
+			mem.forEach(function (r) { r.ts = window.__rvTs ? window.__rvTs(r.seen) : 0; });
+			mem.sort(function (a, b) { return b.ts - a.ts; });
+			mem.forEach(function (r) { if (!ids[r.href] && r.ts && now - r.ts < 864e5) { day.push({ name: r.name, href: r.href, g: r.g, ts: r.ts }); } });
+		}
+		var places = {}, order = [];
+		d.rows.forEach(function (m) { var k = m.place || '—'; if (!places[k]) { places[k] = 0; order.push(k); } places[k]++; });
+		var total = Math.max(d.rows.length, 1);
+		var h = '<div class="rvv-head"><div><div class="rvv-h1">Qui est en ligne</div><p class="rvv-tag">Les sorciers présents dans le château, ces cinq dernières minutes.</p></div>';
+		h += '<div class="rvv-stats"><div><b>' + d.reg + '</b>' + plural(d.reg, 'sorcier connecté', 'sorciers connectés') + '</div><div><b>' + d.hid + '</b>' + plural(d.hid, 'invisible', 'invisibles') + '</div><div><b>' + d.gst + '</b>' + plural(d.gst, 'invité', 'invités') + '</div><div><b>' + day.length + '</b>sur 24 h</div></div></div>';
+		h += '<div class="rvv-main"><div><div class="rvv-tools"><div class="rvv-seg" role="group" aria-label="Filtrer les présents">';
+		h += '<button type="button" class="on" data-f="all" aria-pressed="true">Tous<b>' + d.rows.length + '</b></button><button type="button" data-f="m" aria-pressed="false">Sorciers<b>' + nm + '</b></button><button type="button" data-f="g" aria-pressed="false">Invités<b>' + ng + '</b></button></div>';
+		h += '<button type="button" class="rvv-ref">' + REF + 'Actualiser</button></div>';
+		h += '<div class="rvv-list"><div class="rvv-cols"><span>Sorcier</span><span>Où se trouve-t-il</span><span>Dernier signe</span></div>';
+		h += d.rows.map(rowHtml).join('') + '<div class="rvv-empty" hidden>Personne dans cette catégorie pour l’instant.</div></div>';
+		h += '<div class="rvv-note"><span>Ces données sont basées sur les sorciers actifs ces <b>cinq dernières minutes</b>.</span></div></div>';
+		h += '<aside class="rvv-side"><section class="rvv-box"><div class="rvv-bt">Où sont-ils ?</div><div class="rvv-rep">';
+		order.forEach(function (k) { h += '<div><span>' + esc(k) + '<b>' + places[k] + '</b></span><i><u style="width:' + Math.round(places[k] * 100 / total) + '%"></u></i></div>'; });
+		if (!order.length) { h += '<p>Le château est silencieux.</p>'; }
+		h += '</div></section><section class="rvv-box"><div class="rvv-bt">Légende</div><div class="rvv-leg">';
+		ORDER.forEach(function (g) { h += '<a href="' + GROUPS[g].h + '" style="--l:' + GROUPS[g].l + '"><i></i>' + esc(GROUPS[g].n) + '</a>'; });
+		h += '</div></section></aside></div>';
+		h += '<section class="rvv-day"><div class="rvv-dayhd"><div class="rvv-bt">Passés par le forum ces dernières 24 h</div><span><b>' + day.length + '</b>' + plural(day.length, 'sorcier', 'sorciers') + '</span></div><div class="rvv-chips">';
+		day.forEach(function (m) { var G = GROUPS[m.g]; h += '<a class="rvv-chip" href="' + esc(m.href) + '" style="--l:' + (G ? G.l : NEUTRAL) + ';--t:' + (G ? G.t : NEUTRAL) + '"><i></i><em>' + esc(m.name) + '</em><small>' + esc(ago(m.ts)) + '</small></a>'; });
+		h += '</div></section>';
+		if (rec) { h += '<section class="rvv-box rvv-recbar"><div class="rvv-bt">Record de présence</div><div class="rvv-rec">' + esc(rec.n) + ' connectés' + (rec.date ? '<small>le ' + esc(rec.date) + '</small>' : '') + '</div></section>'; }
+		return h;
+	}
+	function run() {
+		var d = readNative(); if (!d) { return; }
+		var host = document.createElement('section'); host.className = 'rvv'; host.setAttribute('aria-label', 'Qui est en ligne');
+		d.off[0].parentNode.insertBefore(host, d.off[0]);
+		d.off.forEach(function (e) { e.classList.add('rvv-off'); });
+		var mem = null, rec = null, wait = 2;
+		function draw() {
+			host.innerHTML = render(d, mem, rec);
+			var btns = host.querySelectorAll('.rvv-seg button'), rows = host.querySelectorAll('.rvv-row'), emp = host.querySelector('.rvv-empty');
+			[].forEach.call(btns, function (b) {
+				b.addEventListener('click', function () {
+					var f = b.getAttribute('data-f'), n = 0;
+					[].forEach.call(btns, function (x) { var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+					[].forEach.call(rows, function (r) { var show = f === 'all' || r.getAttribute('data-k') === f; r.hidden = !show; if (show) { n++; } });
+					if (emp) { emp.hidden = n > 0; }
+				});
+			});
+			var rf = host.querySelector('.rvv-ref'); if (rf) { rf.addEventListener('click', function () { try { sessionStorage.removeItem('rvVoMem'); } catch (e) { } location.reload(); }); }
+		}
+		draw();
+		function done() { if (--wait === 0) { draw(); } }
+		loadMembers(function (r) { mem = r; done(); });
+		loadRecord(function (r) { rec = r; done(); });
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
+})();

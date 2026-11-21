@@ -2505,6 +2505,7 @@ html:not(.rv-ready) #page-body, html:not(.rv-ready) .rvx { opacity: 0; }
 .rvo-pl .cw{position:absolute;top:-24px;left:50%;transform:translateX(-50%);color:#f0d28f}
 .rvo-pl strong{margin-top:8px;font:500 26px/1 'Cinzel',serif;color:var(--t)}
 .rvo-pl span{margin:5px 0 10px;font:600 9px/1.3 'Montserrat',sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#cfc9b9}
+.rvo-pl em.rvo-tg{margin:-4px 0 10px;padding:2px 9px;border-radius:99px;font:600 8.5px 'Montserrat',sans-serif;font-style:normal;letter-spacing:1.3px;text-transform:uppercase;color:var(--t);background:#0b0a08;box-shadow:inset 0 0 0 1px var(--l)}
 .rvo-pd{width:100%;height:var(--ph);display:flex;justify-content:center;padding-top:8px;box-sizing:border-box;border-radius:8px 8px 0 0;border-top:2px solid var(--l);background:linear-gradient(180deg,color-mix(in srgb,var(--l) 32%,#0e0c09),color-mix(in srgb,var(--l) 8%,#0e0c09));box-shadow:0 -10px 26px color-mix(in srgb,var(--l) 18%,transparent)}
 .rvo-pd b{font:500 17px 'Cinzel',serif;letter-spacing:2px;color:var(--t);opacity:.75}
 .rvo-pl.p1{margin-bottom:0}

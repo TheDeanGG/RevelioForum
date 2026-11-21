@@ -2456,7 +2456,7 @@
 			var crest = function (g) { return nat.crests[g] ? '<img src="' + esc(nat.crests[g]) + '" alt="">' : ''; };
 			var pl = function (k, cls, ph) {
 				var g = rk[k], G = GROUPS[g], n = bal[g] || 0;
-				return '<div class="rvo-pl ' + cls + '" style="--l:' + G.l + ';--t:' + G.t + ';--ph:' + ph + 'px"><span class="cr">' + (k === 0 ? '<svg class="cw" width="22" height="16" viewBox="0 0 24 18" fill="currentColor" aria-hidden="true"><path d="M2 16 1 4l6 5 5-7 5 7 6-5-1 12z"/></svg>' : '') + crest(g) + '</span><strong>' + n + '</strong><span>' + esc(G.n) + '</span><div class="rvo-pd"><b>' + RN[k] + '</b></div></div>';
+				return '<div class="rvo-pl ' + cls + '" style="--l:' + G.l + ';--t:' + G.t + ';--ph:' + ph + 'px"><span class="cr">' + (k === 0 ? '<svg class="cw" width="22" height="16" viewBox="0 0 24 18" fill="currentColor" aria-hidden="true"><path d="M2 16 1 4l6 5 5-7 5 7 6-5-1 12z"/></svg>' : '') + crest(g) + '</span><strong>' + n + '</strong><span>' + esc(G.n) + '</span>' + (g === hmn ? '<em class="rvo-tg">À rejoindre</em>' : '') + '<div class="rvo-pd"><b>' + RN[k] + '</b></div></div>';
 			};
 			h += '<div class="rvo-bal"><div class="rvo-bh">Équilibre des factions <span>' + ORDER.length + ' factions · ' + tot + ' ' + plural(tot, 'sorcier', 'sorciers') + '</span></div>';
 			h += '<div class="rvo-pod">' + pl(1, 'p2', 60) + pl(0, 'p1', 84) + pl(2, 'p3', 44) + '</div><ol class="rvo-rk">';

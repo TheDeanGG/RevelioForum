@@ -2364,6 +2364,13 @@
 				});
 			}
 		}
+		if (!d.online.length) {
+			[].forEach.call(box.querySelectorAll('.rv-online-raw a[href]'), function (a) {
+				var sp = a.querySelector('[class*="group-"]'), gm = sp ? /group-(\d+)/.exec(sp.className) : null, g = gm ? +gm[1] : 0;
+				var nm = (a.textContent || '').replace(/^\s+|\s+$/g, ''); if (!nm || !GROUPS[g]) { return; }
+				d.online.push({ name: nm, href: a.getAttribute('href'), g: g });
+			});
+		}
 		var sc=[].filter.call(document.scripts,function(x){return /RevelioForum@/.test(x.src);})[0], base=sc?sc.src.replace(/\/[^\/]*$/,'')+'/img/ecussons/':'';
 		var FN={4:'Gryffondor',5:'Serpentard',6:'Serdaigle',7:'Poufsouffle',8:'Poudlard-4-maisons',9:'Ministere-de-la-Magie',10:'sor',11:'mol',12:'mag'};
 		if (base) { ORDER.forEach(function (g) { if (!d.crests[g]) { d.crests[g] = base + FN[g] + '.png'; } }); }

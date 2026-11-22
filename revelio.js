@@ -2437,7 +2437,7 @@
 		h += '<div class="rvo-names">' + (day.length ? listHtml(day) : '<em>Personne pour l’instant.</em>') + '</div></section>';
 		h += '<section class="rvo-core"><div class="rvo-num">' + nat.cnt.total + '</div><h3><span class="d"></span>' + plural(nat.cnt.total, 'Âme vagabonde', 'Âmes vagabondes') + '</h3>';
 		h += '<p><b>' + nat.cnt.reg + '</b> ' + plural(nat.cnt.reg, 'enregistré', 'enregistrés') + ' · <b>' + nat.cnt.hid + '</b> ' + plural(nat.cnt.hid, 'invisible', 'invisibles') + ' · <b>' + nat.cnt.gst + '</b> ' + plural(nat.cnt.gst, 'invité', 'invités') + '</p></section>';
-		h += '<section class="rvo-col r"><h3 class="rvo-lb">En ligne maintenant <b>' + onl.length + '</b></h3>';
+		h += '<section class="rvo-col r"><h3 class="rvo-lb">En ligne maintenant <b>' + Math.max(onl.length, nat.cnt.reg) + '</b></h3>';
 		h += '<div class="rvo-names on">' + (onl.length ? listHtml(onl.map(function (m) { return nameHtml(m, ''); })) : (nat.cnt.reg ? '<em>Une âme discrète arpente le château.</em>' : '<em>Le château est silencieux.</em>')) + '</div>';
 		h += '<div class="rvo-stats">' + (stats ? '<div><b>' + stats.posts + '</b>hiboux envoyés</div><div><b>' + stats.users + '</b>inscrits</div>' : '') + (nat.rec ? '<div><b>' + esc(nat.rec) + '</b>record</div>' : '') + '</div></section></div>';
 		/* groupes */

@@ -2364,6 +2364,9 @@
 				});
 			}
 		}
+		var sc=[].filter.call(document.scripts,function(x){return /RevelioForum@/.test(x.src);})[0], base=sc?sc.src.replace(/\/[^\/]*$/,'')+'/img/ecussons/':'';
+		var FN={4:'Gryffondor',5:'Serpentard',6:'Serdaigle',7:'Poufsouffle',8:'Poudlard-4-maisons',9:'Ministere-de-la-Magie',10:'sor',11:'mol',12:'mag'};
+		if (base) { ORDER.forEach(function (g) { if (!d.crests[g]) { d.crests[g] = base + FN[g] + '.png'; } }); }
 		return d;
 	}
 
@@ -2435,7 +2438,7 @@
 		h += '<section class="rvo-core"><div class="rvo-num">' + nat.cnt.total + '</div><h3><span class="d"></span>' + plural(nat.cnt.total, 'Âme vagabonde', 'Âmes vagabondes') + '</h3>';
 		h += '<p><b>' + nat.cnt.reg + '</b> ' + plural(nat.cnt.reg, 'enregistré', 'enregistrés') + ' · <b>' + nat.cnt.hid + '</b> ' + plural(nat.cnt.hid, 'invisible', 'invisibles') + ' · <b>' + nat.cnt.gst + '</b> ' + plural(nat.cnt.gst, 'invité', 'invités') + '</p></section>';
 		h += '<section class="rvo-col r"><h3 class="rvo-lb">En ligne maintenant <b>' + onl.length + '</b></h3>';
-		h += '<div class="rvo-names on">' + (onl.length ? listHtml(onl.map(function (m) { return nameHtml(m, ''); })) : '<em>Le château est silencieux.</em>') + '</div>';
+		h += '<div class="rvo-names on">' + (onl.length ? listHtml(onl.map(function (m) { return nameHtml(m, ''); })) : (nat.cnt.reg ? '<em>Une âme discrète arpente le château.</em>' : '<em>Le château est silencieux.</em>')) + '</div>';
 		h += '<div class="rvo-stats">' + (stats ? '<div><b>' + stats.posts + '</b>hiboux envoyés</div><div><b>' + stats.users + '</b>inscrits</div>' : '') + (nat.rec ? '<div><b>' + esc(nat.rec) + '</b>record</div>' : '') + '</div></section></div>';
 		/* groupes */
 		var cnt = {}; onl.forEach(function (m) { cnt[m.g] = (cnt[m.g] || 0) + 1; });

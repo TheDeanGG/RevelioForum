@@ -2489,7 +2489,7 @@
 	function run() {
 		var box = document.querySelector('.rv-online-box');
 		if (!box || box.__rvo) { return true; }
-		if (!box.querySelector('.rv-hcard') || !box.querySelector('.rv-online-groups .rv-chip')) { return false; }
+		if (!box.querySelector('.rv-online-count') && !box.querySelector('.rv-hcard')) { return false; }
 		box.__rvo = 1;
 		var nat; try { nat = readNative(box); } catch (e) { return true; }
 		var shown = build(box, nat, null);

@@ -2722,3 +2722,29 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
 })();
+
+/* ============================================================
+   REVELIO — profil : bouton « Fiche de liens » dans les losanges de la bannière
+   (ouvre les fiches de liens du joueur dans « Le Carnet des relations », forum 15)
+   ============================================================ */
+(function () {
+	if (window.__rvPfL) { return; } window.__rvPfL = 1;
+	function run() {
+		var nav = document.querySelector('.rv-pv .pa-dia'); if (!nav) { return false; }
+		if (nav.__rvL) { return true; } nav.__rvL = 1;
+		var h = nav.querySelector('a[href*="search_author="]'); if (!h) { return true; }
+		var m = /search_author=([^&]+)/.exec(h.getAttribute('href') || ''); if (!m) { return true; }
+		var a = document.createElement('a');
+		a.href = '/search?search_author=' + m[1] + '&search_forum=15&show_results=topics';
+		a.title = 'Fiche de liens'; a.setAttribute('aria-label', 'Fiche de liens');
+		a.style.cssText = 'left:250px;top:98px';
+		a.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+		nav.appendChild(a);
+		return true;
+	}
+	function go() {
+		if (run()) { return; }
+		var n = 0, iv = setInterval(function () { n++; if (run() || n > 40) { clearInterval(iv); } }, 200);
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+})();

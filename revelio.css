@@ -2671,3 +2671,14 @@ body:has(.rvo) .statistics{display:none !important}
 	.rvb-band.rvb-b4 .rvb-id .rv-absb span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	.rvb-band.rvb-b4 .rvb-id .rvb-crest { right: -26px; top: 50%; height: 150px; opacity: .3; transform: translateY(-50%); z-index: 0; }
 }
+
+/* En-tête des prophéties : rang · âge en ligne sobre (piste 2), citation en italique serif */
+@media (min-width: 900px) {
+	.rvb-band.rvb-b4 .rvb-id { grid-template-columns: auto; gap: 12px; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-tg { display: flex; align-items: center; gap: 0; filter: none; margin: 0; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-tg b { background: none; clip-path: none; padding: 0; color: #d9b36a; font-size: 12px; font-weight: 700; letter-spacing: 3.4px; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-tg b::after { content: "·"; margin: 0 12px; opacity: .6; font-weight: 400; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-tg span { background: none; border: 0; margin: 0; padding: 0; font-size: 12px; font-weight: 300; letter-spacing: 3px; color: #b9b2a2; text-transform: none; }
+	.rvb-band.rvb-b4 .rvb-id .rv-absb { width: max-content; }
+	.rvb-band.rvb-b4 .rvb-qt { font: italic 400 16.5px/1.7 Georgia, "Times New Roman", serif; letter-spacing: .2px; text-transform: none; color: #e8e2d2; }
+}

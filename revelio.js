@@ -2684,3 +2684,41 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run); } else { run(); }
 })();
+
+/* ============================================================
+   REVELIO — icônes du « Serment inviolable » selon le type de lien
+   (cœur pour Amour, poignée de main pour Amitié, balance, épées, crâne)
+   ============================================================ */
+(function () {
+	if (window.__rvSvIc) { return; } window.__rvSvIc = 1;
+	var P = {
+		amiti: '<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/>',
+		neutre: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+		rival: '<polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/>',
+		ennemi: '<path d="m12.5 17-.5-1-.5 1h1z"/><path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="12" r="1"/>'
+	};
+	function svg(inner, w) {
+		return '<svg width="' + w + '" height="' + w + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
+	}
+	function swap(host, inner, w) {
+		var s = host && host.querySelector('svg'); if (!s) { return; }
+		var t = document.createElement('div'); t.innerHTML = svg(inner, w);
+		s.parentNode.replaceChild(t.firstChild, s);
+	}
+	function run() {
+		var sec = document.querySelector('.pa-sv'); if (!sec) { return false; }
+		if (sec.__rvIc) { return true; } sec.__rvIc = 1;
+		var chip = sec.querySelector('.pa-sv-chip'); if (!chip) { return true; }
+		var t = (chip.textContent || '').toLowerCase(), key = '';
+		['amiti', 'neutre', 'rival', 'ennemi'].forEach(function (k) { if (t.replace(/^\s+/, '').indexOf(k) === 0) { key = k; } });
+		if (!key) { return true; }
+		swap(chip, P[key], 13);
+		swap(sec.querySelector('.pa-sv-h'), P[key], 20);
+		return true;
+	}
+	function go() {
+		if (run()) { return; }
+		var n = 0, iv = setInterval(function () { n++; if (run() || n > 40) { clearInterval(iv); } }, 200);
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+})();

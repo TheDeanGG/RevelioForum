@@ -2732,3 +2732,6 @@ body:has(.rvo) .statistics{display:none !important}
 html.rv-gaz .rv-vt { grid-template-columns: minmax(0, 1fr) !important; }
 html.rv-gaz .post.rv-gazp { display: block !important; }
 html.rv-gaz .post.rv-gazp .postbody { width: 100% !important; max-width: none !important; margin: 0 !important; }
+
+/* Posts officiels : bloc de 940px centré, comme la Gazette */
+.gp.of { max-width: 940px !important; margin-left: auto !important; margin-right: auto !important; }

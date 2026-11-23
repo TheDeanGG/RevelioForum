@@ -2750,7 +2750,8 @@
 })();
 
 /* ============================================================
-   REVELIO — en-tête des prophéties (.rvb-dia) : Profil, Hauts-faits, Fiche de liens, Présentation
+   REVELIO — en-tête des prophéties : 4 boutons le long du losange de la photo
+   (Profil, Hauts-faits, Fiche de liens, Présentation)
    ============================================================ */
 (function () {
 	if (window.__rvDia4) { return; } window.__rvDia4 = 1;
@@ -2760,22 +2761,29 @@
 		li: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
 		pr: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>'
 	};
-	function btn(href, title, ic, left) {
-		return '<a href="' + href + '" title="' + title + '" aria-label="' + title + '" style="left:' + left + 'px;top:55px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + IC[ic] + '</svg></a>';
+	/* positions (px) relatives au centre du losange de la photo (150 x 150) */
+	var POS = [[-71, 44], [-38, 78], [38, 78], [71, 44]];
+	function btn(href, title, ic, p) {
+		return '<span class="rvb-b" style="left:' + (75 + p[0]) + 'px;top:' + (75 + p[1]) + 'px"><a href="' + href + '" aria-label="' + title + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + IC[ic] + '</svg></a><em>' + title + '</em></span>';
 	}
-	function one(nav) {
-		if (nav.__rvD) { return; }
+	function one(band) {
+		if (band.__rvD) { return; }
+		var nav = band.querySelector('nav.rvb-dia'), ph = band.querySelector('.rvb-ph');
+		if (!nav || !ph) { return; }
 		var pm = nav.querySelector('a[href*="privmsg"]'), sa = nav.querySelector('a[href*="search_author="]');
 		var u = pm && /[?&]u=(\d+)/.exec(pm.getAttribute('href') || ''), n = sa && /search_author=([^&]+)/.exec(sa.getAttribute('href') || '');
 		if (!u || !n) { return; }
-		nav.__rvD = 1;
-		nav.innerHTML = btn('/u' + u[1], 'Profil', 'pro', 42)
-			+ btn('/h1-haut-faits?u=' + u[1] + '&n=' + n[1], 'Hauts-faits', 'hf', 90)
-			+ btn('/search?search_author=' + n[1] + '&search_where=f15&show_results=topics', 'Fiche de liens', 'li', 138)
-			+ btn('/search?search_author=' + n[1] + '&search_where=f8&show_results=topics', 'Présentation', 'pr', 186);
+		band.__rvD = 1;
+		var q = n[1];
+		ph.insertAdjacentHTML('beforeend',
+			btn('/u' + u[1], 'Profil', 'pro', POS[0])
+			+ btn('/h1-haut-faits?u=' + u[1] + '&n=' + q, 'Hauts-faits', 'hf', POS[1])
+			+ btn('/search?search_author=' + q + '&search_where=f15&show_results=topics', 'Fiche de liens', 'li', POS[2])
+			+ btn('/search?search_author=' + q + '&search_where=f8&show_results=topics', 'Présentation', 'pr', POS[3]));
+		band.classList.add('rvb-b4');
 	}
 	function run() {
-		var l = document.querySelectorAll('nav.rvb-dia');
+		var l = document.querySelectorAll('.rvb-band');
 		for (var i = 0; i < l.length; i++) { one(l[i]); }
 		return l.length > 0;
 	}

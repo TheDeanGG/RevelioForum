@@ -2727,3 +2727,6 @@ body:has(.rvo) .statistics{display:none !important}
 	.gp.of .idx { grid-template-columns: 1fr; }
 	.gp.of .gp-btn { display: flex; justify-content: center; }
 }
+
+/* Gazette : cadre standard (banderole), bloc à la largeur du message */
+.gp:not(.of) { max-width: none; }

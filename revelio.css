@@ -2727,3 +2727,8 @@ body:has(.rvo) .statistics{display:none !important}
 	.gp.of .idx { grid-template-columns: 1fr; }
 	.gp.of .gp-btn { display: flex; justify-content: center; }
 }
+
+/* Posts officiels : contenu centré dans la page (le texte reste aligné normalement) */
+html.rv-gaz .rv-vt { grid-template-columns: minmax(0, 1fr) !important; }
+html.rv-gaz .post.rv-gazp { display: block !important; }
+html.rv-gaz .post.rv-gazp .postbody { width: 100% !important; max-width: 960px !important; margin-left: auto !important; margin-right: auto !important; }

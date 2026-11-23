@@ -2682,3 +2682,48 @@ body:has(.rvo) .statistics{display:none !important}
 	.rvb-band.rvb-b4 .rvb-id .rv-absb { width: max-content; }
 	.rvb-band.rvb-b4 .rvb-qt { font: italic 400 16.5px/1.7 Georgia, "Times New Roman", serif; letter-spacing: .2px; text-transform: none; color: #e8e2d2; }
 }
+
+/* ===== Posts officiels : gabarit D (cartes) ===== */
+.gp.of{position:relative;overflow:hidden;padding:0;border:1px solid rgba(217,179,106,.22);border-left:1px solid rgba(217,179,106,.22);background:#0d0b08;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.gp.of .mast{display:block;padding:54px 52px 26px;border-bottom:1px solid rgba(217,179,106,.3);position:relative;background:linear-gradient(180deg,#12100b,#0d0b08)}
+.gp.of .emb{display:none}
+.gp.of .meta{justify-content:flex-start;gap:16px;margin-bottom:16px;font-size:10.5px}
+.gp.of .meta span:last-child::before{content:'—';margin-right:16px;color:#5b5648}
+.gp.of .mt h2{font:500 52px/1.05 'Cinzel',serif;letter-spacing:6px;color:#f4efe0}
+.gp.of .mt h2::after{content:'';display:block;width:84px;height:3px;margin-top:22px;background:linear-gradient(90deg,#d9b36a,transparent)}
+.gp.of .gp-tag,.gp.of .mt .tag{margin-top:18px;font:italic 400 24px 'EB Garamond',serif;color:#d9b36a}
+.gp.of .orn{display:none}
+.gp.of .gp-body{padding:30px 52px 48px}
+.gp.of .gp-body>p:first-child{font-size:17px !important;line-height:1.85 !important;color:#e8e4d8 !important;max-width:none !important}
+.gp.of .gp-body h3{margin:38px 0 18px;font:600 12px 'Poppins',sans-serif;letter-spacing:4px;color:#d9b36a}
+.gp.of .idx{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0}
+.gp.of .idx li{position:relative;overflow:hidden;display:block;padding:26px 24px 24px;background:#100e0a;border:1px solid rgba(217,179,106,.16);border-top:2px solid var(--c);transition:transform .25s,border-color .25s,box-shadow .25s}
+.gp.of .idx li:last-child{border-bottom:1px solid rgba(217,179,106,.16)}
+.gp.of .idx li:last-child:nth-child(odd){grid-column:1 / -1}
+.gp.of .idx li:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--c) 60%,transparent);box-shadow:0 16px 34px rgba(0,0,0,.5)}
+.gp.of .idx i{position:absolute;right:16px;top:2px;font:500 74px/1 'Cinzel',serif;color:var(--c);opacity:.13}
+.gp.of .idx li div{position:relative}
+.gp.of .idx b{font-size:15px;letter-spacing:1.6px;margin-bottom:8px}
+.gp.of .idx span{font-size:13.5px;line-height:1.7}
+.gp.of .idx em{display:none}
+.gp.of .gp-body h3+p{font-size:15px !important;max-width:none !important}
+.gp.of .gp-btn{display:inline-flex;align-items:center;gap:14px;margin:34px 0 4px;padding:18px 32px;background:transparent;border:1.5px solid #d9b36a;color:#d9b36a !important;font:700 12px 'Poppins',sans-serif;letter-spacing:3.4px;transition:background .25s,color .25s}
+.gp.of .gp-btn::after{content:'→';font-size:18px;letter-spacing:0}
+.gp.of .gp-btn:hover{background:#d9b36a;color:#0b0a08 !important;filter:none}
+.gp.of .gp-body p.gp-note{margin:34px 0 0;text-align:left;border-top:1px solid rgba(217,179,106,.22);padding-top:22px;font:italic 400 19px 'EB Garamond',serif}
+
+
+.gp.of .facts div{padding:16px 0}
+.gp.of .rules li{padding:20px 0}
+.gp.of .gzl li{padding:18px 0}
+.gp.of .opts li{transition:border-color .25s,transform .25s}
+.gp.of .opts li:hover{border-color:var(--c);transform:translateX(4px)}
+
+@media (max-width: 760px) {
+	.gp.of .mast { padding: 34px 22px 20px; }
+	.gp.of .mt h2 { font-size: 30px; letter-spacing: 3px; }
+	.gp.of .gp-tag, .gp.of .mt .tag { font-size: 19px; }
+	.gp.of .gp-body { padding: 22px 22px 34px; }
+	.gp.of .idx { grid-template-columns: 1fr; }
+	.gp.of .gp-btn { display: flex; justify-content: center; }
+}

@@ -2732,15 +2732,15 @@ body:has(.rvo) .statistics{display:none !important}
 .gp:not(.of) { max-width: none; }
 
 /* Posts officiels GUIDE : cartes staff avec portrait */
-.gp.of .idx-staff{grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:8px}
+.gp.of .idx-staff{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:8px}
 .gp.of .idx-staff li{display:flex;flex-direction:column;padding:0;border:1px solid rgba(217,179,106,.22);border-top:1px solid rgba(217,179,106,.22);background:linear-gradient(180deg,#14110c,#0c0a07);position:relative;overflow:hidden}
 .gp.of .idx-staff li:last-child:nth-child(odd){grid-column:auto}
 .gp.of .idx-staff li::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--c),transparent);z-index:2}
 .gp.of .idx-staff li::after{content:"";position:absolute;inset:8px;border:1px solid rgba(217,179,106,.18);pointer-events:none;z-index:2}
 .gp.of .idx-staff .pf{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:center 18%;filter:saturate(.85) contrast(1.05);-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 55%,transparent 100%)}
 .gp.of .idx-staff li div{margin-top:-64px;padding:0 22px 24px;text-align:center;position:relative;z-index:1}
-.gp.of .idx-staff .rl{display:inline-block;font:600 9.5px 'Montserrat',sans-serif;letter-spacing:2.6px;text-transform:uppercase;color:#0b0a08;background:var(--c);padding:5px 12px;margin-bottom:12px}
-.gp.of .idx-staff b{font:600 17px/1.25 'Cinzel',serif;letter-spacing:1.4px;margin:0 0 12px;text-shadow:0 2px 12px #000}
+.gp.of .idx-staff .rl{display:inline-block;font:600 9px 'Montserrat',sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:#0b0a08;background:var(--c);padding:5px 10px;max-width:100%;box-sizing:border-box;margin-bottom:12px}
+.gp.of .idx-staff b{font:600 16px/1.25 'Cinzel',serif;letter-spacing:.8px;overflow-wrap:break-word;margin:0 0 12px;text-shadow:0 2px 12px #000}
 .gp.of .idx-staff li div>span:last-child{display:block;font-size:12.5px;line-height:1.7;color:#cfc9ba}
 .gp.of .idx-staff li div>span:last-child::before{content:"";display:block;width:28px;height:1px;background:var(--c);margin:0 auto 12px;opacity:.7}
 @media(max-width:700px){.gp.of .idx-staff{grid-template-columns:1fr}}

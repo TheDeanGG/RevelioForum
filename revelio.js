@@ -2735,7 +2735,7 @@
 		var h = nav.querySelector('a[href*="search_author="]'); if (!h) { return true; }
 		var m = /search_author=([^&]+)/.exec(h.getAttribute('href') || ''); if (!m) { return true; }
 		var a = document.createElement('a');
-		a.href = '/search?search_author=' + m[1] + '&search_forum=15&show_results=topics';
+		a.href = '/search?search_author=' + m[1] + '&search_where=f15&show_results=topics';
 		a.title = 'Fiche de liens'; a.setAttribute('aria-label', 'Fiche de liens');
 		a.style.cssText = 'left:250px;top:98px';
 		a.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
@@ -2745,6 +2745,42 @@
 	function go() {
 		if (run()) { return; }
 		var n = 0, iv = setInterval(function () { n++; if (run() || n > 40) { clearInterval(iv); } }, 200);
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+})();
+
+/* ============================================================
+   REVELIO — en-tête des prophéties (.rvb-dia) : Profil, Hauts-faits, Fiche de liens, Présentation
+   ============================================================ */
+(function () {
+	if (window.__rvDia4) { return; } window.__rvDia4 = 1;
+	var IC = {
+		pro: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+		hf: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+		li: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+		pr: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>'
+	};
+	function btn(href, title, ic, left) {
+		return '<a href="' + href + '" title="' + title + '" aria-label="' + title + '" style="left:' + left + 'px;top:55px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + IC[ic] + '</svg></a>';
+	}
+	function one(nav) {
+		if (nav.__rvD) { return; }
+		var pm = nav.querySelector('a[href*="privmsg"]'), sa = nav.querySelector('a[href*="search_author="]');
+		var u = pm && /[?&]u=(\d+)/.exec(pm.getAttribute('href') || ''), n = sa && /search_author=([^&]+)/.exec(sa.getAttribute('href') || '');
+		if (!u || !n) { return; }
+		nav.__rvD = 1;
+		nav.innerHTML = btn('/u' + u[1], 'Profil', 'pro', 42)
+			+ btn('/h1-haut-faits?u=' + u[1] + '&n=' + n[1], 'Hauts-faits', 'hf', 90)
+			+ btn('/search?search_author=' + n[1] + '&search_where=f15&show_results=topics', 'Fiche de liens', 'li', 138)
+			+ btn('/search?search_author=' + n[1] + '&search_where=f8&show_results=topics', 'Présentation', 'pr', 186);
+	}
+	function run() {
+		var l = document.querySelectorAll('nav.rvb-dia');
+		for (var i = 0; i < l.length; i++) { one(l[i]); }
+		return l.length > 0;
+	}
+	function go() {
+		var n = 0, iv = setInterval(function () { n++; run(); if (n > 40) { clearInterval(iv); } }, 250);
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
 })();

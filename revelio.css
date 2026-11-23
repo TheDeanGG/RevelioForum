@@ -2657,3 +2657,17 @@ body:has(.rvo) .statistics{display:none !important}
 .rvb-b em { position: absolute; top: 25px; left: 0; transform: translateX(-50%); font: 600 9px Montserrat, "Helvetica Neue", Arial, sans-serif; font-style: normal; letter-spacing: 1.6px; text-transform: uppercase; color: #d9b36a; white-space: nowrap; opacity: 0; transition: opacity .2s; pointer-events: none; text-shadow: 0 0 6px #000; }
 .rvb-b:hover em { opacity: 1; }
 @media (min-width: 900px) { .rvb-band.rvb-b4 { min-height: 210px; } .rvb-band.rvb-b4 .rvb-ph { transform: translateY(-12px); } }
+
+/* En-tête des prophéties : identité compacte (option B), écusson en arrière-plan, citation plus large */
+@media (min-width: 900px) {
+	.rvb-band.rvb-b4 .rvb-ph { margin-left: 22px; }
+	.rvb-band.rvb-b4 .rvb-qt { flex: 0 1 560px; }
+	.rvb-band.rvb-b4 .rvb-id { display: grid; grid-template-columns: auto auto; justify-content: start; align-items: stretch; gap: 14px 12px; max-width: none; }
+	.rvb-band.rvb-b4 .rvb-id h2 { grid-column: 1 / -1; flex-wrap: nowrap; white-space: nowrap; align-items: baseline; gap: 0 12px; position: relative; z-index: 1; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-f { font-size: 34px; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-l { font-size: 34px; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-tg, .rvb-band.rvb-b4 .rvb-id .rv-absb { position: relative; z-index: 1; margin: 0; }
+	.rvb-band.rvb-b4 .rvb-id .rv-absb { max-width: 300px; }
+	.rvb-band.rvb-b4 .rvb-id .rv-absb span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.rvb-band.rvb-b4 .rvb-id .rvb-crest { right: -26px; top: 50%; height: 150px; opacity: .3; transform: translateY(-50%); z-index: 0; }
+}

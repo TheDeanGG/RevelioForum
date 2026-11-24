@@ -1626,7 +1626,7 @@
 				var a = aff(p.nat), c = a[1], fcFree = !p.fc || /^libre$/i.test(p.fc);
 				var others = p.others.map(function (x) { var free = /^à définir/i.test(x.name); return '<a class="o' + (free ? ' free' : '') + '" href="' + esc(ctx.reply) + '" style="--c:' + (free ? '#b79be0' : '#8cc7a0') + '"><i><b>' + esc(free ? '?' : ini(x.name)) + '</b></i><div><strong>' + esc(x.name) + '</strong><em>' + esc(x.rel) + '</em></div><u>' + (free ? 'À pourvoir' : 'Joué') + '</u></a>'; }).join('');
 				h += '<article class="lp-cd wait pre" style="--c:' + c + '"><div class="jr-cg"><aside class="jr-as"><div class="jr-dm"><i><b>' + esc(ini(p.name)) + '</b></i></div><div class="cd-fcn">' + (fcFree ? 'Faceclaim libre' : 'Faceclaim · ' + esc(p.fc)) + '</div>' +
-					'<div class="jr-gj"><div class="gh"><span>Profondeur du lien</span><b>0 / 5</b></div><div class="gd"><i></i><i></i><i></i><i></i><i></i></div><p class="gn">Tout reste à écrire.</p></div>' +
+					'<div class="jr-gj"><div class="pd-gh"><span>Profondeur du lien</span><b>0 / 5</b></div><div class="pd-gd"><i></i><i></i><i></i><i></i><i></i></div><p class="gn">Tout reste à écrire.</p></div>' +
 					'<div class="lp-facts jr-f3">' + facts([['Âge', p.age], ['Maison', p.house], ['Sang', p.blood]]) + '</div></aside>' +
 					'<div class="jr-mn"><div class="jr-hd"><span class="aff dash"><i></i><span>Pré-lien · ' + esc(a[0]) + '</span></span><span class="no">À pourvoir</span></div>' +
 					'<h4 class="jr-nm"><small>' + esc(p.first) + '</small><span>' + esc(p.last) + '</span></h4><div class="jr-ln"><i></i><em>' + esc(p.rel) + '</em><u></u></div>' +
@@ -1656,7 +1656,7 @@
 		var gauge = [0, 1, 2, 3, 4].map(function (g) { return '<i class="' + (g < depth ? 'on' : '') + '"></i>'; }).join('');
 		return '<div class="jr-body ent"><article class="lp-cd' + (l.ok ? '' : ' wait') + '" style="--c:' + c + '"><div class="cd-wm" aria-hidden="true"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M60 10L110 102H10Z"/><circle cx="60" cy="72" r="30"/><path d="M60 10V102"/></svg></div>' +
 			'<div class="jr-cg"><aside class="jr-as"><div class="jr-dm"><i>' + SVG_PERSON + (l.img ? '<img src="' + esc(l.img) + '" alt="">' : '') + '</i></div><div class="cd-fcn">' + (l.fc ? 'Faceclaim · ' + esc(l.fc) : 'Faceclaim') + '</div>' +
-			'<div class="jr-gj"><div class="gh"><span>Profondeur du lien</span><b>' + depth + ' / 5</b></div><div class="gd">' + gauge + '</div></div>' +
+			'<div class="jr-gj"><div class="pd-gh"><span>Profondeur du lien</span><b>' + depth + ' / 5</b></div><div class="pd-gd">' + gauge + '</div></div>' +
 			'<div class="lp-facts jr-f3">' + facts([['Première rencontre', l.since], ['Lieu', l.lieu], ['Dernière scène', last], ['Sang', l.blood]]) + '</div></aside>' +
 			'<div class="jr-mn"><div class="jr-hd"><span class="aff"><i></i><span>' + esc(a[0]) + '</span></span><span class="no">n° ' + (i < 9 ? '0' : '') + (i + 1) + '</span></div>' +
 			'<h4 class="jr-nm"><small>' + esc(l.first) + '</small><span>' + esc(l.last) + '</span></h4><div class="jr-ln"><i></i><em>' + esc(l.rel) + '</em><u></u></div>' +
@@ -2800,4 +2800,78 @@
 		var n = 0, iv = setInterval(function () { n++; run(); if (n > 40) { clearInterval(iv); } }, 250);
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+})();
+
+/* ===== REVELIO : fiche de personnage prédéfini (Héritiers & Panthéon, pré-liens) : 1er message « PERSONNAGE PRÉDÉFINI », 2e message « FAMILLE ET LIENS » ===== */
+(function () {
+	var AFF = { 'amour': '#d65a6b', 'amitié': '#8cc7a0', 'neutre': '#a8a193', 'rivalité': '#e0975f', 'ennemi': '#b79be0' };
+	var HCOL = { 'gryffondor': '#d65a6b', 'serdaigle': '#6fb0cf', 'serpentard': '#5fc4a0', 'poufsouffle': '#d9b650' };
+	var HEADS = ['PERSONNAGE PRÉDÉFINI', 'FAMILLE ET LIENS', 'HISTOIRE', 'CARACTÈRE', 'ANECDOTES', 'FAMILLE', 'LIENS DE DÉPART', 'SCÈNE D’OUVERTURE', 'SCÈNE D\'OUVERTURE'];
+	function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+	function trim(s) { return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
+	function plain(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
+	function safeUrl(u) { u = trim(u); return /^(https?:\/\/|\/)/i.test(u) ? u : ''; }
+	function ini(nm) { return nm.split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase(); }
+	function kv(lines) { var o = {}; lines.forEach(function (l) { var m = /^([^:]+?)\s*:\s*(.*)$/.exec(l); if (m && !(m[1] in o)) { o[m[1]] = trim(m[2]); } }); return o; }
+	function parse(c) {
+		var clone = c.cloneNode(true), img = '';
+		Array.prototype.forEach.call(clone.querySelectorAll('img'), function (im) { var s = im.getAttribute('src') || ''; if (!img && !/smil|emoticon|icon_/i.test(s)) { img = s; } im.parentNode.removeChild(im); });
+		var lines = plain(clone.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(div|p|li)>/gi, '\n')).replace(/ /g, ' ').split('\n').map(trim);
+		var secs = [], cur = null, i, l;
+		for (i = 0; i < lines.length; i++) {
+			l = lines[i]; if (!l) { continue; }
+			if (HEADS.indexOf(l) > -1) { cur = { h: l, lines: [] }; secs.push(cur); continue; }
+			if (cur) { cur.lines.push(l); }
+		}
+		return { secs: secs, img: img };
+	}
+	function sec(D, h) { for (var i = 0; i < D.secs.length; i++) { if (D.secs[i].h === h) { return D.secs[i]; } } return null; }
+	function parts(s) { return s.split('|').map(trim); }
+	function fiche(D, ctx) {
+		var m = sec(D, 'PERSONNAGE PRÉDÉFINI'), k = kv(m.lines), nm = trim((k['Prénom'] || '') + ' ' + (k['Nom'] || '')), typ = k['Type'] || 'Héritier';
+		var hc = HCOL[(k['Maison'] || '').toLowerCase()] || '#d9b36a', nat = (k['Nature'] || '').toLowerCase(), nc = AFF[nat] || '#d9b36a', pre = !!(k['Lié à'] || k['Lie a']), lie = k['Lié à'] || k['Lie a'] || '';
+		var dp = Math.max(0, Math.min(5, parseInt(k['Profondeur'] || '0', 10) || 0)), st = k['Statut'] || 'Libre';
+		var img = safeUrl(k['Image']) || D.img;
+		var hist = (sec(D, 'HISTOIRE') || { lines: [] }).lines, car = (sec(D, 'CARACTÈRE') || { lines: [] }).lines, an = (sec(D, 'ANECDOTES') || { lines: [] }).lines;
+		var traits = '', carP = [];
+		car.forEach(function (x) { var t = /^Traits\s*:\s*(.*)$/.exec(x); if (t) { traits = t[1]; } else { carP.push(x); } });
+		var facts = [['Âge', k['Âge']], ['Maison', k['Maison']], ['Statut du sang', k['Statut du sang']], ['Famille', k['Famille']], ['Allégeance', k['Allégeance'] || 'À choisir'], ['Avatar conseillé', k['Avatar'] || 'Libre, à ton choix']];
+		var h = '<div class="pd-fiche" style="--h:' + hc + ';--n:' + nc + '"><aside class="pd-fp"><i class="pd-dia">' + (img ? '<img src="' + esc(img) + '" alt="' + esc(nm) + '">' : '<b>' + esc(ini(nm)) + '</b>') + '</i><span>' + esc(nm) + '</span><small>' + esc(typ.toUpperCase()) + (k['Maison'] ? ' · ' + esc(k['Maison'].toUpperCase()) : '') + '</small></aside><div class="pd-fm">';
+		if (pre) { h += '<div class="pd-gj"><div class="pd-gh"><span>Profondeur du lien</span><b>' + dp + ' / 5</b></div><div class="pd-gd">' + [0, 1, 2, 3, 4].map(function (g) { return '<i class="' + (g < dp ? 'on' : '') + '"></i>'; }).join('') + '</div></div>'; }
+		h += '<div class="pd-kd">' + esc(typ) + ' — Revelio</div><h2>' + esc(nm) + '</h2>' + (k['Accroche'] ? '<p class="pd-tg">' + esc(k['Accroche']) + '</p>' : '');
+		if (k['Relation']) { h += '<div class="pd-rl"><em>' + esc(k['Relation']) + '</em><u></u></div>'; }
+		h += '<dl class="pd-facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + esc(f[1] || '—') + '</dd></div>'; }).join('') + '</dl>';
+		if (pre) { h += '<div class="pd-lie"><i>' + esc(ini(lie)) + '</i><div><b>' + esc(lie) + '</b><small>Lié à' + (k['Nature'] ? ' · ' + esc(k['Nature']) : '') + '</small></div><u>' + esc(k['Lié statut'] || 'Joué') + '</u></div>'; }
+		if (hist.length) { h += '<h4>' + (pre ? 'Ce qui les lie' : 'Son histoire') + '</h4>' + hist.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join(''); }
+		if (carP.length || traits || an.length) {
+			h += '<div class="pd-cols"><div class="cl"><h4>Caractère</h4>' + carP.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + (traits ? '<div class="tags">' + traits.split(',').map(trim).filter(Boolean).map(function (t) { return '<b>' + esc(t) + '</b>'; }).join('') + '</div>' : '') + '</div>' +
+				'<div class="cl"><h4>Anecdotes</h4><ul>' + an.map(function (a) { return '<li>' + esc(a.replace(/^[-•]\s*/, '')) + '</li>'; }).join('') + '</ul></div></div>';
+		}
+		h += '<h4>Ce que le staff attend</h4><ul class="pd-ul"><li><b>Respecter les points fixes.</b> Sa famille et son passé' + (pre ? ', ainsi que son lien de départ,' : '') + ' ne changent pas.</li><li><b>Libre à toi</b> pour le caractère, les projets et la suite de l’histoire.</li><li><b>Un seul joueur</b> par personnage : réserve-le avant de le présenter.</li></ul>';
+		h += '<div class="pd-cta"><a class="btn pl" href="' + esc(ctx.reply) + '">Réserver ce personnage</a><a class="btn" href="/h2-">Voir le générateur</a><span>Statut : ' + esc(st.toLowerCase()) + '</span></div></div></div>';
+		return h;
+	}
+	function liens(D) {
+		var m = sec(D, 'FAMILLE ET LIENS'), k = kv(m.lines), nm = k['Personnage'] || '';
+		function rows(s, withNat) { return s ? s.lines.filter(function (x) { return /^(Famille|Lien)\s*:/.test(x); }).map(function (x) { var p = parts(x.replace(/^[^:]+:\s*/, '')), t = (p[3] || '').toLowerCase(), cl = /joué/.test(t) ? 'pj' : /pnj/.test(t) ? 'pj' : /panth/.test(t) ? 'pn' : 'li'; return '<li><span class="r">' + esc(p[0] || '') + '</span><span class="n">' + esc(p[1] || '') + '<small>' + esc(p[2] || '') + '</small></span><span class="t ' + cl + '">' + esc(p[3] || '') + '</span></li>'; }).join('') : ''; }
+		var fam = rows(sec(D, 'FAMILLE')), lk = rows(sec(D, 'LIENS DE DÉPART')), sc = sec(D, 'SCÈNE D’OUVERTURE') || sec(D, 'SCÈNE D\'OUVERTURE');
+		var h = '<div class="pd-fiche pd-lk"><aside class="pd-fp pd-fp2"><span>' + esc(nm) + '</span><small>FAMILLE &amp; LIENS</small></aside><div class="pd-fm"><div class="pd-kd">Famille &amp; liens</div><h2 class="s">' + esc(nm) + '</h2>' + (k['Accroche'] ? '<p class="pd-tg">' + esc(k['Accroche']) + '</p>' : '');
+		if (fam) { h += '<h4>Sa famille</h4><ul class="pd-ll">' + fam + '</ul>'; }
+		if (lk) { h += '<h4>Liens de départ</h4><ul class="pd-ll">' + lk + '</ul>'; }
+		if (sc) { sc.lines.forEach(function (x) { var s = /^Scène\s*:\s*(.*)$/.exec(x); if (s) { var p = parts(s[1]); h += '<h4>Scène d’ouverture proposée</h4><div class="pd-sc"><i></i><div><small>À jouer ensemble</small><b>' + esc(p[0] || '') + '</b><em>' + esc(p[1] || '') + '</em><p>' + esc(p[2] || '') + '</p></div><u>Ouvert</u></div>'; } }); }
+		return h + '</div></div>';
+	}
+	function run() {
+		var main = document.getElementById('main-content'); if (!main) { return; }
+		var cs = main.querySelectorAll('.postbody .content, .post .content');
+		Array.prototype.forEach.call(cs, function (c) {
+			if (c.getAttribute('data-rv-pd')) { return; }
+			var first = trim(plain(c.innerHTML.replace(/<br\s*\/?>/gi, '\n')).replace(/ /g, ' ').split('\n').filter(function (x) { return trim(x); })[0] || '');
+			if (first !== 'PERSONNAGE PRÉDÉFINI' && first !== 'FAMILLE ET LIENS') { return; }
+			c.setAttribute('data-rv-pd', '1');
+			var D = parse(c), post = c.closest('.post') || c.parentNode, reply = document.querySelector('a[href*="mode=reply"]'), ctx = { reply: reply ? reply.getAttribute('href') : '#' };
+			try { c.innerHTML = '<div class="rv-pd">' + (first === 'FAMILLE ET LIENS' ? liens(D) : fiche(D, ctx)) + '</div>'; if (post && post.classList) { post.classList.add('rv-pd-post'); } } catch (e) { if (window.console) { console.log('rv-pd', e); } }
+		});
+	}
+	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 60); }); } else { setTimeout(run, 60); }
 })();

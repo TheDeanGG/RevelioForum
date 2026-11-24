@@ -2813,7 +2813,6 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-sc em{display:block;margin-top:4px;font:700 9px Montserrat,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#8f8878;font-style:normal}
 .rv-pd .pd-sc p{margin:8px 0 0;font:300 13px/1.6 Poppins,sans-serif;color:#cfc9ba}
 .rv-pd .pd-sc u{text-decoration:none;font:700 9px Montserrat,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#8cc7a0;border:1px solid #3a5a48;padding:3px 10px}
-@media(max-width:900px){.rv-pd .pd-fiche{grid-template-columns:1fr}.rv-pd .pd-fp{min-height:240px}.rv-pd .pd-gj{position:static;width:auto;margin-bottom:16px}.rv-pd .pd-facts{grid-template-columns:1fr 1fr}.rv-pd .pd-cols{grid-template-columns:1fr}.rv-pd .pd-ll li{grid-template-columns:1fr auto}.rv-pd .pd-ll .r{grid-column:1/-1}}
 /* correctifs .rv-pd : neutraliser les puces globales .content ul li et les styles de paragraphe */
 .postbody .content .rv-pd ul li:before{content:none;display:none}
 .postbody .content .rv-pd ul li{margin:0;padding-left:0}

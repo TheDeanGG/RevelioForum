@@ -2842,3 +2842,8 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-ll li{grid-template-columns:1fr auto}
 .rv-pd .pd-ll .r{grid-column:1/-1}
 }
+/* 2e message (Famille et liens) : accents bleus conservés */
+.rv-pd .pd-lk .pd-kd{color:#6fb0cf}
+.rv-pd .pd-lk .pd-sc{background:#12161c;border-color:#2a3340}
+.rv-pd .pd-lk .pd-sc i{border-color:#6fb0cf}
+.rv-pd .pd-lk .pd-sc small{color:#6fb0cf}

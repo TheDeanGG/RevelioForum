@@ -2825,3 +2825,21 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-gj .pd-gd i{width:30px;margin-right:2px}
 .rv-pd .pd-lie{margin-bottom:6px}
 .rv-pd .pd-gj .pd-gd{padding:0;background:none;border:0;display:flex}
+/* .rv-pd : mise en page selon la largeur du message (colonne profil à côté), pas celle de l'écran */
+.rv-pd{container-type:inline-size}
+@container (max-width:1000px){
+.rv-pd .pd-fiche{grid-template-columns:1fr}
+.rv-pd .pd-fp{min-height:250px;padding-bottom:20px}
+.rv-pd .pd-fp2{min-height:0}
+.rv-pd .pd-dia{top:34px}
+.rv-pd .pd-fm{padding:32px 30px 32px}
+}
+@container (max-width:620px){
+.rv-pd .pd-gj{position:static;width:auto;margin-bottom:16px}
+.rv-pd .pd-gj .pd-gd{justify-content:flex-start}
+.rv-pd .pd-facts{grid-template-columns:1fr 1fr}
+.rv-pd .pd-cols{grid-template-columns:1fr}
+.rv-pd .pd-fm h2{font-size:30px}
+.rv-pd .pd-ll li{grid-template-columns:1fr auto}
+.rv-pd .pd-ll .r{grid-column:1/-1}
+}

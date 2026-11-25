@@ -2838,9 +2838,9 @@
 		var traits = '', carP = [];
 		car.forEach(function (x) { var t = /^Traits\s*:\s*(.*)$/.exec(x); if (t) { traits = t[1]; } else { carP.push(x); } });
 		var facts = [['Âge', k['Âge']], ['Maison', k['Maison']], ['Statut du sang', k['Statut du sang']], ['Famille', k['Famille']], ['Allégeance', k['Allégeance'] || 'À choisir'], ['Avatar conseillé', k['Avatar'] || 'Libre, à ton choix']];
-		var h = '<div class="pd-fiche" style="--h:' + hc + ';--n:' + nc + '"><aside class="pd-fp"><i class="pd-dia">' + (img ? '<img src="' + esc(img) + '" alt="' + esc(nm) + '">' : '<b>' + esc(ini(nm)) + '</b>') + '</i><span>' + esc(nm) + '</span><small>' + esc(typ.toUpperCase()) + (k['Maison'] ? ' · ' + esc(k['Maison'].toUpperCase()) : '') + '</small></aside><div class="pd-fm">' + crest(k['Maison']);
+		var h = '<div class="pd-fiche pd-band" style="--h:' + hc + ';--n:' + nc + '"><div class="pd-bd"><i class="pd-dia">' + (img ? '<img src="' + esc(img) + '" alt="' + esc(nm) + '">' : '<b>' + esc(ini(nm)) + '</b>') + '</i><div class="pd-ti"><div class="pd-k">' + esc(typ) + (k['Maison'] ? ' · ' + esc(k['Maison']) : '') + '</div><h2>' + esc(nm) + '</h2>' + (k['Accroche'] ? '<p class="pd-tg">' + esc(k['Accroche']) + '</p>' : '');
 		if (pre) { h += '<div class="pd-gj"><div class="pd-gh"><span>Profondeur du lien</span><b>' + dp + ' / 5</b></div><div class="pd-gd">' + [0, 1, 2, 3, 4].map(function (g) { return '<i class="' + (g < dp ? 'on' : '') + '"></i>'; }).join('') + '</div></div>'; }
-		h += '<div class="pd-kd">' + esc(typ) + ' — Revelio</div><h2>' + esc(nm) + '</h2>' + (k['Accroche'] ? '<p class="pd-tg">' + esc(k['Accroche']) + '</p>' : '');
+		h += '</div>' + crest(k['Maison']) + '</div><div class="pd-fm">';
 		if (k['Relation']) { h += '<div class="pd-rl"><em>' + esc(k['Relation']) + '</em><u></u></div>'; }
 		h += '<dl class="pd-facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + esc(f[1] || '—') + '</dd></div>'; }).join('') + '</dl>';
 		if (pre) { h += '<div class="pd-lie"><i><b>' + esc(ini(lie)) + '</b></i><div><b>' + esc(lie) + '</b><small>Lié à' + (k['Nature'] ? ' · ' + esc(k['Nature']) : '') + '</small></div><u>' + esc(k['Lié statut'] || 'Joué') + '</u></div>'; }

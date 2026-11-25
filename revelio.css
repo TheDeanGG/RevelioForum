@@ -2903,3 +2903,10 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-bd>.pd-crest{height:150px;top:8px;right:8px;opacity:.3}
 .rv-pd .pd-fm{padding:24px 22px 28px}
 }
+/* écusson : tout à droite du bandeau, entièrement visible */
+.rv-pd .pd-bd>.pd-crest{top:18px;bottom:18px;right:28px;height:auto;max-height:calc(100% - 36px);width:auto;aspect-ratio:341/379;object-fit:contain}
+@container (max-width:900px){.rv-pd .pd-bd>.pd-crest{top:16px;bottom:16px;right:20px;height:auto}}
+@container (max-width:620px){.rv-pd .pd-bd>.pd-crest{top:14px;bottom:14px;right:14px;height:auto}}
+/* post 2 : le bandeau remplace l'ancienne colonne */
+.rv-pd .pd-lk .pd-ti h2{font-size:38px}
+.rv-pd .pd-lk .pd-bd{min-height:190px}

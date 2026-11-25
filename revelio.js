@@ -2811,6 +2811,8 @@
 	function trim(s) { return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
 	function plain(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
 	function safeUrl(u) { u = trim(u); return /^(https?:\/\/|\/)/i.test(u) ? u : ''; }
+	var CREST = { 'gryffondor': 'Gryffondor', 'serdaigle': 'Serdaigle', 'serpentard': 'Serpentard', 'poufsouffle': 'Poufsouffle' };
+	function crest(maison) { var f = CREST[(maison || '').toLowerCase()], s = document.querySelector('script[src*="RevelioForum@"][src*="revelio.js"]'); if (!f || !s) { return ''; } return '<img class="pd-crest" src="' + esc(s.src.replace(/revelio\.js.*$/, '') + 'img/ecussons/' + f + '.png') + '" alt="' + esc(f) + '">'; }
 	function ini(nm) { return nm.split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase(); }
 	function kv(lines) { var o = {}; lines.forEach(function (l) { var m = /^([^:]+?)\s*:\s*(.*)$/.exec(l); if (m && !(m[1] in o)) { o[m[1]] = trim(m[2]); } }); return o; }
 	function parse(c) {
@@ -2836,7 +2838,7 @@
 		var traits = '', carP = [];
 		car.forEach(function (x) { var t = /^Traits\s*:\s*(.*)$/.exec(x); if (t) { traits = t[1]; } else { carP.push(x); } });
 		var facts = [['Âge', k['Âge']], ['Maison', k['Maison']], ['Statut du sang', k['Statut du sang']], ['Famille', k['Famille']], ['Allégeance', k['Allégeance'] || 'À choisir'], ['Avatar conseillé', k['Avatar'] || 'Libre, à ton choix']];
-		var h = '<div class="pd-fiche" style="--h:' + hc + ';--n:' + nc + '"><aside class="pd-fp"><i class="pd-dia">' + (img ? '<img src="' + esc(img) + '" alt="' + esc(nm) + '">' : '<b>' + esc(ini(nm)) + '</b>') + '</i><span>' + esc(nm) + '</span><small>' + esc(typ.toUpperCase()) + (k['Maison'] ? ' · ' + esc(k['Maison'].toUpperCase()) : '') + '</small></aside><div class="pd-fm">';
+		var h = '<div class="pd-fiche" style="--h:' + hc + ';--n:' + nc + '"><aside class="pd-fp"><i class="pd-dia">' + (img ? '<img src="' + esc(img) + '" alt="' + esc(nm) + '">' : '<b>' + esc(ini(nm)) + '</b>') + '</i>' + crest(k['Maison']) + '<span>' + esc(nm) + '</span><small>' + esc(typ.toUpperCase()) + (k['Maison'] ? ' · ' + esc(k['Maison'].toUpperCase()) : '') + '</small></aside><div class="pd-fm">';
 		if (pre) { h += '<div class="pd-gj"><div class="pd-gh"><span>Profondeur du lien</span><b>' + dp + ' / 5</b></div><div class="pd-gd">' + [0, 1, 2, 3, 4].map(function (g) { return '<i class="' + (g < dp ? 'on' : '') + '"></i>'; }).join('') + '</div></div>'; }
 		h += '<div class="pd-kd">' + esc(typ) + ' — Revelio</div><h2>' + esc(nm) + '</h2>' + (k['Accroche'] ? '<p class="pd-tg">' + esc(k['Accroche']) + '</p>' : '');
 		if (k['Relation']) { h += '<div class="pd-rl"><em>' + esc(k['Relation']) + '</em><u></u></div>'; }

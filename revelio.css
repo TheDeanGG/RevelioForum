@@ -2857,3 +2857,6 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-lie div{min-width:0}
 .rv-pd .pd-lie u{align-self:center}
 .rv-pd .pd-dia img{max-width:none;max-height:none;width:216px;height:216px;border:0;padding:0}
+/* écusson de maison sous le portrait */
+.rv-pd .pd-crest{display:block;max-width:none;width:auto;height:92px;margin:0 auto 18px;border:0;padding:0;filter:drop-shadow(0 4px 14px rgba(0,0,0,.6))}
+@container (max-width:1000px){.rv-pd .pd-fp{min-height:390px}}

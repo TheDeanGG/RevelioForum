@@ -2860,3 +2860,12 @@ body:has(.rvo) .statistics{display:none !important}
 /* écusson de maison sous le portrait */
 .rv-pd .pd-crest{display:block;max-width:none;width:auto;height:92px;margin:0 auto 18px;border:0;padding:0;filter:drop-shadow(0 4px 14px rgba(0,0,0,.6))}
 @container (max-width:1000px){.rv-pd .pd-fp{min-height:390px}}
+/* écusson en filigrane, à droite du contenu (remplace le placement sous le portrait) */
+.rv-pd .pd-fm{overflow:hidden}
+.rv-pd .pd-fm>*{position:relative;z-index:1}
+.rv-pd .pd-fm>.pd-gj{position:absolute}
+.rv-pd .pd-fm>.pd-crest{position:absolute;z-index:0;right:-30px;top:120px;left:auto;margin:0;height:420px;width:auto;opacity:.13;filter:none;pointer-events:none}
+@container (max-width:1000px){.rv-pd .pd-fp{min-height:310px}.rv-pd .pd-fm>.pd-crest{height:340px;right:-20px;top:150px}}
+@container (max-width:620px){.rv-pd .pd-fm>.pd-gj{position:static}.rv-pd .pd-fm>.pd-crest{height:240px;top:200px;right:-30px}}
+.rv-pd .pd-facts div,.rv-pd .pd-lie,.rv-pd .pd-cols .cl,.rv-pd .pd-ul li{background:rgba(16,14,10,.72)}
+.rv-pd .pd-fm>.pd-crest{opacity:.17;top:90px}

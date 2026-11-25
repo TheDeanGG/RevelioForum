@@ -2847,3 +2847,12 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-lk .pd-sc{background:#12161c;border-color:#2a3340}
 .rv-pd .pd-lk .pd-sc i{border-color:#6fb0cf}
 .rv-pd .pd-lk .pd-sc small{color:#6fb0cf}
+/* icône losange : l'image couvre tout le losange, le nom ne passe plus dessous */
+.rv-pd .pd-dia img{width:216px;height:216px;margin:-108px 0 0 -108px}
+@container (max-width:1000px){.rv-pd .pd-fp{min-height:310px;padding-bottom:26px}.rv-pd .pd-dia{top:40px}}
+/* bloc « Lié à » : losange à bordure, texte aligné au centre */
+.rv-pd .pd-lie{grid-template-columns:56px 1fr auto;gap:12px;padding:16px 22px 16px 18px}
+.rv-pd .pd-lie i{width:34px;height:34px;margin:0 11px;transform:rotate(45deg);clip-path:none;border:1px solid var(--n,#d65a6b);background:linear-gradient(135deg,#3a3a3a,#111);display:flex;align-items:center;justify-content:center}
+.rv-pd .pd-lie i b{transform:rotate(-45deg);font:500 12px Cinzel,serif;letter-spacing:0;color:#f4efe0}
+.rv-pd .pd-lie div{min-width:0}
+.rv-pd .pd-lie u{align-self:center}

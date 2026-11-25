@@ -2841,7 +2841,7 @@
 		h += '<div class="pd-kd">' + esc(typ) + ' — Revelio</div><h2>' + esc(nm) + '</h2>' + (k['Accroche'] ? '<p class="pd-tg">' + esc(k['Accroche']) + '</p>' : '');
 		if (k['Relation']) { h += '<div class="pd-rl"><em>' + esc(k['Relation']) + '</em><u></u></div>'; }
 		h += '<dl class="pd-facts">' + facts.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd>' + esc(f[1] || '—') + '</dd></div>'; }).join('') + '</dl>';
-		if (pre) { h += '<div class="pd-lie"><i>' + esc(ini(lie)) + '</i><div><b>' + esc(lie) + '</b><small>Lié à' + (k['Nature'] ? ' · ' + esc(k['Nature']) : '') + '</small></div><u>' + esc(k['Lié statut'] || 'Joué') + '</u></div>'; }
+		if (pre) { h += '<div class="pd-lie"><i><b>' + esc(ini(lie)) + '</b></i><div><b>' + esc(lie) + '</b><small>Lié à' + (k['Nature'] ? ' · ' + esc(k['Nature']) : '') + '</small></div><u>' + esc(k['Lié statut'] || 'Joué') + '</u></div>'; }
 		if (hist.length) { h += '<h4>' + (pre ? 'Ce qui les lie' : 'Son histoire') + '</h4>' + hist.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join(''); }
 		if (carP.length || traits || an.length) {
 			h += '<div class="pd-cols"><div class="cl"><h4>Caractère</h4>' + carP.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + (traits ? '<div class="tags">' + traits.split(',').map(trim).filter(Boolean).map(function (t) { return '<b>' + esc(t) + '</b>'; }).join('') + '</div>' : '') + '</div>' +

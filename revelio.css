@@ -2893,8 +2893,13 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-fm{padding:28px 28px 32px}
 }
 @container (max-width:620px){
-.rv-pd .pd-bd{flex-direction:column;align-items:flex-start;padding:24px 22px}
-.rv-pd .pd-ti h2{font-size:26px}
-.rv-pd .pd-bd>.pd-crest{height:150px;top:8px;opacity:.35}
+.rv-pd .pd-bd{padding:22px 22px;gap:16px;min-height:0}
+.rv-pd .pd-bd .pd-dia{width:76px;height:76px;margin:0 12px 0 4px}
+.rv-pd .pd-bd .pd-dia img{width:116px;height:116px;margin:-58px 0 0 -58px}
+.rv-pd .pd-bd .pd-dia b{font-size:20px}
+.rv-pd .pd-ti h2{font-size:24px;letter-spacing:3px}
+.rv-pd .pd-ti .pd-tg{font-size:18px}
+.rv-pd .pd-ti .pd-gj{width:210px;margin-top:12px}
+.rv-pd .pd-bd>.pd-crest{height:150px;top:8px;right:8px;opacity:.3}
 .rv-pd .pd-fm{padding:24px 22px 28px}
 }

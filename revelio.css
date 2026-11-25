@@ -2856,3 +2856,4 @@ body:has(.rvo) .statistics{display:none !important}
 .rv-pd .pd-lie i b{transform:rotate(-45deg);font:500 12px Cinzel,serif;letter-spacing:0;color:#f4efe0}
 .rv-pd .pd-lie div{min-width:0}
 .rv-pd .pd-lie u{align-self:center}
+.rv-pd .pd-dia img{max-width:none;max-height:none;width:216px;height:216px;border:0;padding:0}
